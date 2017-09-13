@@ -11,13 +11,17 @@ import java.util.List;
 /**
  * <pre>
  *     author : TK
- *     time   : 2017/03/16
+ *     time   : 2017/9/13
  *     desc   : 集合处理工具
  * </pre>
  */
 public final class CollectionUtils {
-    public interface Predicate<T> {
-        boolean removeConfirm(T t);
+    public interface Predicate<D> {
+        boolean removeConfirm(D d);
+    }
+
+    public interface Search<T, D> {
+        D apply(T t);
     }
 
     private CollectionUtils() {
@@ -76,19 +80,76 @@ public final class CollectionUtils {
     }
 
     /**
-     * 数组中搜索元素
+     * 数组中搜索元素第一次出现位置，equals
      *
      * @param objects
      * @param element
      * @return
      */
-    public static <T> int search(@NonNull T[] objects, @NonNull T element) {
-        int e = -1;
-        for (int w = 0; w < objects.length; w++) {
-            if (element.equals(objects[w])) {
-                return w;
+    public static <T> int searchFirst(@NonNull T[] objects, @NonNull T element) {
+        int index = -1;
+        for (int i = 0; i < objects.length; i++) {
+            if (element.equals(objects[i])) {
+                return i;
             }
         }
-        return e;
+        return index;
+    }
+
+    /**
+     * 数组中搜索元素第一次出现位置
+     *
+     * @param objects
+     * @param condition
+     * @param search
+     * @param <T>
+     * @param <D>
+     * @return
+     */
+    public static <T, D> int searchFirst(@NonNull T[] objects, @NonNull D condition, @NonNull Search<T, D> search) {
+        int index = -1;
+        for (int i = 0; i < objects.length; i++) {
+            if (search.apply(objects[i]).equals(condition)) {
+                return i;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 集合中搜索元素第一次出现位置，equals
+     *
+     * @param list
+     * @param element
+     * @return
+     */
+    public static <T> int searchFirst(@NonNull List<T> list, @NonNull T element) {
+        int index = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (element.equals(list.get(i))) {
+                return i;
+            }
+        }
+        return index;
+    }
+
+    /**
+     * 集合中搜索元素第一次出现位置
+     *
+     * @param list
+     * @param condition
+     * @param search
+     * @param <T>
+     * @param <D>
+     * @return
+     */
+    public static <T, D> int searchFirst(@NonNull List<T> list, @NonNull D condition, @NonNull Search<T, D> search) {
+        int result = -1;
+        for (int i = 0; i < list.size(); i++) {
+            if (search.apply(list.get(i)).equals(condition)) {
+                return i;
+            }
+        }
+        return result;
     }
 }
