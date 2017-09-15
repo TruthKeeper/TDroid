@@ -17,6 +17,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-//        Logger.init(new Logger.Config());
+//        Logger.init(new Logger.Config()
+//                .logPath(Environment.getExternalStorageDirectory() + File.separator + "test"));
     }
 }

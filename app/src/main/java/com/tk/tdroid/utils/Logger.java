@@ -1,6 +1,8 @@
 package com.tk.tdroid.utils;
 
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -8,9 +10,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -18,6 +27,7 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 
 /**
  * <pre>
@@ -27,6 +37,18 @@ import javax.xml.transform.stream.StreamSource;
  * </pre>
  */
 public final class Logger {
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({V, D, I, W, E, A})
+    public @interface Type {
+
+    }
+
+    public static final int V = Log.VERBOSE;
+    public static final int D = Log.DEBUG;
+    public static final int I = Log.INFO;
+    public static final int W = Log.WARN;
+    public static final int E = Log.ERROR;
+    public static final int A = Log.ASSERT;
     /**
      * 默认TAG
      */
@@ -48,6 +70,14 @@ public final class Logger {
      */
     private static boolean header = true;
     /**
+     * 是否记录日志
+     */
+    private static boolean saveLog = true;
+    /**
+     * 记录日志的路径，默认在缓存文件下
+     */
+    private static String logPath = null;
+    /**
      * 单行最大长度
      */
     private static final int MAX_LENGTH = 3200;
@@ -61,12 +91,7 @@ public final class Logger {
     private static final String PARAM = "Param";
     private static final String NULL = "null";
 
-    private static final int V = Log.VERBOSE;
-    private static final int D = Log.DEBUG;
-    private static final int I = Log.INFO;
-    private static final int W = Log.WARN;
-    private static final int E = Log.ERROR;
-    private static final int A = Log.ASSERT;
+    private static ArrayMap<Integer, String> map = null;
 
     private static final int HIGH = 0xF0;
     private static final int LOW = 0x0F;
@@ -74,6 +99,8 @@ public final class Logger {
     private static final int FILE = 0x10;
     private static final int JSON = 0x20;
     private static final int XML = 0x30;
+
+    private static ExecutorService executorService;
 
     /**
      * 初始化
@@ -86,6 +113,30 @@ public final class Logger {
         print = config.isPrint();
         border = config.isBorder();
         header = config.isHeader();
+        saveLog = config.isSaveLog();
+        logPath = config.getLogPath();
+    }
+
+    /**
+     * 初始化日志写入
+     */
+    private static void initLogWriter() {
+        if (map == null) {
+            map = new ArrayMap<>();
+            map.put(V, "VERBOSE");
+            map.put(D, "DEBUG");
+            map.put(I, "INFO");
+            map.put(W, "WARN");
+            map.put(E, "ERROR");
+            map.put(A, "ASSERT");
+            map.put(FILE, "FILE");
+            map.put(JSON, "JSON");
+            map.put(XML, "XML");
+        }
+        if (executorService == null) {
+            //单线程的线程池
+            executorService = Executors.newSingleThreadExecutor();
+        }
     }
 
     public static void v(Object msg) {
@@ -111,7 +162,6 @@ public final class Logger {
     public static void i(String tag, Object... objects) {
         printLog(I, tag, objects);
     }
-
 
     public static void w(Object msg) {
         printLog(W, null, msg);
@@ -146,7 +196,7 @@ public final class Logger {
         printLog(FILE | D, tag, file);
     }
 
-    public static void file(int type, String tag, File file) {
+    public static void file(@Type int type, String tag, File file) {
         printLog(FILE | type, tag, file);
     }
 
@@ -158,7 +208,7 @@ public final class Logger {
         printLog(JSON | D, tag, json);
     }
 
-    public static void json(int type, String tag, String json) {
+    public static void json(@Type int type, String tag, String json) {
         printLog(JSON | type, tag, json);
     }
 
@@ -170,7 +220,7 @@ public final class Logger {
         printLog(XML | D, tag, xml);
     }
 
-    public static void xml(int type, String tag, String xml) {
+    public static void xml(@Type int type, String tag, String xml) {
         printLog(XML | type, tag, xml);
     }
 
@@ -186,7 +236,10 @@ public final class Logger {
         String body = generateBody(type & HIGH, objects);
         String tag = TextUtils.isEmpty(tagStr) ? TAG : tagStr;
         if (print) {
-            print2Console(type & LOW, tag, header, body);
+            print2console(type & LOW, tag, header, body);
+        }
+        if (saveLog) {
+            print2file(type, tag, header, body);
         }
     }
 
@@ -226,6 +279,7 @@ public final class Logger {
                 } else if (type == XML) {
                     body = fromXml(body);
                 }
+                body += LINE_SEP;
             } else {
                 StringBuilder sb = new StringBuilder();
                 Object obj;
@@ -300,7 +354,7 @@ public final class Logger {
      * @param header
      * @param body
      */
-    private static void print2Console(int type, String tag, String header, String body) {
+    private static void print2console(int type, String tag, String header, String body) {
         if (border) {
             Log.println(type, tag, TOP_BORDER);
         }
@@ -359,6 +413,83 @@ public final class Logger {
     }
 
     /**
+     * 输出到存储位置
+     *
+     * @param type
+     * @param tag
+     * @param header
+     * @param body
+     */
+    private static void print2file(int type, String tag, String header, String body) {
+        String date = FormatUtils.formatExactDate(System.currentTimeMillis());
+        String day = date.substring(0, date.lastIndexOf("\t"));
+        final File file = new File(TextUtils.isEmpty(logPath) ? Utils.getApp().getCacheDir().getAbsolutePath() : logPath,
+                String.format("Log-%s.log", day));
+        if (!createLogFile(file)) {
+            Log.e(tag, "print2file failure !");
+            return;
+        }
+        initLogWriter();
+        final StringBuilder builder = new StringBuilder();
+        builder.append(date)
+                .append(" ");
+        if (type < LOW) {
+            builder.append(map.get(type));
+        } else {
+            builder.append(map.get(type & HIGH))
+                    .append("+")
+                    .append(map.get(type & LOW));
+        }
+        builder.append(" ")
+                .append(tag)
+                .append(LINE_SEP)
+                .append(header)
+                .append(LINE_SEP)
+                .append(body)
+                .append(LINE_SEP);
+
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                BufferedWriter writer = null;
+                try {
+                    writer = new BufferedWriter(new FileWriter(file, true));
+                    writer.write(builder.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    IOUtils.closeQuietly(writer);
+                }
+            }
+        });
+    }
+
+    /**
+     * 创建日志
+     *
+     * @param file
+     * @return
+     */
+    private static boolean createLogFile(File file) {
+        if (file.exists()) {
+            if (file.isFile()) {
+                return true;
+            }
+            file.delete();
+        }
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    /**
      * 配置
      */
     public static class Config {
@@ -367,29 +498,83 @@ public final class Logger {
         private boolean print = true;
         private boolean border = true;
         private boolean header = true;
+        private boolean saveLog = true;
+        private String logPath = null;
 
+        /**
+         * 通用Tag头
+         *
+         * @param tag
+         * @return
+         */
         public Config tag(String tag) {
             this.tag = tag;
             return this;
         }
 
+        /**
+         * 是否启用日志功能
+         *
+         * @param log
+         * @return
+         */
         public Config log(boolean log) {
             this.log = log;
             return this;
         }
 
+        /**
+         * 是否打印日志到控制台显示
+         *
+         * @param print
+         * @return
+         */
         public Config print(boolean print) {
             this.print = print;
             return this;
         }
 
+        /**
+         * 打印的日志是否带有边框
+         *
+         * @param border
+         * @return
+         */
         public Config border(boolean border) {
             this.border = border;
             return this;
         }
 
+        /**
+         * 打印的日志是否带有头信息（方法栈）
+         *
+         * @param header
+         * @return
+         */
         public Config header(boolean header) {
             this.header = header;
+            return this;
+        }
+
+        /**
+         * 是否记录日志
+         *
+         * @param saveLog
+         * @return
+         */
+        public Config saveLog(boolean saveLog) {
+            this.saveLog = saveLog;
+            return this;
+        }
+
+        /**
+         * 记录日志的路径
+         *
+         * @param logPath
+         * @return
+         */
+        public Config logPath(String logPath) {
+            this.logPath = logPath;
             return this;
         }
 
@@ -415,6 +600,14 @@ public final class Logger {
 
         public boolean isHeader() {
             return header;
+        }
+
+        public boolean isSaveLog() {
+            return saveLog;
+        }
+
+        public String getLogPath() {
+            return logPath;
         }
     }
 }
