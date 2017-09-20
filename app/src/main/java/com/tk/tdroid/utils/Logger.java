@@ -1,6 +1,5 @@
 package com.tk.tdroid.utils;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +19,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -289,7 +289,6 @@ public final class Logger {
      * @param logStackDepth
      * @return
      */
-    @SuppressLint("DefaultLocale")
     private static String[] generateHeader(int logStackDepth) {
         StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         int lastStack = Math.max(logStackDepth, 1) + 3;
@@ -304,7 +303,7 @@ public final class Logger {
             String className = targetElement.getClassName();
             String methodName = targetElement.getMethodName();
             int lineNumber = targetElement.getLineNumber();
-            headers[i - 3] = String.format("%s, %s(%s:%d), %s", threadName, methodName, fileName, lineNumber, className);
+            headers[i - 3] = String.format(Locale.getDefault(), "%s, %s(%s:%d), %s", threadName, methodName, fileName, lineNumber, className);
         }
         return headers;
     }
@@ -357,7 +356,7 @@ public final class Logger {
      * @return
      */
     private static String fromFile(@NonNull File file) {
-        return String.format("File: %s %s", file.getAbsolutePath(), FileUtils.getFileSizeFormat(file, 2));
+        return String.format(Locale.getDefault(), "File: %s %s", file.getAbsolutePath(), FileUtils.getFileSizeFormat(file, 2));
     }
 
     /**
@@ -484,9 +483,9 @@ public final class Logger {
      */
     private static void print2file(int type, @NonNull String tagStr,
                                    @NonNull String[] headers, @NonNull String bodyStr, @NonNull String logPath) {
-        String date = FormatUtils.formatExactDate(System.currentTimeMillis());
-        String day = date.substring(0, date.lastIndexOf("\t"));
-        final File file = new File(logPath, String.format("%s_%s.log", TAG, day));
+        String date = TimeUtils.formatExactDate(System.currentTimeMillis());
+        String day = date.substring(0, date.lastIndexOf(" "));
+        final File file = new File(logPath, String.format(Locale.getDefault(), "%s_%s.log", TAG, day));
         if (!createLogFile(file)) {
             Log.e(tagStr, "print2file failure !");
             return;
