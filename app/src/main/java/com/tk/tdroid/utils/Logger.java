@@ -1,7 +1,9 @@
 package com.tk.tdroid.utils;
 
+import android.annotation.SuppressLint;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,6 +30,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import static com.tk.tdroid.utils.Logger.Type.A;
+import static com.tk.tdroid.utils.Logger.Type.D;
+import static com.tk.tdroid.utils.Logger.Type.E;
+import static com.tk.tdroid.utils.Logger.Type.I;
+import static com.tk.tdroid.utils.Logger.Type.V;
+import static com.tk.tdroid.utils.Logger.Type.W;
+
 
 /**
  * <pre>
@@ -40,45 +49,48 @@ public final class Logger {
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({V, D, I, W, E, A})
     public @interface Type {
-
+        int V = Log.VERBOSE;
+        int D = Log.DEBUG;
+        int I = Log.INFO;
+        int W = Log.WARN;
+        int E = Log.ERROR;
+        int A = Log.ASSERT;
     }
 
-    public static final int V = Log.VERBOSE;
-    public static final int D = Log.DEBUG;
-    public static final int I = Log.INFO;
-    public static final int W = Log.WARN;
-    public static final int E = Log.ERROR;
-    public static final int A = Log.ASSERT;
     /**
      * 默认TAG
      */
-    private static String TAG = "Logger";
+    private static final String TAG = Logger.class.getSimpleName();
     /**
-     * 总开关
+     * 默认总开关
      */
-    private static boolean log = true;
+    private static final boolean LOG = true;
     /**
-     * 是否打印日志到控制台
+     * 默认是否打印日志到控制台
      */
-    private static boolean print = true;
+    private static final boolean PRINT = true;
     /**
-     * 是否显示边框
+     * 默认是否显示边框
      */
-    private static boolean border = true;
+    private static final boolean BORDER = true;
     /**
-     * 是否显示方法栈
+     * 默认是否显示方法栈
      */
-    private static boolean header = true;
+    private static final boolean HEADER = true;
     /**
-     * 是否记录日志
+     * Log头的方法栈深度
      */
-    private static boolean saveLog = true;
+    private static final int LOG_STACK_DEPTH = 1;
     /**
-     * 记录日志的路径，默认在缓存文件下
+     * 默认是否记录日志
      */
-    private static String logPath = null;
+    private static final boolean SAVE_LOG = true;
     /**
-     * 单行最大长度
+     * 默认记录日志的路径，在缓存文件下
+     */
+    private static final String LOG_PATH = null;
+    /**
+     * 单行Log最大长度
      */
     private static final int MAX_LENGTH = 3200;
 
@@ -91,15 +103,19 @@ public final class Logger {
     private static final String PARAM = "Param";
     private static final String NULL = "null";
 
-    private static ArrayMap<Integer, String> map = null;
-
     private static final int HIGH = 0xF0;
     private static final int LOW = 0x0F;
 
-    private static final int FILE = 0x10;
-    private static final int JSON = 0x20;
-    private static final int XML = 0x30;
-
+    private static final int JSON = 0x10;
+    private static final int XML = 0x20;
+    private static ArrayMap<Integer, String> map = null;
+    /**
+     * 全局配置
+     */
+    private static Config globalConfig = new Config().build();
+    /**
+     * Log写入文件单例线程池
+     */
     private static ExecutorService executorService;
 
     /**
@@ -108,13 +124,16 @@ public final class Logger {
      * @param config
      */
     public static void init(@NonNull Config config) {
-        TAG = config.getTag();
-        log = config.isLog();
-        print = config.isPrint();
-        border = config.isBorder();
-        header = config.isHeader();
-        saveLog = config.isSaveLog();
-        logPath = config.getLogPath();
+        globalConfig = config;
+    }
+
+    /**
+     * 获取全局配置
+     *
+     * @return
+     */
+    public static Config getGlobalConfig() {
+        return globalConfig;
     }
 
     /**
@@ -122,141 +141,172 @@ public final class Logger {
      */
     private static void initLogWriter() {
         if (map == null) {
-            map = new ArrayMap<>();
+            map = new ArrayMap<>(8);
             map.put(V, "VERBOSE");
             map.put(D, "DEBUG");
             map.put(I, "INFO");
             map.put(W, "WARN");
             map.put(E, "ERROR");
             map.put(A, "ASSERT");
-            map.put(FILE, "FILE");
             map.put(JSON, "JSON");
             map.put(XML, "XML");
         }
         if (executorService == null) {
-            //单线程的线程池
             executorService = Executors.newSingleThreadExecutor();
         }
     }
 
-    public static void v(Object msg) {
+    public static void v(@Nullable Object msg) {
         printLog(V, null, msg);
     }
 
-    public static void v(String tag, Object... objects) {
-        printLog(V, tag, objects);
+    public static void v(@NonNull String tag, @Nullable Object... objects) {
+        printLog(V, globalConfig.newBuilder().tag(tag), objects);
     }
 
-    public static void d(Object msg) {
+    public static void v(@Nullable Config config, @Nullable Object... objects) {
+        printLog(V, config, objects);
+    }
+
+    public static void d(@Nullable Object msg) {
         printLog(D, null, msg);
     }
 
-    public static void d(String tag, Object... objects) {
-        printLog(D, tag, objects);
+    public static void d(@NonNull String tag, @Nullable Object... objects) {
+        printLog(D, globalConfig.newBuilder().tag(tag), objects);
     }
 
-    public static void i(Object msg) {
+    public static void d(@Nullable Config config, @Nullable Object... objects) {
+        printLog(D, config, objects);
+    }
+
+    public static void i(@Nullable Object msg) {
         printLog(I, null, msg);
     }
 
-    public static void i(String tag, Object... objects) {
-        printLog(I, tag, objects);
+    public static void i(@NonNull String tag, @Nullable Object... objects) {
+        printLog(I, globalConfig.newBuilder().tag(tag), objects);
     }
 
-    public static void w(Object msg) {
+    public static void i(@Nullable Config config, @Nullable Object... objects) {
+        printLog(I, config, objects);
+    }
+
+    public static void w(@Nullable Object msg) {
         printLog(W, null, msg);
     }
 
-    public static void w(String tag, Object... objects) {
-        printLog(W, tag, objects);
+    public static void w(@NonNull String tag, @Nullable Object... objects) {
+        printLog(W, globalConfig.newBuilder().tag(tag), objects);
     }
 
-    public static void e(Object msg) {
+    public static void w(@Nullable Config config, @Nullable Object... objects) {
+        printLog(W, config, objects);
+    }
+
+    public static void e(@Nullable Object msg) {
         printLog(E, null, msg);
     }
 
-    public static void e(String tag, Object... objects) {
-        printLog(E, tag, objects);
+    public static void e(@NonNull String tag, @Nullable Object... objects) {
+        printLog(E, globalConfig.newBuilder().tag(tag), objects);
     }
 
+    public static void e(@Nullable Config config, @Nullable Object... objects) {
+        printLog(E, config, objects);
+    }
 
-    public static void a(Object msg) {
+    public static void a(@Nullable Object msg) {
         printLog(A, null, msg);
     }
 
-    public static void a(String tag, Object... objects) {
-        printLog(A, tag, objects);
+    public static void a(@NonNull String tag, @Nullable Object... objects) {
+        printLog(A, globalConfig.newBuilder().tag(tag), objects);
     }
 
-    public static void file(File file) {
-        printLog(FILE | D, null, file);
+    public static void a(@Nullable Config config, @Nullable Object... objects) {
+        printLog(A, config, objects);
     }
 
-    public static void file(String tag, File file) {
-        printLog(FILE | D, tag, file);
-    }
-
-    public static void file(@Type int type, String tag, File file) {
-        printLog(FILE | type, tag, file);
-    }
-
-    public static void json(String json) {
+    public static void json(@Nullable String json) {
         printLog(JSON | D, null, json);
     }
 
-    public static void json(String tag, String json) {
-        printLog(JSON | D, tag, json);
+    public static void json(@NonNull String tag, @Nullable String json) {
+        printLog(JSON | D, globalConfig.newBuilder().tag(tag), json);
     }
 
-    public static void json(@Type int type, String tag, String json) {
-        printLog(JSON | type, tag, json);
+    public static void json(@Type int type, @Nullable Config config, @Nullable String json) {
+        printLog(JSON | type, config, json);
     }
 
-    public static void xml(String xml) {
+    public static void xml(@Nullable String xml) {
         printLog(XML | D, null, xml);
     }
 
-    public static void xml(String tag, String xml) {
-        printLog(XML | D, tag, xml);
+    public static void xml(@NonNull String tag, String xml) {
+        printLog(XML | D, globalConfig.newBuilder().tag(tag), xml);
     }
 
-    public static void xml(@Type int type, String tag, String xml) {
-        printLog(XML | type, tag, xml);
+    public static void xml(@Type int type, @Nullable Config config, @Nullable String xml) {
+        printLog(XML | type, config, xml);
     }
 
     /**
      * 输出日志
      *
      * @param type
-     * @param tagStr
+     * @param config
      * @param objects
      */
-    private static void printLog(int type, String tagStr, Object... objects) {
-        String header = generateHeader();
-        String body = generateBody(type & HIGH, objects);
-        String tag = TextUtils.isEmpty(tagStr) ? TAG : tagStr;
+    private static void printLog(int type, @Nullable Config config, @Nullable Object... objects) {
+        Config realConfig = config == null ? globalConfig : config;
+
+        String tagStr = realConfig == null ? TAG : realConfig.tag;
+        String[] headers = generateHeader(realConfig == null ? LOG_STACK_DEPTH : realConfig.logStackDepth);
+        String bodyStr = generateBody(type & HIGH, objects);
+
+        boolean print = realConfig == null ? PRINT : realConfig.print;
+        boolean saveLog = realConfig == null ? SAVE_LOG : realConfig.saveLog;
+        boolean border = realConfig == null ? BORDER : realConfig.border;
+        boolean header = realConfig == null ? HEADER : realConfig.header;
+        String logPath = realConfig == null ? "" : realConfig.logPath;
+        if (TextUtils.isEmpty(logPath)) {
+            logPath = Utils.getApp().getCacheDir().getAbsolutePath();
+        }
+
         if (print) {
-            print2console(type & LOW, tag, header, body);
+            print2console(type & LOW, tagStr, headers, bodyStr, border, header);
         }
         if (saveLog) {
-            print2file(type, tag, header, body);
+            print2file(type, tagStr, headers, bodyStr, logPath);
         }
     }
 
     /**
      * 生成头
      *
+     * @param logStackDepth
      * @return
      */
-    private static String generateHeader() {
+    @SuppressLint("DefaultLocale")
+    private static String[] generateHeader(int logStackDepth) {
         StackTraceElement[] stackTrace = new Throwable().getStackTrace();
-        StackTraceElement targetElement = stackTrace[3];
-        String threadName = Thread.currentThread().getName();
-        String fileName = targetElement.getFileName();
-        String className = targetElement.getClassName();
-        String methodName = targetElement.getMethodName();
-        int lineNumber = targetElement.getLineNumber();
-        return String.format("%s, %s(%s:%d), %s", threadName, methodName, fileName, lineNumber, className);
+        int lastStack = Math.max(logStackDepth, 1) + 3;
+        lastStack = lastStack > stackTrace.length ? stackTrace.length : lastStack;
+
+        String[] headers = new String[lastStack - 3];
+        StackTraceElement targetElement;
+        for (int i = 3; i < lastStack; i++) {
+            targetElement = stackTrace[i];
+            String threadName = Thread.currentThread().getName();
+            String fileName = targetElement.getFileName();
+            String className = targetElement.getClassName();
+            String methodName = targetElement.getMethodName();
+            int lineNumber = targetElement.getLineNumber();
+            headers[i - 3] = String.format("%s, %s(%s:%d), %s", threadName, methodName, fileName, lineNumber, className);
+        }
+        return headers;
     }
 
     /**
@@ -266,32 +316,36 @@ public final class Logger {
      * @param objects
      * @return
      */
-    private static String generateBody(final int type, final Object... objects) {
+    private static String generateBody(final int type, @Nullable final Object... objects) {
         String body = NULL;
         if (!CollectionUtils.isEmpty(objects)) {
             if (objects.length == 1) {
-                Object object = objects[0];
-                body = object == null ? NULL : object.toString();
-                if (type == FILE && object instanceof File) {
-                    body = fromFile((File) object);
-                } else if (type == JSON) {
-                    body = fromJson(body);
+                if (type == JSON) {
+                    body = objects[0] == null ? NULL : fromJson(objects[0].toString());
+                    body += LINE_SEP;
+                    return body;
                 } else if (type == XML) {
-                    body = fromXml(body);
+                    body = objects[0] == null ? NULL : fromXml(objects[0].toString());
+                    body += LINE_SEP;
+                    return body;
                 }
-                body += LINE_SEP;
-            } else {
-                StringBuilder sb = new StringBuilder();
-                Object obj;
-                for (int i = 0, len = objects.length; i < len; ++i) {
-                    obj = objects[i];
-                    sb.append(PARAM).append("[").append(i).append("]")
-                            .append(" = ")
-                            .append(obj == null ? NULL : obj.toString())
-                            .append(LINE_SEP);
-                }
-                body = sb.toString();
             }
+            StringBuilder sb = new StringBuilder();
+            Object obj;
+            for (int i = 0, len = objects.length; i < len; ++i) {
+                obj = objects[i];
+                sb.append(PARAM).append("[").append(i).append("]")
+                        .append(" = ");
+                if (obj == null) {
+                    sb.append(NULL);
+                } else if (obj instanceof File) {
+                    sb.append(fromFile((File) obj));
+                } else {
+                    sb.append(obj.toString());
+                }
+                sb.append(LINE_SEP);
+            }
+            body = sb.toString();
         }
         return body;
     }
@@ -302,7 +356,7 @@ public final class Logger {
      * @param file
      * @return
      */
-    private static String fromFile(File file) {
+    private static String fromFile(@NonNull File file) {
         return String.format("File: %s %s", file.getAbsolutePath(), FileUtils.getFileSizeFormat(file, 2));
     }
 
@@ -312,7 +366,7 @@ public final class Logger {
      * @param json
      * @return
      */
-    private static String fromJson(String json) {
+    private static String fromJson(@NonNull String json) {
         try {
             if (json.startsWith("{")) {
                 json = new JSONObject(json).toString(4);
@@ -331,7 +385,7 @@ public final class Logger {
      * @param xml
      * @return
      */
-    private static String fromXml(String xml) {
+    private static String fromXml(@NonNull String xml) {
         try {
             Source xmlInput = new StreamSource(new StringReader(xml));
             StreamResult xmlOutput = new StreamResult(new StringWriter());
@@ -350,23 +404,28 @@ public final class Logger {
      * 输出到控制台
      *
      * @param type
-     * @param tag
+     * @param tagStr
+     * @param headers
+     * @param bodyStr
+     * @param border
      * @param header
-     * @param body
      */
-    private static void print2console(int type, String tag, String header, String body) {
+    private static void print2console(int type, @NonNull String tagStr, @NonNull String[] headers, @NonNull String bodyStr,
+                                      boolean border, boolean header) {
         if (border) {
-            Log.println(type, tag, TOP_BORDER);
+            Log.println(type, tagStr, TOP_BORDER);
         }
-        if (Logger.header) {
-            Log.println(type, tag, border ? LEFT_BORDER + header : header);
+        if (header) {
+            for (String headerStr : headers) {
+                Log.println(type, tagStr, border ? LEFT_BORDER + headerStr : headerStr);
+            }
             if (border) {
-                Log.println(type, tag, SPLIT_BORDER);
+                Log.println(type, tagStr, SPLIT_BORDER);
             }
         }
-        printBody(type, tag, body);
+        printBody(type, tagStr, bodyStr, border);
         if (border) {
-            Log.println(type, tag, BOTTOM_BORDER);
+            Log.println(type, tagStr, BOTTOM_BORDER);
         }
     }
 
@@ -374,23 +433,24 @@ public final class Logger {
      * 打印主体部分
      *
      * @param type
-     * @param tag
-     * @param body
+     * @param tagStr
+     * @param bodyStr
+     * @param border
      */
-    private static void printBody(int type, String tag, String body) {
-        int len = body.length();
+    private static void printBody(int type, @NonNull String tagStr, @NonNull String bodyStr, boolean border) {
+        int len = bodyStr.length();
         int count = len / MAX_LENGTH;
         if (count > 0) {
             int index = 0;
             for (int i = 0; i < count; i++) {
-                printContent(type, tag, body.substring(index, index + MAX_LENGTH));
+                printContent(type, tagStr, bodyStr.substring(index, index + MAX_LENGTH), border);
                 index += MAX_LENGTH;
             }
             if (index != len) {
-                printContent(type, tag, body.substring(index, len));
+                printContent(type, tagStr, bodyStr.substring(index, len), border);
             }
         } else {
-            printContent(type, tag, body);
+            printContent(type, tagStr, bodyStr, border);
         }
     }
 
@@ -398,17 +458,18 @@ public final class Logger {
      * 逐一打印内容
      *
      * @param type
-     * @param tag
-     * @param content
+     * @param tagStr
+     * @param contentStr
+     * @param border
      */
-    private static void printContent(int type, String tag, String content) {
+    private static void printContent(int type, @NonNull String tagStr, @NonNull String contentStr, boolean border) {
         if (!border) {
-            Log.println(type, tag, content);
+            Log.println(type, tagStr, contentStr);
             return;
         }
-        String[] lines = content.split(LINE_SEP);
+        String[] lines = contentStr.split(LINE_SEP);
         for (String line : lines) {
-            Log.println(type, tag, LEFT_BORDER + line);
+            Log.println(type, tagStr, LEFT_BORDER + line);
         }
     }
 
@@ -416,17 +477,18 @@ public final class Logger {
      * 输出到存储位置
      *
      * @param type
-     * @param tag
-     * @param header
-     * @param body
+     * @param tagStr
+     * @param headers
+     * @param bodyStr
+     * @param logPath
      */
-    private static void print2file(int type, String tag, String header, String body) {
+    private static void print2file(int type, @NonNull String tagStr,
+                                   @NonNull String[] headers, @NonNull String bodyStr, @NonNull String logPath) {
         String date = FormatUtils.formatExactDate(System.currentTimeMillis());
         String day = date.substring(0, date.lastIndexOf("\t"));
-        final File file = new File(TextUtils.isEmpty(logPath) ? Utils.getApp().getCacheDir().getAbsolutePath() : logPath,
-                String.format("Log-%s.log", day));
+        final File file = new File(logPath, String.format("%s_%s.log", TAG, day));
         if (!createLogFile(file)) {
-            Log.e(tag, "print2file failure !");
+            Log.e(tagStr, "print2file failure !");
             return;
         }
         initLogWriter();
@@ -441,11 +503,13 @@ public final class Logger {
                     .append(map.get(type & LOW));
         }
         builder.append(" ")
-                .append(tag)
-                .append(LINE_SEP)
-                .append(header)
-                .append(LINE_SEP)
-                .append(body)
+                .append(tagStr)
+                .append(LINE_SEP);
+        for (String headerStr : headers) {
+            builder.append(headerStr)
+                    .append(LINE_SEP);
+        }
+        builder.append(bodyStr)
                 .append(LINE_SEP);
 
         executorService.execute(new Runnable() {
@@ -470,7 +534,7 @@ public final class Logger {
      * @param file
      * @return
      */
-    private static boolean createLogFile(File file) {
+    private static boolean createLogFile(@NonNull File file) {
         if (file.exists()) {
             if (file.isFile()) {
                 return true;
@@ -494,12 +558,26 @@ public final class Logger {
      */
     public static class Config {
         private String tag = Logger.TAG;
-        private boolean log = true;
-        private boolean print = true;
-        private boolean border = true;
-        private boolean header = true;
-        private boolean saveLog = true;
-        private String logPath = null;
+        private boolean log = Logger.LOG;
+        private boolean print = Logger.PRINT;
+        private boolean border = Logger.BORDER;
+        private boolean header = Logger.HEADER;
+        private int logStackDepth = Logger.LOG_STACK_DEPTH;
+        private boolean saveLog = Logger.SAVE_LOG;
+        private String logPath = Logger.LOG_PATH;
+
+        public Config newBuilder() {
+            return new Config()
+                    .tag(tag)
+                    .log(log)
+                    .print(print)
+                    .border(border)
+                    .header(header)
+                    .logStackDepth(logStackDepth)
+                    .saveLog(saveLog)
+                    .logPath(logPath)
+                    .build();
+        }
 
         /**
          * 通用Tag头
@@ -507,7 +585,7 @@ public final class Logger {
          * @param tag
          * @return
          */
-        public Config tag(String tag) {
+        public Config tag(@NonNull String tag) {
             this.tag = tag;
             return this;
         }
@@ -557,6 +635,17 @@ public final class Logger {
         }
 
         /**
+         * 打印的日志头，方法栈深度
+         *
+         * @param logStackDepth 默认深度1，当前调用者的信息
+         * @return
+         */
+        public Config logStackDepth(int logStackDepth) {
+            this.logStackDepth = logStackDepth;
+            return this;
+        }
+
+        /**
          * 是否记录日志
          *
          * @param saveLog
@@ -568,12 +657,12 @@ public final class Logger {
         }
 
         /**
-         * 记录日志的路径
+         * 记录日志的路径，默认在应用缓存目录下
          *
          * @param logPath
          * @return
          */
-        public Config logPath(String logPath) {
+        public Config logPath(@Nullable String logPath) {
             this.logPath = logPath;
             return this;
         }
@@ -582,32 +671,5 @@ public final class Logger {
             return new Config();
         }
 
-        public String getTag() {
-            return tag;
-        }
-
-        public boolean isLog() {
-            return log;
-        }
-
-        public boolean isPrint() {
-            return print;
-        }
-
-        public boolean isBorder() {
-            return border;
-        }
-
-        public boolean isHeader() {
-            return header;
-        }
-
-        public boolean isSaveLog() {
-            return saveLog;
-        }
-
-        public String getLogPath() {
-            return logPath;
-        }
     }
 }

@@ -12,8 +12,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Logger.e(getClass().getSimpleName(), "123", true);
-        Logger.json("{\"name\":\"test\"}");
-        Logger.json(Logger.I, "this", "{\"name\":\"test\"}");
+        Logger.json(Logger.Type.E,
+                Logger.getGlobalConfig().newBuilder()
+                        .tag("Json_Test")
+                        .logStackDepth(3),
+                "{\"name\":\"test\"}");
+        Logger.json(Logger.Type.I, null, "{\"name\":\"test\"}");
     }
 
 }
