@@ -1,8 +1,9 @@
-package com.tk.tdroid;
+package com.tk.tdroiddemo;
 
 import android.app.Application;
 
 import com.tk.tdroid.utils.Utils;
+
 
 /**
  * <pre>
@@ -13,10 +14,12 @@ import com.tk.tdroid.utils.Utils;
  */
 
 public class App extends Application {
+
     @Override
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
+
 //        Logger.init(new Logger.Config()
 //                .logPath(Environment.getExternalStorageDirectory() + File.separator + "test"));
 

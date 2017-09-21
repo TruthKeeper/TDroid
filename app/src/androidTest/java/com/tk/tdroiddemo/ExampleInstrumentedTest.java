@@ -1,4 +1,4 @@
-package com.tk.tdroid;
+package com.tk.tdroiddemo;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
