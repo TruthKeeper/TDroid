@@ -25,5 +25,8 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testCompile 'junit:junit:4.12'
+    //依赖的核心
     compile project(':library')
+    //依赖的APT处理
+    annotationProcessor project(':APT')
 }
