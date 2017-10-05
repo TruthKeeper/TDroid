@@ -1,4 +1,4 @@
-package com.tk.tdroid.utils;
+package com.tk.tdroid.utils.internal;
 
 /**
  * <pre>

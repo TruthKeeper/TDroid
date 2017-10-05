@@ -1,4 +1,4 @@
-package com.tk.tdroid.utils;
+package com.tk.tdroid.utils.internal;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -6,6 +6,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
+
+import com.tk.tdroid.utils.CollectionUtils;
+import com.tk.tdroid.utils.FileUtils;
+import com.tk.tdroid.utils.IOUtils;
+import com.tk.tdroid.utils.TimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,12 +35,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import static com.tk.tdroid.utils.Logger.Type.A;
-import static com.tk.tdroid.utils.Logger.Type.D;
-import static com.tk.tdroid.utils.Logger.Type.E;
-import static com.tk.tdroid.utils.Logger.Type.I;
-import static com.tk.tdroid.utils.Logger.Type.V;
-import static com.tk.tdroid.utils.Logger.Type.W;
+import static com.tk.tdroid.utils.internal.Logger.Type.A;
+import static com.tk.tdroid.utils.internal.Logger.Type.D;
+import static com.tk.tdroid.utils.internal.Logger.Type.E;
+import static com.tk.tdroid.utils.internal.Logger.Type.I;
+import static com.tk.tdroid.utils.internal.Logger.Type.V;
+import static com.tk.tdroid.utils.internal.Logger.Type.W;
 
 
 /**
