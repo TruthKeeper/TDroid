@@ -98,7 +98,11 @@ public class App extends Application {
 //                .appendLine("这是一个阴影文本").foregroundColor(Color.RED).fontProportion(2).shadow(4, 10, 10, Color.GRAY)
 //                .build());
 
-
+//        GlideApp.with(this)
+//                .load(new CacheTokenUrl( ))
+//                .load(NetImageUtils.netCrop())
+//                .override(image)
+//                .into(image);
 
     }
 

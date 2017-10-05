@@ -152,4 +152,51 @@ public final class CollectionUtils {
         }
         return result;
     }
+
+    /**
+     * 获取集合内容
+     *
+     * @param iterator
+     * @param divide
+     * @return
+     */
+    public static String getContent(@Nullable Iterator iterator, String divide) {
+        if (iterator == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        if (iterator.hasNext()) {
+            sb.append(iterator.next());
+            while (iterator.hasNext()) {
+                sb.append(divide);
+                sb.append(iterator.next());
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 获取数组内容
+     *
+     * @param ts
+     * @param divide
+     * @param <T>
+     * @return
+     */
+    public static <T> String getContent(@Nullable T[] ts, String divide) {
+        if (ts == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean firstTime = true;
+        for (T t : ts) {
+            if (firstTime) {
+                firstTime = false;
+            } else {
+                sb.append(divide);
+            }
+            sb.append(t);
+        }
+        return sb.toString();
+    }
 }

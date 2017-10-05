@@ -7,6 +7,9 @@ android {
     defaultConfig {
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
+
+        renderscriptTargetApi rootProject.ext.android.compileSdkVersion
+        renderscriptSupportModeEnabled true
     }
     buildTypes {
     }
@@ -19,4 +22,6 @@ dependencies {
     compile rootProject.ext.dependencies["constraint"]
     compile rootProject.ext.dependencies["recyclerview"]
     compile rootProject.ext.dependencies["design"]
+    compile rootProject.ext.dependencies["glide"]
+    annotationProcessor rootProject.ext.dependencies["glide-processor"]
 }
