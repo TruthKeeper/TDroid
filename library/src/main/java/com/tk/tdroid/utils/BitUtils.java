@@ -14,7 +14,7 @@ public final class BitUtils {
     }
 
     /**
-     * 或操作，等同+
+     * 或操作
      *
      * @param source
      * @param flags
@@ -30,7 +30,7 @@ public final class BitUtils {
     }
 
     /**
-     * 或操作，等同-
+     * 或操作
      *
      * @param source
      * @param flags
