@@ -20,6 +20,8 @@ public class App extends Application {
         super.onCreate();
         Utils.init(this);
         HttpUtils.init(this);
+
+
 //        Logger.e(getClass().getSimpleName(), "123", true);
 //        Logger.json(Logger.Type.E,
 //                Logger.getGlobalConfig().newBuilder()
@@ -101,11 +103,46 @@ public class App extends Application {
 //                .build());
 
 //        GlideApp.with(this)
-//                .load(new CacheTokenUrl( ))
-//                .load(NetImageUtils.netCrop())
+//                .load(CacheTokenUrl.wrap(""))
+//                .load(NetCropUtils.wrap())
 //                .override(image)
 //                .into(image);
 
+//        try {
+//            File file1 = new File(getCacheDir(), "t1.txt");
+//            PrintWriter writer1 = new PrintWriter(file1);
+//            writer1.write("111");
+//            writer1.flush();
+//            writer1.close();
+//
+//            File file2 = new File(getCacheDir(), "t2.txt");
+//            PrintWriter writer2 = new PrintWriter(file2);
+//            writer2.write("222222");
+//            writer2.flush();
+//            writer2.close();
+//            //拷贝 file1 到 cache/t 文件夹下
+//            Log.e("copy", FileUtils.copyFileToDir(file1, new File(getCacheDir(), "t")) + "");
+//            //拷贝 file1 到 cache/t/tt.text 文件中
+//            Log.e("copy", FileUtils.copyFileToFile(file1, new File(getCacheDir(), "t" + File.separator + "tt.txt")) + "");
+//            //拷贝 file2 到 cache/t 文件夹下（不覆盖）
+//            Log.e("copy", FileUtils.copyFileToDir(file2, new File(getCacheDir(), "t"), false) + "");
+//            //拷贝 file2 到 cache/t/tt.text 文件中（覆盖）
+//            Log.e("copy", FileUtils.copyFileToFile(file2, new File(getCacheDir(), "t" + File.separator + "tt.txt")) + "");
+//            //移动file1 到 cache/tt 文件夹下
+//            Log.e("move", FileUtils.moveFileToDir(file1, new File(getCacheDir(), "tt")) + "");
+//            //移动cache/t/t1.text 到 cache/tt/tt.text 文件中
+//            Log.e("move", FileUtils.moveFileToFile(new File(getCacheDir(), "t" + File.separator + "t1.txt"),
+//                    new File(getCacheDir(), "tt" + File.separator + "tt.txt")) + "");
+//
+//            //结果：不存在
+//            Log.e("result", file1.exists() + "");
+//            //结果：不存在
+//            Log.e("result", new File(getCacheDir(), "t" + File.separator + "t1.txt").exists() + "");
+//            //长度为3而不为6
+//            Log.e("result", new File(getCacheDir(), "tt" + File.separator + "tt.txt").length() + "");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
 //    private BitmapDrawable toDrawable(Context context, int resId, int width, int height) {

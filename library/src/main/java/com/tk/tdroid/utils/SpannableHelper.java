@@ -61,29 +61,30 @@ import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_TOP;
  * <pre>
  *      author : TK
  *      time : 2017/9/30
- *      desc : Spannable辅助类，支持：
- *               <ul>
- *               <li>前景色（字体颜色）</li>
- *               <li>背景色</li>
- *               <li>加粗、倾斜、粗斜体</li>
- *               <li>删除线</li>
- *               <li>下划线</li>
- *               <li>上标、下标</li>
- *               <li>字体大小</li>
- *               <li>点击事件</li>
- *               <li>超链接</li>
- *               <li>图文混排（支持对齐方式）</li>
- *               <li>行高设置</li>
- *               <li>首行缩进</li>
- *               <li>引用线</li>
- *               <li>列表项</li>
- *               <li>支持空格</li>
- *               <li>文字对齐方式</li>
- *               <li>Shader模式</li>
- *               <li>阴影</li>
- *               </ul>
- *               http://blog.csdn.net/liao277218962/article/details/50623722
+ *      desc : Spannable辅助类
  * </pre>
+ * 支持：
+ * <ul>
+ * <li>前景色（字体颜色）</li>
+ * <li>背景色</li>
+ * <li>加粗、倾斜、粗斜体</li>
+ * <li>删除线</li>
+ * <li>下划线</li>
+ * <li>上标、下标</li>
+ * <li>字体大小</li>
+ * <li>点击事件</li>
+ * <li>超链接</li>
+ * <li>图文混排（支持对齐方式）</li>
+ * <li>行高设置</li>
+ * <li>首行缩进</li>
+ * <li>引用线</li>
+ * <li>列表项</li>
+ * <li>支持空格</li>
+ * <li>文字对齐方式</li>
+ * <li>Shader模式</li>
+ * <li>阴影</li>
+ * </ul>
+ * <a href="http://blog.csdn.net/liao277218962/article/details/50623722">PS: Android中各种Span的用法</a>
  */
 
 public final class SpannableHelper {

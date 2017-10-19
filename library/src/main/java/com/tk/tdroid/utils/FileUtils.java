@@ -1,163 +1,223 @@
 package com.tk.tdroid.utils;
 
-import android.content.Context;
-import android.os.Environment;
-import android.os.StatFs;
-import android.os.storage.StorageManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.io.File;
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 文件工具
+ *     desc   : 文件工具 <ul>
+ *         <li>判断文件是否存在</li>
+ *         <li>重命名文件</li>
+ *         <li>判断目录是否存在，不存在则判断是否创建成功</li>
+ *         <li>判断文件是否存在，不存在则判断是否创建成功</li>
+ *         <li>复制文件、文件夹到目录</li>
+ *         <li>复制文件到文件</li>
+ *         <li>移动文件、文件夹到目录</li>
+ *         <li>移动文件到文件</li>
+ *         <li>删除文件、文件夹(支持过滤)</li>
+ *         <li>计算文件、文件夹大小(支持过滤)</li>
+ *     </ul>
  * </pre>
  */
 public final class FileUtils {
+    public static final boolean NIO = true;
+
     private FileUtils() {
         throw new IllegalStateException();
     }
 
     /**
-     * 外置SD卡是否可用
+     * 是否存在
      *
-     * @param context
+     * @param path
      * @return
      */
-    public static boolean isSDEnable(@NonNull Context context) {
-        String sdPath = getStoragePath(context, true);
-        if (null == sdPath) {
-            return false;
-        } else {
-            File sdFile = new File(sdPath);
-            if (!sdFile.exists() || 0 == sdFile.length()) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean exist(@Nullable String path) {
+        return !TextUtils.isEmpty(path) && exist(new File(path));
     }
 
     /**
-     * 得到内置/外置存储路径
-     *
-     * @param context
-     * @param getSD
-     * @return
-     */
-    public static String getStoragePath(@NonNull Context context, boolean getSD) {
-        StorageManager mStorageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
-        Class<?> storageVolumeClazz = null;
-        try {
-            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
-            Method getVolumeList = mStorageManager.getClass().getMethod("getVolumeList");
-            Method getPath = storageVolumeClazz.getMethod("getPath");
-            Method isRemovable = storageVolumeClazz.getMethod("isRemovable");
-            Object result = getVolumeList.invoke(mStorageManager);
-            final int length = Array.getLength(result);
-            for (int i = 0; i < length; i++) {
-                Object storageVolumeElement = Array.get(result, i);
-                String path = (String) getPath.invoke(storageVolumeElement);
-                boolean removable = (Boolean) isRemovable.invoke(storageVolumeElement);
-                if (getSD == removable) {
-                    return path;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
-     * 获取剩余可用空间
-     *
-     * @param context
-     * @return
-     */
-    public static String getEnableSpace(@NonNull Context context) {
-        File path = Environment.getDataDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long totalBlocks = stat.getBlockCount();
-        long availableBlocks = stat.getAvailableBlocks();
-        return formatSize((totalBlocks - availableBlocks) * blockSize, 1);
-    }
-
-    /**
-     * 获取缓存路径，优先磁盘
-     *
-     * @param context
-     * @return
-     */
-    public static String getDiskCacheDir(@NonNull Context context) {
-        String cachePath = null;
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            cachePath = context.getExternalCacheDir().getPath();
-        } else {
-            cachePath = context.getCacheDir().getPath();
-        }
-        return cachePath;
-    }
-
-    /**
-     * 获得当前缓存大小
-     *
-     * @param context
-     * @return
-     */
-    private static long getCacheSize(@NonNull Context context) {
-        long cacheSize;
-        cacheSize = getFolderSize(context.getCacheDir());
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            cacheSize += getFolderSize(context.getExternalCacheDir());
-        }
-        return cacheSize;
-    }
-
-    /**
-     * 获得当前缓存大小
-     *
-     * @param context
-     * @return
-     */
-    public static String getCacheSizeFormat(@NonNull Context context) {
-        return formatSize(getCacheSize(context), 2);
-    }
-
-    /**
-     * 清理所有缓存
-     *
-     * @param context
-     */
-    public static void clearAllCache(@NonNull Context context) {
-        deleteFiles(context.getCacheDir());
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                || !Environment.isExternalStorageRemovable()) {
-            deleteFiles(context.getExternalCacheDir());
-        }
-    }
-
-    /**
-     * 删除指定文件或者目录下的所有文件
+     * 是否存在
      *
      * @param file
      * @return
      */
-    public static boolean deleteFiles(@NonNull File file) {
-        if (file.isDirectory()) {
-            String[] children = file.list();
-            if (children == null) {
+    public static boolean exist(@Nullable File file) {
+        return file != null && file.exists();
+    }
+
+    /**
+     * 重命名
+     *
+     * @param file
+     * @param newName
+     * @return
+     */
+    public static boolean rename(@NonNull File file, @NonNull String newName) {
+        return file.renameTo(new File(file.getParent(), newName));
+    }
+
+    /**
+     * 拷贝文件 or 文件夹到目录下
+     * <br><b>递归</b>
+     *
+     * @param srcFile 源文件、文件夹
+     * @param destDir 目标目录
+     * @return
+     */
+    public static boolean copyFileToDir(@NonNull File srcFile, @NonNull File destDir) {
+        return copyAndMove(srcFile, new File(destDir, srcFile.getName()), true, false);
+    }
+
+    /**
+     * 拷贝文件 or 文件夹到目录下
+     * <br><b>递归</b>
+     *
+     * @param srcFile 源文件、文件夹
+     * @param destDir 目标目录
+     * @param cover   是否覆盖
+     * @return
+     */
+    public static boolean copyFileToDir(@NonNull File srcFile, @NonNull File destDir, boolean cover) {
+        return copyAndMove(srcFile, new File(destDir, srcFile.getName()), cover, false);
+    }
+
+    /**
+     * 拷贝文件到指定文件
+     * <br><b>递归</b>
+     *
+     * @param srcFile  源文件
+     * @param destFile 目标文件
+     * @return
+     */
+    public static boolean copyFileToFile(@NonNull File srcFile, @NonNull File destFile) {
+        return copyAndMove(srcFile, destFile, true, false);
+    }
+
+    /**
+     * 拷贝文件到指定文件
+     * <br><b>递归</b>
+     *
+     * @param srcFile  源文件
+     * @param destFile 目标文件
+     * @param cover    是否覆盖
+     * @return
+     */
+    public static boolean copyFileToFile(@NonNull File srcFile, @NonNull File destFile, boolean cover) {
+        return copyAndMove(srcFile, destFile, cover, false);
+    }
+
+    /**
+     * 移动文件到指定文件
+     * <br><b>递归</b>
+     *
+     * @param srcFile  源文件
+     * @param destFile 目标文件
+     * @return
+     */
+    public static boolean moveFileToFile(@NonNull File srcFile, @NonNull File destFile) {
+        return copyAndMove(srcFile, destFile, true, true);
+    }
+
+    /**
+     * 移动文件 or 文件夹到目录下
+     * <br><b>递归</b>
+     *
+     * @param srcFile 源文件、文件夹
+     * @param destDir 目标目录
+     * @return
+     */
+    public static boolean moveFileToDir(@NonNull File srcFile, @NonNull File destDir) {
+        return copyAndMove(srcFile, new File(destDir, srcFile.getName()), true, true);
+    }
+
+    /**
+     * 移动拷贝 文件到文件
+     * <br><b>递归</b>
+     *
+     * @param srcFile       源文件、文件夹
+     * @param destFile      目标文件
+     * @param cover         是否覆盖
+     * @param deleteSrcFile 是否删除源文件、文件夹
+     * @return
+     */
+    public static boolean copyAndMove(@NonNull File srcFile, @NonNull File destFile, boolean cover, boolean deleteSrcFile) {
+        if (!exist(srcFile)) {
+            //过滤：源文件不存在
+            return false;
+        }
+        if (srcFile.equals(destFile)) {
+            //过滤：当前目录下
+            return false;
+        }
+        if (srcFile.isDirectory()) {
+            File[] listFiles = srcFile.listFiles();
+            for (File listFile : listFiles) {
+                //迭代+递归
+                if (!copyAndMove(listFile, destFile, cover, deleteSrcFile)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            if (destFile.exists() && !cover) {
+                //已存在，并且无需覆盖
+                return true;
+            }
+            try {
+                //写入
+                boolean write = NIO ? FileNIOUtils.write(destFile, new FileInputStream(srcFile), false)
+                        : FileIOUtils.write(destFile, new FileInputStream(srcFile), false);
+                if (deleteSrcFile) {
+                    return write && deleteFile(srcFile);
+                } else {
+                    return write;
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
                 return false;
             }
-            for (String name : children) {
-                if (!deleteFiles(new File(file, name))) {
+        }
+    }
+
+    /**
+     * 删除文件 or 文件夹
+     * <br><b>递归</b>
+     *
+     * @param file
+     * @return
+     */
+    public static boolean deleteFile(@Nullable File file) {
+        return deleteFile(file, null);
+    }
+
+    /**
+     * 删除文件 or 文件夹
+     * <br><b>递归</b>
+     *
+     * @param file
+     * @param filter 过滤器
+     * @return
+     */
+    public static boolean deleteFile(@Nullable File file, @Nullable FileFilter filter) {
+        if (!exist(file)) {
+            return false;
+        }
+        if (filter != null && !filter.filter(file)) {
+            return true;
+        }
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                if (!deleteFile(f, filter)) {
                     return false;
                 }
             }
@@ -167,72 +227,92 @@ public final class FileUtils {
     }
 
     /**
-     * 获取文件大小
+     * 获取文件的大小
+     * <br><b>递归</b>
      *
      * @param file
-     * @param scale
      * @return
      */
-    public static String getFileSizeFormat(@NonNull File file, int scale) {
-        return formatSize(getFolderSize(file), scale);
+    public static long getFileSize(@NonNull File file) {
+        return getFileSize(file, null);
     }
 
     /**
      * 获取文件的大小
+     * <br><b>递归</b>
      *
      * @param file
+     * @param filter 过滤器
      * @return
      */
-    private static long getFolderSize(@NonNull File file) {
+    public static long getFileSize(@NonNull File file, @Nullable FileFilter filter) {
         long size = 0;
-        File[] fileList = file.listFiles();
-        for (File f : fileList) {
-            if (f.isDirectory()) {
-                size += getFolderSize(f);
-            } else {
-                size += f.length();
+        if (!exist(file)) {
+            return size;
+        }
+        if (filter != null && !filter.filter(file)) {
+            return size;
+        }
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                size += getFileSize(f);
             }
+        } else {
+            size += file.length();
         }
         return size;
     }
 
     /**
-     * 格式化单位
+     * 创建或者是否存在
+     * <br><b>递归</b>
      *
-     * @param size
-     * @param scale 保留几位小数
+     * @param file
      * @return
      */
-    public static String formatSize(double size, int scale) {
-        double kiloByte = size / 1024;
-        if (kiloByte < 1) {
-//            return size + "Byte";
-            return "0K";
+    public static boolean createOrExistsFile(@Nullable File file) {
+        if (file == null) {
+            return false;
         }
-
-        double megaByte = kiloByte / 1024;
-        if (megaByte < 1) {
-            BigDecimal result1 = new BigDecimal(Double.toString(kiloByte));
-            return result1.setScale(scale, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "KB";
+        if (file.exists()) {
+            return file.isFile();
         }
-
-        double gigaByte = megaByte / 1024;
-        if (gigaByte < 1) {
-            BigDecimal result2 = new BigDecimal(Double.toString(megaByte));
-            return result2.setScale(scale, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "MB";
+        //尝试创建Dir
+        if (!createOrExistsDir(file.getParentFile())) {
+            return false;
         }
-
-        double teraBytes = gigaByte / 1024;
-        if (teraBytes < 1) {
-            BigDecimal result3 = new BigDecimal(Double.toString(gigaByte));
-            return result3.setScale(scale, BigDecimal.ROUND_HALF_UP)
-                    .toPlainString() + "GB";
+        try {
+            return file.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        BigDecimal result4 = new BigDecimal(teraBytes);
-        return result4.setScale(scale, BigDecimal.ROUND_HALF_UP).toPlainString()
-                + "TB";
     }
 
+    /**
+     * 创建或者是否存在
+     *
+     * @param dir
+     * @return
+     */
+    public static boolean createOrExistsDir(@Nullable File dir) {
+        if (dir == null) {
+            return false;
+        }
+        if (dir.exists()) {
+            return dir.isDirectory();
+        }
+        return dir.mkdirs();
+    }
+
+    public interface FileFilter {
+        /**
+         * 是否通过过滤
+         *
+         * @param file
+         * @return false：需要过滤
+         */
+        boolean filter(File file);
+    }
 }

@@ -17,6 +17,11 @@ import java.io.OutputStream;
  * </pre>
  */
 public final class FileIOUtils {
+    /**
+     * 4096
+     */
+    public static final int BUFFER = 1 << 12;
+
     private FileIOUtils() {
         throw new IllegalStateException();
     }
@@ -48,18 +53,18 @@ public final class FileIOUtils {
      * 将输入流写入文件
      *
      * @param file   文件
-     * @param stream     输入流
+     * @param stream 输入流
      * @param append 是否追加在文件末
      * @return
      */
     public static boolean write(@NonNull File file, @NonNull InputStream stream, boolean append) {
-        if (!FileUtils.createOrExist(file)) {
+        if (!FileUtils.createOrExistsFile(file)) {
             return false;
         }
         OutputStream os = null;
         try {
             os = new BufferedOutputStream(new FileOutputStream(file, append));
-            byte data[] = new byte[4096];
+            byte data[] = new byte[BUFFER];
             int length;
             while ((length = stream.read(data)) != -1) {
                 os.write(data, 0, length);

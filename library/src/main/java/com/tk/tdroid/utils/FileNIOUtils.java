@@ -52,7 +52,7 @@ public final class FileNIOUtils {
      * @return
      */
     public static boolean write(@NonNull File file, @NonNull FileInputStream stream, boolean append) {
-        if (!FileUtils.createOrExist(file)) {
+        if (!FileUtils.createOrExistsFile(file)) {
             return false;
         }
         FileChannel inputChannel = null;
