@@ -11,10 +11,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.annotation.Retention;
@@ -112,7 +109,7 @@ public final class Logger {
     /**
      * 全局配置
      */
-    private static Config globalConfig = new Config().build();
+    private static Config globalConfig = new Builder().build();
     /**
      * Log写入文件单例线程池
      */
@@ -121,10 +118,10 @@ public final class Logger {
     /**
      * 初始化
      *
-     * @param config
+     * @param globalConfig
      */
-    public static void init(@NonNull Config config) {
-        globalConfig = config;
+    public static void init(@NonNull Config globalConfig) {
+        Logger.globalConfig = globalConfig;
     }
 
     /**
@@ -161,7 +158,7 @@ public final class Logger {
     }
 
     public static void v(@NonNull String tag, @Nullable Object... objects) {
-        printLog(V, globalConfig.newBuilder().tag(tag), objects);
+        printLog(V, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void v(@Nullable Config config, @Nullable Object... objects) {
@@ -173,7 +170,7 @@ public final class Logger {
     }
 
     public static void d(@NonNull String tag, @Nullable Object... objects) {
-        printLog(D, globalConfig.newBuilder().tag(tag), objects);
+        printLog(D, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void d(@Nullable Config config, @Nullable Object... objects) {
@@ -185,7 +182,7 @@ public final class Logger {
     }
 
     public static void i(@NonNull String tag, @Nullable Object... objects) {
-        printLog(I, globalConfig.newBuilder().tag(tag), objects);
+        printLog(I, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void i(@Nullable Config config, @Nullable Object... objects) {
@@ -197,7 +194,7 @@ public final class Logger {
     }
 
     public static void w(@NonNull String tag, @Nullable Object... objects) {
-        printLog(W, globalConfig.newBuilder().tag(tag), objects);
+        printLog(W, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void w(@Nullable Config config, @Nullable Object... objects) {
@@ -209,7 +206,7 @@ public final class Logger {
     }
 
     public static void e(@NonNull String tag, @Nullable Object... objects) {
-        printLog(E, globalConfig.newBuilder().tag(tag), objects);
+        printLog(E, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void e(@Nullable Config config, @Nullable Object... objects) {
@@ -221,7 +218,7 @@ public final class Logger {
     }
 
     public static void a(@NonNull String tag, @Nullable Object... objects) {
-        printLog(A, globalConfig.newBuilder().tag(tag), objects);
+        printLog(A, globalConfig.newBuilder().tag(tag).build(), objects);
     }
 
     public static void a(@Nullable Config config, @Nullable Object... objects) {
@@ -233,7 +230,7 @@ public final class Logger {
     }
 
     public static void json(@NonNull String tag, @Nullable String json) {
-        printLog(JSON | D, globalConfig.newBuilder().tag(tag), json);
+        printLog(JSON | D, globalConfig.newBuilder().tag(tag).build(), json);
     }
 
     public static void json(@Type int type, @Nullable Config config, @Nullable String json) {
@@ -245,7 +242,7 @@ public final class Logger {
     }
 
     public static void xml(@NonNull String tag, String xml) {
-        printLog(XML | D, globalConfig.newBuilder().tag(tag), xml);
+        printLog(XML | D, globalConfig.newBuilder().tag(tag).build(), xml);
     }
 
     public static void xml(@Type int type, @Nullable Config config, @Nullable String xml) {
@@ -486,7 +483,7 @@ public final class Logger {
         String date = TimeUtils.formatExactDate(System.currentTimeMillis());
         String day = date.substring(0, date.lastIndexOf(" "));
         final File file = new File(logPath, String.format(Locale.getDefault(), "%s_%s.log", TAG, day));
-        if (!createLogFile(file)) {
+        if (!FileUtils.createOrExistsFile(file)) {
             Log.e(tagStr, "print2file failure !");
             return;
         }
@@ -514,48 +511,49 @@ public final class Logger {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                BufferedWriter writer = null;
-                try {
-                    writer = new BufferedWriter(new FileWriter(file, true));
-                    writer.write(builder.toString());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    IOUtils.closeQuietly(writer);
-                }
+                FileIOUtils.writeStringByNIO(file, builder.toString(), true);
             }
         });
-    }
-
-    /**
-     * 创建日志
-     *
-     * @param file
-     * @return
-     */
-    private static boolean createLogFile(@NonNull File file) {
-        if (file.exists()) {
-            if (file.isFile()) {
-                return true;
-            }
-            file.delete();
-        }
-        if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
-        }
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     /**
      * 配置
      */
     public static class Config {
+        private String tag;
+        private boolean log;
+        private boolean print;
+        private boolean border;
+        private boolean header;
+        private int logStackDepth;
+        private boolean saveLog;
+        private String logPath;
+
+        private Config(Builder builder) {
+            tag = builder.tag;
+            log = builder.log;
+            print = builder.print;
+            border = builder.border;
+            header = builder.header;
+            logStackDepth = builder.logStackDepth;
+            saveLog = builder.saveLog;
+            logPath = builder.logPath;
+        }
+
+        public Builder newBuilder() {
+            return new Builder()
+                    .tag(tag)
+                    .log(log)
+                    .print(print)
+                    .border(border)
+                    .header(header)
+                    .logStackDepth(logStackDepth)
+                    .saveLog(saveLog)
+                    .logPath(logPath);
+        }
+    }
+
+    public static final class Builder {
         private String tag = Logger.TAG;
         private boolean log = Logger.LOG;
         private boolean print = Logger.PRINT;
@@ -565,17 +563,7 @@ public final class Logger {
         private boolean saveLog = Logger.SAVE_LOG;
         private String logPath = Logger.LOG_PATH;
 
-        public Config newBuilder() {
-            return new Config()
-                    .tag(tag)
-                    .log(log)
-                    .print(print)
-                    .border(border)
-                    .header(header)
-                    .logStackDepth(logStackDepth)
-                    .saveLog(saveLog)
-                    .logPath(logPath)
-                    .build();
+        public Builder() {
         }
 
         /**
@@ -584,7 +572,7 @@ public final class Logger {
          * @param tag
          * @return
          */
-        public Config tag(@NonNull String tag) {
+        public Builder tag(@NonNull String tag) {
             this.tag = tag;
             return this;
         }
@@ -595,7 +583,7 @@ public final class Logger {
          * @param log
          * @return
          */
-        public Config log(boolean log) {
+        public Builder log(boolean log) {
             this.log = log;
             return this;
         }
@@ -606,7 +594,7 @@ public final class Logger {
          * @param print
          * @return
          */
-        public Config print(boolean print) {
+        public Builder print(boolean print) {
             this.print = print;
             return this;
         }
@@ -617,7 +605,7 @@ public final class Logger {
          * @param border
          * @return
          */
-        public Config border(boolean border) {
+        public Builder border(boolean border) {
             this.border = border;
             return this;
         }
@@ -628,7 +616,7 @@ public final class Logger {
          * @param header
          * @return
          */
-        public Config header(boolean header) {
+        public Builder header(boolean header) {
             this.header = header;
             return this;
         }
@@ -639,7 +627,7 @@ public final class Logger {
          * @param logStackDepth 默认深度1，当前调用者的信息
          * @return
          */
-        public Config logStackDepth(int logStackDepth) {
+        public Builder logStackDepth(int logStackDepth) {
             this.logStackDepth = logStackDepth;
             return this;
         }
@@ -650,7 +638,7 @@ public final class Logger {
          * @param saveLog
          * @return
          */
-        public Config saveLog(boolean saveLog) {
+        public Builder saveLog(boolean saveLog) {
             this.saveLog = saveLog;
             return this;
         }
@@ -661,14 +649,13 @@ public final class Logger {
          * @param logPath
          * @return
          */
-        public Config logPath(@Nullable String logPath) {
+        public Builder logPath(@Nullable String logPath) {
             this.logPath = logPath;
             return this;
         }
 
         public Config build() {
-            return new Config();
+            return new Config(this);
         }
-
     }
 }

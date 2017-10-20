@@ -22,19 +22,23 @@ public class App extends Application {
         Utils.init(this);
         HttpUtils.init(this);
 
+
 //        StorageUtils.getStoragePath(true);
 //        StorageUtils.getStoragePath(false);
 
+//        Logger.init(new Logger.Builder()
+//                .logPath(Environment.getExternalStorageDirectory() + File.separator + "test")
+//                .build());
 //        Logger.e(getClass().getSimpleName(), "123", true);
 //        Logger.json(Logger.Type.E,
 //                Logger.getGlobalConfig().newBuilder()
 //                        .tag("Json_Test")
-//                        .logStackDepth(3),
+//                        .logStackDepth(3)
+//                        .build(),
 //                "{\"name\":\"test\"}");
 //        Logger.json(Logger.Type.I, null, "{\"name\":\"test\"}");
 
-//        Logger.init(new Logger.Config()
-//                .logPath(Environment.getExternalStorageDirectory() + File.separator + "test"));
+
 //        Logger.d(TimeUtils.formatExactDate(new Date().getTime() + 1000 * 100 + 30 * 1000 * 60));
 //        Logger.d(TimeUtils.formatHourMinute(1000 * 100 + 30 * 1000 * 60));
 //        Logger.d(TimeUtils.formatHourMinuteSecond(1000 * 100 + 30 * 1000 * 60, true));
@@ -146,6 +150,8 @@ public class App extends Application {
 //        } catch (FileNotFoundException e) {
 //            e.printStackTrace();
 //        }
+
+
     }
 
 //    private BitmapDrawable toDrawable(Context context, int resId, int width, int height) {

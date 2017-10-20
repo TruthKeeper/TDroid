@@ -28,7 +28,6 @@ import java.io.IOException;
  * </pre>
  */
 public final class FileUtils {
-    public static final boolean NIO = true;
 
     private FileUtils() {
         throw new IllegalStateException();
@@ -174,8 +173,7 @@ public final class FileUtils {
             }
             try {
                 //写入
-                boolean write = NIO ? FileNIOUtils.write(destFile, new FileInputStream(srcFile), false)
-                        : FileIOUtils.write(destFile, new FileInputStream(srcFile), false);
+                boolean write = FileIOUtils.writeByNIO(destFile, new FileInputStream(srcFile), false);
                 if (deleteSrcFile) {
                     return write && deleteFile(srcFile);
                 } else {
