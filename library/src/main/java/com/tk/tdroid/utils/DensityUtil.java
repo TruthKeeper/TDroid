@@ -1,4 +1,4 @@
-package com.tk.tdroid.utils.internal;
+package com.tk.tdroid.utils;
 
 import android.content.res.Resources;
 

@@ -4,8 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.tk.tdroid.constants.HttpConstants;
 import com.tk.tdroid.utils.NetworkUtils;
-import com.tk.tdroid.utils.internal.Logger;
-import com.tk.tdroid.utils.internal.Utils;
+import com.tk.tdroid.utils.Logger;
+import com.tk.tdroid.utils.Utils;
 
 import java.io.IOException;
 

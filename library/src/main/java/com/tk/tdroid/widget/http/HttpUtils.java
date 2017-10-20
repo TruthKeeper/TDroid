@@ -52,7 +52,7 @@ public class HttpUtils {
                     okHttpClient = builder.build();
 
                     retrofit = new Retrofit.Builder()
-//                            .baseUrl(BuilConfig.BASE_API_URL)
+                            .baseUrl("http://www.baidu.com/")
                             .client(okHttpClient)
 //                            .addConverterFactory(CustomGsonFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())

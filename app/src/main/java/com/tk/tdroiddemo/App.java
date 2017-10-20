@@ -2,7 +2,7 @@ package com.tk.tdroiddemo;
 
 import android.app.Application;
 
-import com.tk.tdroid.utils.internal.Utils;
+import com.tk.tdroid.utils.Utils;
 import com.tk.tdroid.widget.http.HttpUtils;
 
 
@@ -15,12 +15,15 @@ import com.tk.tdroid.widget.http.HttpUtils;
  */
 public class App extends Application {
 
+
     @Override
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
         HttpUtils.init(this);
 
+//        StorageUtils.getStoragePath(true);
+//        StorageUtils.getStoragePath(false);
 
 //        Logger.e(getClass().getSimpleName(), "123", true);
 //        Logger.json(Logger.Type.E,

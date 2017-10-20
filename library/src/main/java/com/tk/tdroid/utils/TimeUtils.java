@@ -13,7 +13,7 @@ import java.util.Locale;
  * </pre>
  */
 
-public class TimeUtils {
+public final class TimeUtils {
 
     private static final int SECOND = 1_000;
     private static final int MINUTE = 60 * SECOND;
@@ -28,6 +28,10 @@ public class TimeUtils {
     private static final String WEEK_STR = "周";
 
     private static final SimpleDateFormat exactDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+
+    private TimeUtils() {
+        throw new IllegalStateException();
+    }
 
     /**
      * 解析为详细日期

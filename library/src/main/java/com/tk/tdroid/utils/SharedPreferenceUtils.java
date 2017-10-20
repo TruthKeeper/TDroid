@@ -3,8 +3,6 @@ package com.tk.tdroid.utils;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.tk.tdroid.utils.internal.Utils;
-
 /**
  * <pre>
  *     author : TK

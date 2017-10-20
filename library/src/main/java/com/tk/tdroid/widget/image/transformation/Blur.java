@@ -11,7 +11,7 @@ import android.support.v8.renderscript.ScriptIntrinsicBlur;
 
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.tk.tdroid.utils.internal.Utils;
+import com.tk.tdroid.utils.Utils;
 
 import java.security.MessageDigest;
 
