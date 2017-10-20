@@ -1,0 +1,20 @@
+//module全局配置
+android {
+    defaultConfig {
+        //高斯模糊
+        renderscriptTargetApi rootProject.ext.android.compileSdkVersion
+        renderscriptSupportModeEnabled true
+        //SVG
+        vectorDrawables.useSupportLibrary = true
+        //DEX
+        multiDexEnabled true
+        dexOptions {
+            javaMaxHeapSize "4g"
+            preDexLibraries = false
+            maxProcessCount 8
+        }
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'
+        }
+    }
+}

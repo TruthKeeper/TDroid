@@ -1,6 +1,22 @@
 apply plugin: 'com.android.application'
+apply from: rootProject.file('module.gradle')
+
+def releaseTime() {
+    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
+}
 
 android {
+    //默认打包名称
+    android.applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.outputFile = new File(output.outputFile.parent, rootProject.getName()
+                    + "-" + buildType.name
+                    + "-" + releaseTime()
+                    + "-v" + defaultConfig.versionName
+                    + "-" + defaultConfig.versionCode
+                    + ".apk");
+        }
+    }
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     buildToolsVersion rootProject.ext.android.buildToolsVersion
     defaultConfig {
@@ -12,10 +28,30 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+//        debug {
+//            manifestPlaceholders = [
+//                    "holder_1": "aaa",
+//                    "holder_2": "bbb",
+//            ]
+//        }
         release {
+//            manifestPlaceholders = [
+//                    "holder_1": "111",
+//                    "holder_2": "222",
+//            ]
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    productFlavors {
+//        a {
+//            resValue "string", "res", "111111"
+//            buildConfigField "String", "test", "\"aaa\""
+//        }
+//        b {
+//            resValue "string", "res", "222222"
+//            buildConfigField "String", "test", "\"bbb\""
+//        }
     }
 }
 

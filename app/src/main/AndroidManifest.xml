@@ -20,6 +20,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!--<meta-data-->
+            <!--android:name="holder_1"-->
+            <!--android:value="${holder_1}" />-->
+        <!--<meta-data-->
+            <!--android:name="holder_2"-->
+            <!--android:value="${holder_2}" />-->
     </application>
 
 </manifest>
