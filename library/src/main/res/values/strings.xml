@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Library</string>
+    <string name="TDroid_no_network">网络好像有问题</string>
 </resources>

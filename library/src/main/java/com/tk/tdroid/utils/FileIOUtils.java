@@ -80,8 +80,7 @@ public final class FileIOUtils {
             e.printStackTrace();
             return false;
         } finally {
-            IOUtils.closeQuietly(stream);
-            IOUtils.closeQuietly(os);
+            IOUtils.closeQuietly(stream,os);
         }
     }
 
@@ -159,8 +158,7 @@ public final class FileIOUtils {
             e.printStackTrace();
             return false;
         } finally {
-            IOUtils.closeQuietly(inputChannel);
-            IOUtils.closeQuietly(outputChannel);
+            IOUtils.closeQuietly(inputChannel,outputChannel);
         }
     }
 

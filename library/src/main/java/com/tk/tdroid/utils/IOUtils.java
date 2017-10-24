@@ -33,6 +33,17 @@ public final class IOUtils {
     }
 
     /**
+     * 关闭
+     *
+     * @param closeable
+     */
+    public static void close(@Nullable Closeable... closeable) {
+        for (Closeable c : closeable) {
+            close(c);
+        }
+    }
+
+    /**
      * 安静关闭
      *
      * @param closeable
@@ -44,6 +55,17 @@ public final class IOUtils {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * 安静关闭
+     *
+     * @param closeable
+     */
+    public static void closeQuietly(@Nullable Closeable... closeable) {
+        for (Closeable c : closeable) {
+            closeQuietly(c);
         }
     }
 }

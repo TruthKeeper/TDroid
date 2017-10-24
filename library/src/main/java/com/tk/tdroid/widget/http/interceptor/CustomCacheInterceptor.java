@@ -3,9 +3,8 @@ package com.tk.tdroid.widget.http.interceptor;
 import android.support.annotation.NonNull;
 
 import com.tk.tdroid.constants.HttpConstants;
-import com.tk.tdroid.utils.NetworkUtils;
 import com.tk.tdroid.utils.Logger;
-import com.tk.tdroid.utils.Utils;
+import com.tk.tdroid.utils.NetworkUtils;
 
 import java.io.IOException;
 
@@ -27,14 +26,14 @@ public class CustomCacheInterceptor implements Interceptor {
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
-        if (!NetworkUtils.isNetAvailable(Utils.getApp())) {
+        if (!NetworkUtils.isConnected()) {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
             Logger.d(TAG, "no network");
         }
         Response originalResponse = chain.proceed(request);
-        if (NetworkUtils.isNetAvailable(Utils.getApp())) {
+        if (NetworkUtils.isConnected()) {
             //有网络无缓存
             return originalResponse.newBuilder()
                     .removeHeader("Pragma")

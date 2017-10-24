@@ -22,13 +22,14 @@ public @interface Logger {
     /**
      * Logger的类型
      *
-     * @return <ul>
-     * <li>Log.VERBOSE</li>
-     * <li>Log.DEBUG</li>
-     * <li>Log.INFO</li>
-     * <li>Log.WARN</li>
-     * <li>Log.ERROR</li>
-     * <li>Log.ASSERT</li>
+     * @return Log类型
+     * <ul>
+     * <li>{@link Log#VERBOSE}</li>
+     * <li>{@link Log#DEBUG}</li>
+     * <li>{@link Log#INFO}</li>
+     * <li>{@link Log#WARN}</li>
+     * <li>{@link Log#ERROR}</li>
+     * <li>{@link Log#ASSERT}</li>
      * </ul>
      */
     int type() default Log.DEBUG;
