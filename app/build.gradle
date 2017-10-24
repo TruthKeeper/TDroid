@@ -4,12 +4,31 @@ import org.aspectj.tools.ajc.Main
 
 apply plugin: 'com.android.application'
 apply from: rootProject.file('module.gradle')
+//读取打包签名
+def keystorePropertiesFile = rootProject.file("local.properties");
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
 android {
+    //打包签名
+    signingConfigs {
+        debug {
+            storeFile file(keystoreProperties['keystore.path'])
+            storePassword keystoreProperties['keystore.password']
+            keyAlias keystoreProperties['keystore.alias']
+            keyPassword keystoreProperties['keystore.alias_password']
+        }
+        release {
+            storeFile file(keystoreProperties['keystore.path'])
+            storePassword keystoreProperties['keystore.password']
+            keyAlias keystoreProperties['keystore.alias']
+            keyPassword keystoreProperties['keystore.alias_password']
+        }
+    }
     //默认打包名称
     android.applicationVariants.all { variant ->
         variant.outputs.each { output ->
@@ -32,19 +51,21 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-//        debug {
+        debug {
 //            manifestPlaceholders = [
 //                    "holder_1": "aaa",
 //                    "holder_2": "bbb",
 //            ]
-//        }
+            signingConfig signingConfigs.debug
+        }
         release {
 //            manifestPlaceholders = [
 //                    "holder_1": "111",
 //                    "holder_2": "222",
 //            ]
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     productFlavors {
