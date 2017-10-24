@@ -6,6 +6,9 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
+        //AOP
+        classpath 'org.aspectj:aspectjtools:1.8.12'
+        classpath 'org.aspectj:aspectjweaver:1.8.12'
     }
 }
 

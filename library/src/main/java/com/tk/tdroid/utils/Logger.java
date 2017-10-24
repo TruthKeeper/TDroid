@@ -57,7 +57,7 @@ public final class Logger {
     /**
      * 默认TAG
      */
-    private static final String TAG = Logger.class.getSimpleName();
+    public static final String TAG = "Logger";
     /**
      * 默认总开关
      */
@@ -81,7 +81,7 @@ public final class Logger {
     /**
      * 默认是否记录日志
      */
-    private static final boolean SAVE_LOG = true;
+    private static final boolean SAVE_LOG = false;
     /**
      * 默认记录日志的路径，在缓存文件下
      */
@@ -267,7 +267,7 @@ public final class Logger {
         boolean saveLog = realConfig == null ? SAVE_LOG : realConfig.saveLog;
         boolean border = realConfig == null ? BORDER : realConfig.border;
         boolean header = realConfig == null ? HEADER : realConfig.header;
-        String logPath = realConfig == null ? "" : realConfig.logPath;
+        String logPath = realConfig == null ? LOG_PATH : realConfig.logPath;
         if (TextUtils.isEmpty(logPath)) {
             logPath = Utils.getApp().getCacheDir().getAbsolutePath();
         }

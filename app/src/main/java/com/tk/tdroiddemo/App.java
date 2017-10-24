@@ -1,9 +1,11 @@
 package com.tk.tdroiddemo;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.tk.tdroid.utils.Utils;
 import com.tk.tdroid.widget.http.HttpUtils;
+import com.tk.tdroiddemo.aop.annotation.Logger;
 
 
 /**
@@ -13,15 +15,16 @@ import com.tk.tdroid.widget.http.HttpUtils;
  *      desc :
  * </pre>
  */
+
 public class App extends Application {
 
-
+    @Logger(type = Log.ERROR)
     @Override
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
         HttpUtils.init(this);
-
+//        A a = new A(1, "321", true);
 
 //        StorageUtils.getStoragePath(true);
 //        StorageUtils.getStoragePath(false);
@@ -154,6 +157,7 @@ public class App extends Application {
 
     }
 
+
 //    private BitmapDrawable toDrawable(Context context, int resId, int width, int height) {
 //        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 //        Canvas canvas = new Canvas(bitmap);
@@ -164,7 +168,19 @@ public class App extends Application {
 //    }
 
 
-//    @Instance
+    //    @Instance
 //    public static class ABC {
+//    }
+//    public static class A {
+//        private int i;
+//        private String j;
+//        private boolean k;
+//
+//        @Logger(tag = "123")
+//        public A(int i, String j, boolean k) {
+//            this.i = i;
+//            this.j = j;
+//            this.k = k;
+//        }
 //    }
 }
