@@ -201,7 +201,8 @@ rx.internal.util.atomic.LinkedQueueNode consumerNode;
 #-keep class .bean.** { *; }
 #-keep class .entry.** { *; }
 # AOP
--keep class com.tk.tdroiddemo.aop.** { *; }
--keep class org.aspectj.** { *; }
--keep public class * extends org.aspectj.runtime.internal.AroundClosure{*;}
+#-keep class com.tk.tdroiddemo.aop.** { *; }
+#-keepnames @org.aspectj.lang.annotation.Aspect class * {
+#    ajc* <methods>;
+#}
 #-------------------------------------------项目定制区 end-----------------------------------------------

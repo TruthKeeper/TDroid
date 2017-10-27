@@ -2,13 +2,20 @@ apply from: "config.gradle"
 
 buildscript {
     repositories {
+        maven {
+            //插件的地址：项目路径下
+            url uri('repo')
+        }
         jcenter()
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        //AOP
-        classpath 'org.aspectj:aspectjtools:1.8.12'
-        classpath 'org.aspectj:aspectjweaver:1.8.12'
+        /**
+         * 自定义插件：http://blog.csdn.net/yulong0809/article/details/77752098
+         * 1.AOP切面支持
+         */
+        classpath 'com.tk.tdroid:plugin:1.0.0'
     }
 }
 
