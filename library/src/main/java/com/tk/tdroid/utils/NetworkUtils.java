@@ -29,7 +29,7 @@ import static com.tk.tdroid.utils.NetworkUtils.NetworkType.NETWORK_WIFI;
 /**
  * <pre>
  *     author : TK
- *     time   : 2017/03/17
+ *     time   : 2017/10/25
  *     desc   : 网络工具
  * </pre>
  */
@@ -48,7 +48,6 @@ public final class NetworkUtils {
         int NETWORK_UNKNOWN = 0x05;
         int NETWORK_NO = 0x06;
     }
-
 
     /**
      * 网络是否连接畅通

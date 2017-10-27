@@ -3,6 +3,7 @@ package com.tk.tdroiddemo;
 import android.app.Application;
 import android.util.Log;
 
+import com.tk.tdroid.utils.NetworkObservable;
 import com.tk.tdroid.utils.Utils;
 import com.tk.tdroid.widget.http.HttpUtils;
 import com.tk.tdroiddemo.aop.annotation.Logger;
@@ -17,6 +18,11 @@ import com.tk.tdroiddemo.aop.annotation.Logger;
  */
 
 public class App extends Application {
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        NetworkObservable.getInstance().recycle();
+    }
 
     @Logger(type = Log.ERROR)
     @Override
@@ -24,6 +30,8 @@ public class App extends Application {
         super.onCreate();
         Utils.init(this);
         HttpUtils.init(this);
+        NetworkObservable.getInstance().init();
+
 //        A a = new A(1, "321", true);
 
 //        StorageUtils.getStoragePath(true);
