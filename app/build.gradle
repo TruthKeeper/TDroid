@@ -16,16 +16,16 @@ android {
     //打包签名
     signingConfigs {
         debug {
-            storeFile file(keystoreProperties['keystore.path'])
-            storePassword keystoreProperties['keystore.password']
-            keyAlias keystoreProperties['keystore.alias']
-            keyPassword keystoreProperties['keystore.alias_password']
+            storeFile file(keystoreProperties['keystore.debug.path'])
+            storePassword keystoreProperties['keystore.debug.password']
+            keyAlias keystoreProperties['keystore.debug.alias']
+            keyPassword keystoreProperties['keystore.debug.alias_password']
         }
         release {
-            storeFile file(keystoreProperties['keystore.path'])
-            storePassword keystoreProperties['keystore.password']
-            keyAlias keystoreProperties['keystore.alias']
-            keyPassword keystoreProperties['keystore.alias_password']
+            storeFile file(keystoreProperties['keystore.release.path'])
+            storePassword keystoreProperties['keystore.release.password']
+            keyAlias keystoreProperties['keystore.release.alias']
+            keyPassword keystoreProperties['keystore.release.alias_password']
         }
     }
     //默认打包名称
