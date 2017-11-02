@@ -55,6 +55,7 @@ android {
 //                    "holder_1": "aaa",
 //                    "holder_2": "bbb",
 //            ]
+			ext.alwaysUpdateBuildId = false
             signingConfig signingConfigs.debug
         }
         release {

@@ -287,57 +287,122 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         public Vertical() {
         }
 
+        /**
+         * 分隔
+         *
+         * @param drawable
+         * @return
+         */
         public Vertical drawable(Drawable drawable) {
             this.drawable = drawable;
             return this;
         }
 
+        /**
+         * 分隔线有Padding时
+         *
+         * @param dividerBgColor
+         * @return
+         */
         public Vertical dividerBgColor(@ColorInt int dividerBgColor) {
             this.dividerBgColor = dividerBgColor;
             return this;
         }
 
+        /**
+         * 分隔线色值
+         *
+         * @param dividerColor
+         * @return
+         */
         public Vertical dividerColor(@ColorInt int dividerColor) {
             this.dividerColor = dividerColor;
             return this;
         }
 
+        /**
+         * 是否过滤Adapter最后一项
+         *
+         * @param ignoreLast
+         * @return
+         */
         public Vertical ignoreLast(boolean ignoreLast) {
             this.ignoreLast = ignoreLast;
             return this;
         }
 
+        /**
+         * 过滤指定类型的ItemViewType
+         *
+         * @param viewTypes {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
+         * @return
+         */
         public Vertical ignore(int... viewTypes) {
             this.ignoreViewTypes = viewTypes;
             return this;
         }
 
+        /**
+         * 上间隔
+         *
+         * @param topDivider 单位px
+         * @return
+         */
         public Vertical topDivider(int topDivider) {
             this.topDivider = topDivider;
             return this;
         }
 
+        /**
+         * 上间隔左Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param topDividerPaddingLeft 单位px
+         * @return
+         */
         public Vertical topDividerPaddingLeft(int topDividerPaddingLeft) {
             this.topDividerPaddingLeft = topDividerPaddingLeft;
             return this;
         }
 
+        /**
+         * 上间隔右Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param topDividerPaddingRight 单位px
+         * @return
+         */
         public Vertical topDividerPaddingRight(int topDividerPaddingRight) {
             this.topDividerPaddingRight = topDividerPaddingRight;
             return this;
         }
 
-
+        /**
+         * 下间隔
+         *
+         * @param bottomDivider 单位px
+         * @return
+         */
         public Vertical bottomDivider(int bottomDivider) {
             this.bottomDivider = bottomDivider;
             return this;
         }
 
+        /**
+         * 下间隔左Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param bottomDividerPaddingLeft 单位px
+         * @return
+         */
         public Vertical bottomDividerPaddingLeft(int bottomDividerPaddingLeft) {
             this.bottomDividerPaddingLeft = bottomDividerPaddingLeft;
             return this;
         }
 
+        /**
+         * 下间隔右Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param bottomDividerPaddingRight 单位px
+         * @return
+         */
         public Vertical bottomDividerPaddingRight(int bottomDividerPaddingRight) {
             this.bottomDividerPaddingRight = bottomDividerPaddingRight;
             return this;
@@ -367,56 +432,122 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         public Horizontal() {
         }
 
+        /**
+         * 分隔
+         *
+         * @param drawable
+         * @return
+         */
         public Horizontal drawable(Drawable drawable) {
             this.drawable = drawable;
             return this;
         }
 
+        /**
+         * 分隔线有Padding时
+         *
+         * @param dividerBgColor
+         * @return
+         */
         public Horizontal dividerBgColor(@ColorInt int dividerBgColor) {
             this.dividerBgColor = dividerBgColor;
             return this;
         }
 
+        /**
+         * 分隔线色值
+         *
+         * @param dividerColor
+         * @return
+         */
         public Horizontal dividerColor(@ColorInt int dividerColor) {
             this.dividerColor = dividerColor;
             return this;
         }
 
+        /**
+         * 是否过滤Adapter最后一项
+         *
+         * @param ignoreLast
+         * @return
+         */
         public Horizontal ignoreLast(boolean ignoreLast) {
             this.ignoreLast = ignoreLast;
             return this;
         }
 
+        /**
+         * 过滤指定类型的ItemViewType
+         *
+         * @param viewTypes {@link android.support.v7.widget.RecyclerView.Adapter#getItemViewType(int)}
+         * @return
+         */
         public Horizontal ignore(int... viewTypes) {
             this.ignoreViewTypes = viewTypes;
             return this;
         }
 
+        /**
+         * 左间隔
+         *
+         * @param leftDivider 单位px
+         * @return
+         */
         public Horizontal leftDivider(int leftDivider) {
             this.leftDivider = leftDivider;
             return this;
         }
 
+        /**
+         * 左间隔上Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param leftDividerPaddingTop 单位px
+         * @return
+         */
         public Horizontal leftDividerPaddingTop(int leftDividerPaddingTop) {
             this.leftDividerPaddingTop = leftDividerPaddingTop;
             return this;
         }
 
+        /**
+         * 左间隔下Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param leftDividerPaddingBottom 单位px
+         * @return
+         */
         public Horizontal leftDividerPaddingBottom(int leftDividerPaddingBottom) {
             this.leftDividerPaddingBottom = leftDividerPaddingBottom;
             return this;
         }
 
+        /**
+         * 右间隔
+         *
+         * @param rightDivider 单位px
+         * @return
+         */
         public Horizontal rightDivider(int rightDivider) {
             this.rightDivider = rightDivider;
             return this;
         }
 
+        /**
+         * 右间隔上Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param rightDividerPaddingTop 单位px
+         * @return
+         */
         public Horizontal rightDividerPaddingTop(int rightDividerPaddingTop) {
             this.rightDividerPaddingTop = rightDividerPaddingTop;
             return this;
         }
 
+        /**
+         * 右间隔下Padding，默认透明，可配合{@link Vertical#dividerBgColor}
+         *
+         * @param rightDividerPaddingBottom 单位px
+         * @return
+         */
         public Horizontal rightDividerPaddingBottom(int rightDividerPaddingBottom) {
             this.rightDividerPaddingBottom = rightDividerPaddingBottom;
             return this;
