@@ -4,6 +4,8 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
 
+import com.tk.tdroid.utils.Utils;
+
 /**
  * <pre>
  *      author : TK
@@ -17,18 +19,17 @@ public class AudioFocusHelper {
     private AudioManager.OnAudioFocusChangeListener mListener;
 
     /**
-     * get
+     * 创建
      *
-     * @param context
      * @param audioListener
      * @return
      */
-    public static AudioFocusHelper create(@NonNull Context context, @NonNull AudioListener audioListener) {
-        return new AudioFocusHelper(context, audioListener);
+    public static AudioFocusHelper create(@NonNull AudioListener audioListener) {
+        return new AudioFocusHelper(audioListener);
     }
 
-    private AudioFocusHelper(@NonNull Context context, @NonNull final AudioListener audioListener) {
-        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+    private AudioFocusHelper(@NonNull final AudioListener audioListener) {
+        mAudioManager = (AudioManager) Utils.getApp().getSystemService(Context.AUDIO_SERVICE);
         mListener = new AudioManager.OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
