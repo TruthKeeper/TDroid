@@ -1,5 +1,6 @@
 package com.tk.tdroid.widget.image;
 
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.annotation.GlideExtension;
@@ -19,14 +20,17 @@ public class GlideAPI {
     }
 
     /**
-     * 节省内存
+     * 减少内存占用
      *
      * @param options
      * @param imageView
      */
     @GlideOption
     public static void override(RequestOptions options, ImageView imageView) {
-        if (imageView.getMeasuredWidth() != 0 && imageView.getMeasuredHeight() != 0) {
+        ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        if (params != null && params.width > 0 && params.height > 0) {
+            options = options.override(params.width, params.height);
+        } else if (imageView.getMeasuredWidth() > 0 && imageView.getMeasuredHeight() > 0) {
             options = options.override(imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
         }
     }
