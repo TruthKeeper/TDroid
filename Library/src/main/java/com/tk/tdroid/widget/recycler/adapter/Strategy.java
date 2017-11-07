@@ -21,8 +21,18 @@ public abstract class Strategy<T> {
 
     public abstract int layoutId();
 
+    /**
+     * 需要扩展
+     * <ul>
+     * <li>{@link FasterHolder#onCreate()}</li>
+     * <li>{@link FasterHolder#onDetach()}</li>
+     * <li>{@link FasterHolder#onRecycle()}</li>
+     * </ul>时重写
+     *
+     * @param parent
+     * @return
+     */
     protected FasterHolder createHolder(ViewGroup parent) {
-        //需要扩展时重写
         return new FasterHolder(LayoutInflater.from(parent.getContext()).inflate(layoutId(), parent, false));
     }
 
@@ -59,8 +69,8 @@ public abstract class Strategy<T> {
      * @param id
      * @return
      */
-    protected boolean isSelect(FasterHolder holder, long id) {
-        return holder.getAdapter().getObjectArray().get(id, false) == true;
+    public boolean isSelect(FasterHolder holder, long id) {
+        return holder.getAdapter().getObjectArray().get(id, false) == Boolean.valueOf(true);
     }
 
 }

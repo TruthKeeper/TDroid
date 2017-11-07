@@ -314,7 +314,7 @@ public final class Logger {
      */
     private static String generateBody(final int type, @Nullable final Object... objects) {
         String body = NULL;
-        if (!CollectionUtils.isEmpty(objects)) {
+        if (!EmptyUtils.isEmpty(objects)) {
             if (objects.length == 1) {
                 if (type == JSON) {
                     body = objects[0] == null ? NULL : fromJson(objects[0].toString());

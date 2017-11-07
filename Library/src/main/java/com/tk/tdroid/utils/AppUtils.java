@@ -31,14 +31,13 @@ public final class AppUtils {
     /**
      * 得到软件版本号
      *
-     * @param context
      * @return
      */
-    public static int getVerCode(@NonNull Context context) {
+    public static int getVerCode() {
         int verCode = -1;
         try {
-            String packageName = context.getPackageName();
-            verCode = context.getPackageManager().getPackageInfo(packageName, 0).versionCode;
+            String packageName = Utils.getApp().getPackageName();
+            verCode = Utils.getApp().getPackageManager().getPackageInfo(packageName, 0).versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -48,14 +47,13 @@ public final class AppUtils {
     /**
      * 得到软件版本名称
      *
-     * @param context
      * @return
      */
-    public static String getVerName(@NonNull Context context) {
+    public static String getVerName() {
         String verName = "";
         try {
-            String packageName = context.getPackageName();
-            verName = context.getPackageManager().getPackageInfo(packageName, 0).versionName;
+            String packageName = Utils.getApp().getPackageName();
+            verName = Utils.getApp().getPackageManager().getPackageInfo(packageName, 0).versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -66,57 +64,53 @@ public final class AppUtils {
     /**
      * 安装apk
      *
-     * @param context
-     * @param file    APK文件
+     * @param file APK文件
      */
-    public static void installApk(@NonNull Context context, @NonNull File file) {
+    public static void installApk(@NonNull File file) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        context.startActivity(intent);
+        Utils.getApp().startActivity(intent);
     }
 
 
     /**
      * 安装apk
      *
-     * @param context
-     * @param file    APK文件uri
+     * @param file APK文件uri
      */
-    public static void installApk(@NonNull Context context, Uri file) {
+    public static void installApk(Uri file) {
         Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(file, "application/vnd.android.package-archive");
-        context.startActivity(intent);
+        Utils.getApp().startActivity(intent);
     }
 
 
     /**
      * 卸载apk
      *
-     * @param context
      * @param packageName 包名
      */
-    public static void uninstallApk(@NonNull Context context, @NonNull String packageName) {
+    public static void uninstallApk(@NonNull String packageName) {
         Intent intent = new Intent(Intent.ACTION_DELETE);
         Uri packageURI = Uri.parse("package:" + packageName);
         intent.setData(packageURI);
-        context.startActivity(intent);
+        Utils.getApp().startActivity(intent);
     }
 
 
     /**
      * 检测服务是否运行
      *
-     * @param context   上下文
      * @param className 类名
      * @return 是否运行的状态
      */
-    public static boolean isServiceRunning(@NonNull Context context, @NonNull String className) {
+    public static boolean isServiceRunning(@NonNull String className) {
         boolean isRunning = false;
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> servicesList = activityManager.getRunningServices(Integer.MAX_VALUE);
         for (ActivityManager.RunningServiceInfo info : servicesList) {
             if (className.equals(info.service.getClassName())) {
@@ -129,12 +123,11 @@ public final class AppUtils {
     /**
      * 是否安装了某应用
      *
-     * @param context
      * @param packageName
      * @return
      */
-    public static boolean isApplicationAvailable(@NonNull Context context, @NonNull String packageName) {
-        final PackageManager packageManager = context.getPackageManager();
+    public static boolean isApplicationAvailable(@NonNull String packageName) {
+        final PackageManager packageManager = Utils.getApp().getPackageManager();
         List<PackageInfo> infoList = packageManager.getInstalledPackages(0);
         for (PackageInfo packageInfo : infoList) {
             if (packageInfo.packageName.equals(packageName)) {
@@ -174,12 +167,11 @@ public final class AppUtils {
     /**
      * 应用是否是debug版本
      *
-     * @param context
      * @return
      */
-    public static boolean isApplicationDebug(@NonNull Context context) {
-        if (context.getApplicationInfo() != null) {
-            return (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+    public static boolean isApplicationDebug() {
+        if (Utils.getApp().getApplicationInfo() != null) {
+            return (Utils.getApp().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
         throw new RuntimeException("Application is null");
     }

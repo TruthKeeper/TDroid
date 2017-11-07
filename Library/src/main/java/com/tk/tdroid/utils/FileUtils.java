@@ -28,6 +28,71 @@ import java.io.IOException;
  * </pre>
  */
 public final class FileUtils {
+    /**
+     * 后缀和开发类型的映射关系
+     */
+    private static final String[][] MIME_TYPE = {
+            {".3gp", "video/3gpp"},
+            {".apk", "application/vnd.android.package-archive"},
+            {".asf", "video/x-ms-asf"},
+            {".avi", "video/x-msvideo"},
+            {".bin", "application/octet-stream"},
+            {".bmp", "image/bmp"},
+            {".c", "text/plain"},
+            {".class", "application/octet-stream"},
+            {".conf", "text/plain"},
+            {".cpp", "text/plain"},
+            {".doc", "application/msword"},
+            {".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"},
+            {".xls", "application/vnd.ms-excel"},
+            {".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"},
+            {".exe", "application/octet-stream"},
+            {".gif", "image/gif"},
+            {".gtar", "application/x-gtar"},
+            {".gz", "application/x-gzip"},
+            {".h", "text/plain"},
+            {".htm", "text/html"},
+            {".html", "text/html"},
+            {".jar", "application/java-archive"},
+            {".java", "text/plain"},
+            {".jpeg", "image/jpeg"},
+            {".jpg", "image/jpeg"},
+            {".js", "application/x-javascript"},
+            {".log", "text/plain"},
+            {".m3u", "audio/x-mpegurl"},
+            {".m4a", "audio/mp4a-latm"},
+            {".m4b", "audio/mp4a-latm"},
+            {".m4p", "audio/mp4a-latm"},
+            {".m4u", "video/vnd.mpegurl"},
+            {".m4v", "video/x-m4v"},
+            {".mov", "video/quicktime"},
+            {".aac", "audio/x-mpeg"},
+            {".mp2", "audio/x-mpeg"},
+            {".mp3", "audio/x-mpeg"},
+            {".mp4", "video/mp4"},
+            {".mpc", "application/vnd.mpohun.certificate"},
+            {".mpe", "video/mpeg"},
+            {".mpeg", "video/mpeg"},
+            {".mpg", "video/mpeg"},
+            {".mpg4", "video/mp4"},
+            {".mpga", "audio/mpeg"},
+            {".msg", "application/vnd.ms-outlook"},
+            {".ogg", "audio/ogg"},
+            {".pdf", "application/pdf"},
+            {".png", "image/png"},
+            {".pps", "application/vnd.ms-powerpoint"},
+            {".ppt", "application/vnd.ms-powerpoint"},
+            {".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation"},
+            {".prop", "text/plain"}, {".rc", "text/plain"},
+            {".rmvb", "audio/x-pn-realaudio"}, {".rtf", "application/rtf"},
+            {".sh", "text/plain"}, {".tar", "application/x-tar"},
+            {".tgz", "application/x-compressed"}, {".txt", "text/plain"},
+            {".wav", "audio/x-wav"}, {".wma", "audio/x-ms-wma"},
+            {".wmv", "audio/x-ms-wmv"},
+            {".wps", "application/vnd.ms-works"}, {".xml", "text/plain"},
+            {".z", "application/x-compress"},
+            {".zip", "application/x-zip-compressed"},
+            {"", "*/*"}};
 
     private FileUtils() {
         throw new IllegalStateException();
@@ -51,6 +116,35 @@ public final class FileUtils {
      */
     public static boolean exist(@Nullable File file) {
         return file != null && file.exists();
+    }
+
+    /**
+     * 获取文件的类型
+     *
+     * @param file
+     * @return
+     */
+    public static String getMIMEType(@NonNull File file) {
+        //即 */*
+        String type = MIME_TYPE[MIME_TYPE.length - 1][1];
+        String fileName = file.getName();
+        //获取后缀名前的分隔符"."在fName中的位置。
+        int index = fileName.lastIndexOf(".");
+        if (index < 0) {
+            return type;
+        }
+        //获取文件的后缀名
+        String end = fileName.substring(index, fileName.length()).toLowerCase();
+        if (EmptyUtils.isEmpty(end)) {
+            return type;
+        }
+        //找到对应的MIME类型。
+        for (String[] types : MIME_TYPE) {
+            if (end.equals(types[0])) {
+                return types[1];
+            }
+        }
+        return type;
     }
 
     /**

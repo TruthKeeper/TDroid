@@ -33,26 +33,6 @@ public final class CollectionUtils {
     }
 
     /**
-     * 判断是否为空集合
-     *
-     * @param list
-     * @return
-     */
-    public static boolean isEmpty(@Nullable List<?> list) {
-        return list == null || list.isEmpty();
-    }
-
-    /**
-     * 判断是否为空数组
-     *
-     * @param ts
-     * @return
-     */
-    public static <T> boolean isEmpty(@Nullable T[] ts) {
-        return ts == null || ts.length == 0;
-    }
-
-    /**
      * 集合条件移除
      *
      * @param collection

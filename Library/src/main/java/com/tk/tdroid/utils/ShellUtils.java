@@ -64,7 +64,7 @@ public final class ShellUtils {
      */
     public static CmdResult executeCmd(@NonNull String[] cmds, boolean isRoot, final boolean result) {
         int resultCode = -1;
-        if (CollectionUtils.isEmpty(cmds)) {
+        if (EmptyUtils.isEmpty(cmds)) {
             return new CmdResult(resultCode, null, null);
         }
         Process process = null;

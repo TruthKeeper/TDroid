@@ -21,25 +21,23 @@ public final class ClipboardUtils {
     /**
      * 复制文本到剪贴板
      *
-     * @param context
      * @param text
      */
-    public static void copyText(@NonNull Context context, @NonNull CharSequence text) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+    public static void copyText(@NonNull CharSequence text) {
+        ClipboardManager clipboard = (ClipboardManager) Utils.getApp().getSystemService(Context.CLIPBOARD_SERVICE);
         clipboard.setPrimaryClip(ClipData.newPlainText("text", text));
     }
 
     /**
      * 获取剪贴板的文本
      *
-     * @param context
      * @return
      */
-    public static CharSequence getText(@NonNull Context context) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+    public static CharSequence getText() {
+        ClipboardManager clipboard = (ClipboardManager) Utils.getApp().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
         if (clip != null && clip.getItemCount() > 0) {
-            return clip.getItemAt(0).coerceToText(context);
+            return clip.getItemAt(0).coerceToText(Utils.getApp());
         }
         return null;
     }
@@ -47,22 +45,20 @@ public final class ClipboardUtils {
     /**
      * 复制uri到剪贴板
      *
-     * @param context
      * @param uri
      */
-    public static void copyUri(@NonNull Context context, @NonNull Uri uri) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-        clipboard.setPrimaryClip(ClipData.newUri(context.getContentResolver(), "uri", uri));
+    public static void copyUri(@NonNull Uri uri) {
+        ClipboardManager clipboard = (ClipboardManager) Utils.getApp().getSystemService(Context.CLIPBOARD_SERVICE);
+        clipboard.setPrimaryClip(ClipData.newUri(Utils.getApp().getContentResolver(), "uri", uri));
     }
 
     /**
      * 获取剪贴板的uri
      *
-     * @param context
      * @return
      */
-    public static Uri getUri(@NonNull Context context) {
-        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+    public static Uri getUri() {
+        ClipboardManager clipboard = (ClipboardManager) Utils.getApp().getSystemService(Context.CLIPBOARD_SERVICE);
         ClipData clip = clipboard.getPrimaryClip();
         if (clip != null && clip.getItemCount() > 0) {
             return clip.getItemAt(0).getUri();

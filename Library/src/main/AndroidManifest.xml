@@ -12,7 +12,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!--录音相关-->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-
+    <!--电话相关-->
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
