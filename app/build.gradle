@@ -30,13 +30,8 @@ android {
     }
     //默认打包名称
     android.applicationVariants.all { variant ->
-        variant.outputs.each { output ->
-            output.outputFile = new File(output.outputFile.parent, rootProject.getName()
-                    + "-" + buildType.name
-                    + "-" + releaseTime()
-                    + "-v" + defaultConfig.versionName
-                    + "-" + defaultConfig.versionCode
-                    + ".apk");
+        variant.outputs.all {
+            outputFileName = "${rootProject.getName()}-${buildType.name}-${releaseTime()}-v${defaultConfig.versionName}-${defaultConfig.versionCode}.apk"
         }
     }
     compileSdkVersion rootProject.ext.android.compileSdkVersion
