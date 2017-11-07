@@ -5,18 +5,19 @@ import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
+import android.support.v4.util.LongSparseArray;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.util.ListUpdateCallback;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.tk.tdroid.utils.CollectionUtils;
 import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.utils.ViewUtils;
 
@@ -44,12 +45,13 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  *          <li>支持占位视图和追加视图的优先级调整(例如无数据时不显示头部、底部)</li>
  *          <li>支持上拉加载视图以及监听、NestedScroll场景下的配置</li>
  *          <li>支持上拉加载内置异常处理：点击LoadMoreView重试，回调onLoad方法</li>
- *          <li>支持数据实体与多类型布局的绑定</li>
+ *          <li>支持数据类型与布局类型，一对多，多对多的方式</li>
  *          <li>封装通用的点击、长按事件</li>
- *          <li>封装常用的集合API</li>
- *          <li>封装常用的集合API</li>
- *          <li>特殊业务场景下，封装SparseArray用于对FasterHolder的数据保存</li>
- *              </ul>
+ *          <li>封装常用的集合 API</li>
+ *          <li>封装常用的ViewHolder API</li>
+ *          <li>类似选中业务场景下，封装SparseArray记录对FasterHolder的数据保存</li>
+ *          <li>final 不允许重写，暂不支持Adapter变长模式</li>
+ *          </ul>
  * </pre>
  */
 
@@ -63,6 +65,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
     public static final int TYPE_HEADER = -10002;
     public static final int TYPE_FOOTER = -10003;
     public static final int TYPE_LOAD = -10004;
+    public static final int[] INNER_TYPE = new int[]{TYPE_EMPTY, TYPE_ERROR, TYPE_HEADER, TYPE_FOOTER, TYPE_LOAD};
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({Status.LOAD_IDLE, Status.LOAD_ERROR, Status.LOAD_END, Status.LOAD_ING})
@@ -143,7 +146,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
     /**
      * 存放对FasterHolder额外数据保存的Array
      */
-    private SparseArray<Object> array = null;
+    private LongSparseArray<Object> array = null;
     /**
      * 上拉加载的滚动监听
      */
@@ -254,7 +257,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
             mList = builder.list;
         }
         mBindMap = builder.bindMap;
-        array = new SparseArray<>(2);
+        array = new LongSparseArray<>(2);
     }
 
     private void safeAddView(ViewGroup viewGroup, View child) {
@@ -1032,7 +1035,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
      *
      * @return
      */
-    public SparseArray<Object> getObjectArray() {
+    public LongSparseArray<Object> getObjectArray() {
         return array;
     }
 
@@ -1085,7 +1088,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
      * @return
      */
     public int getLoadMoreViewSpace() {
-        return ViewUtils.isEmpty(mLoadMoreContainer) ? 0 : 1;
+        return ViewUtils.isEmpty(mLoadMoreContainer) || (!isLoadMoreEnabled) ? 0 : 1;
     }
 
     /**
@@ -1342,7 +1345,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
      * @param predicate
      * @return
      */
-    public boolean removeIf(@NonNull Predicate<T> predicate) {
+    public boolean removeIf(@NonNull CollectionUtils.Predicate<T> predicate) {
         return removeIf(predicate, false);
     }
 
@@ -1353,13 +1356,13 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
      * @param immediately
      * @return
      */
-    public boolean removeIf(@NonNull Predicate<T> predicate, boolean immediately) {
+    public boolean removeIf(@NonNull CollectionUtils.Predicate<T> predicate, boolean immediately) {
         boolean removed = false;
         final ListIterator<Entry<T>> listIterator = mList.listIterator();
         int nextIndex;
         while (listIterator.hasNext()) {
             nextIndex = listIterator.nextIndex();
-            if (predicate.removeConfirm(listIterator.next().getData())) {
+            if (predicate.process(listIterator.next().getData())) {
                 listIterator.remove();
                 if (!immediately && 0 == getErrorViewSpace()) {
                     notifyItemRemoved(nextIndex);
@@ -1555,15 +1558,6 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
             result.add(entry);
         }
         return result;
-    }
-
-    /**
-     * 移除器，兼容实现
-     *
-     * @param <D>
-     */
-    public interface Predicate<D> {
-        boolean removeConfirm(D data);
     }
 
     /**

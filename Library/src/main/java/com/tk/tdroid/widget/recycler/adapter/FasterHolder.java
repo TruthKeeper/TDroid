@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.FloatRange;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
@@ -41,7 +42,7 @@ public class FasterHolder extends RecyclerView.ViewHolder {
     /**
      * 放置额外的对象标记
      */
-    private SparseArray<Object> mTags = null;
+    private SparseArray<Object> mExtra = null;
 
     public FasterHolder(View itemView) {
         super(itemView);
@@ -82,7 +83,7 @@ public class FasterHolder extends RecyclerView.ViewHolder {
      * @return
      */
     public final int getListPosition() {
-        return getAdapterPosition() - getAdapter().getHeaderViewSpace();
+        return Math.max(getAdapterPosition() - mAdapter.getHeaderViewSpace(), 0);
     }
 
     /**
@@ -294,11 +295,23 @@ public class FasterHolder extends RecyclerView.ViewHolder {
      * 设置是否可见
      *
      * @param viewId
-     * @param visibility
+     * @param visible
      * @return
      */
-    public final FasterHolder setVisibility(@IdRes int viewId, int visibility) {
-        findViewById(viewId).setVisibility(visibility);
+    public final FasterHolder setVisible(@IdRes int viewId, boolean visible) {
+        findViewById(viewId).setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+        return this;
+    }
+
+    /**
+     * 设置是否占位
+     *
+     * @param viewId
+     * @param visible
+     * @return
+     */
+    public final FasterHolder setGone(@IdRes int viewId, boolean visible) {
+        findViewById(viewId).setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
 
@@ -339,6 +352,41 @@ public class FasterHolder extends RecyclerView.ViewHolder {
     }
 
     /**
+     * 设置透明度
+     *
+     * @param viewId
+     * @param alpha
+     * @return
+     */
+    public final FasterHolder setAlpha(@IdRes int viewId, @FloatRange(from = 0.0, to = 1.0) float alpha) {
+        findViewById(viewId).setAlpha(alpha);
+        return this;
+    }
+
+    /**
+     * 设置额外数据
+     *
+     * @param viewId
+     * @param tag
+     */
+    public final FasterHolder setTag(@IdRes int viewId, Object tag) {
+        findViewById(viewId).setTag(tag);
+        return this;
+    }
+
+    /**
+     * 设置额外数据
+     *
+     * @param viewId
+     * @param key
+     * @param tag
+     */
+    public final FasterHolder setTag(@IdRes int viewId, int key, Object tag) {
+        findViewById(viewId).setTag(key, tag);
+        return this;
+    }
+
+    /**
      * 设置点击监听
      *
      * @param viewId
@@ -363,32 +411,32 @@ public class FasterHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * 设置一个额外存储Tag
+     * 设置额外存储数据
      *
-     * @param tagKey
-     * @param tag
+     * @param key
+     * @param extra
      */
-    public final FasterHolder setTag(int tagKey, Object tag) {
-        if (null == mTags) {
-            mTags = new SparseArray<>(2);
+    public final FasterHolder setExtra(int key, Object extra) {
+        if (null == mExtra) {
+            mExtra = new SparseArray<>(2);
         }
-        mTags.put(tagKey, tag);
+        mExtra.put(key, extra);
         return this;
     }
 
     /**
-     * 获取额外存储Tag
+     * 获取额外存储数据
      *
-     * @param tagKey
+     * @param key
      * @param <T>
      * @return
      */
     @SuppressWarnings("unchecked")
-    public final <T> T getTag(int tagKey) {
-        if (null == mTags) {
+    public final <T> T getExtra(int key) {
+        if (null == mExtra) {
             return null;
         }
-        return (T) mTags.get(tagKey);
+        return (T) mExtra.get(key);
     }
 
     /**

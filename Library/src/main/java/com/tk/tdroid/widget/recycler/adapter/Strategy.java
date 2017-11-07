@@ -32,7 +32,35 @@ public abstract class Strategy<T> {
 
     public abstract void onBindViewHolder(FasterHolder holder, T data);
 
-    public interface OnItemStrategyClickListener<D> {
-        void onItemClick(D data);
+    /**
+     * 选中
+     *
+     * @param holder
+     * @param id
+     */
+    protected void select(FasterHolder holder, long id) {
+        holder.getAdapter().getObjectArray().put(id, true);
     }
+
+    /**
+     * 反选
+     *
+     * @param holder
+     * @param id
+     */
+    protected void unSelect(FasterHolder holder, long id) {
+        holder.getAdapter().getObjectArray().delete(id);
+    }
+
+    /**
+     * 是否选中
+     *
+     * @param holder
+     * @param id
+     * @return
+     */
+    protected boolean isSelect(FasterHolder holder, long id) {
+        return holder.getAdapter().getObjectArray().get(id, false) == true;
+    }
+
 }

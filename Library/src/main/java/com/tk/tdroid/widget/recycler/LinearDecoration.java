@@ -14,6 +14,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.tk.tdroid.widget.recycler.adapter.FasterAdapter;
+
 
 /**
  * <pre>
@@ -273,7 +275,8 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         private int dividerBgColor = Color.TRANSPARENT;
         private int dividerColor = Color.TRANSPARENT;
         private boolean ignoreLast = true;
-        private int[] ignoreViewTypes = new int[]{};
+        //默认过滤FasterAdapter
+        private int[] ignoreViewTypes = FasterAdapter.INNER_TYPE;
 
         private int topDivider = 0;
         private int topDividerPaddingLeft = 0;

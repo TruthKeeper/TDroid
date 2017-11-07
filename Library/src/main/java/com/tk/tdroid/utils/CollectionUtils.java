@@ -17,7 +17,11 @@ import java.util.List;
  */
 public final class CollectionUtils {
     public interface Predicate<D> {
-        boolean removeConfirm(D d);
+        /**
+         * @param d
+         * @return 是否执行
+         */
+        boolean process(D d);
     }
 
     public interface Search<T, D> {
@@ -60,7 +64,7 @@ public final class CollectionUtils {
         boolean removed = false;
         final Iterator<T> iterator = collection.iterator();
         while (iterator.hasNext()) {
-            if (predicate.removeConfirm(iterator.next())) {
+            if (predicate.process(iterator.next())) {
                 iterator.remove();
                 removed = true;
             }

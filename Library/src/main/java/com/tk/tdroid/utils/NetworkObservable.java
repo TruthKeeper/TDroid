@@ -169,7 +169,7 @@ public class NetworkObservable {
         if (observerList != null && observer != null) {
             CollectionUtils.removeIf(observerList, new CollectionUtils.Predicate<WeakReference<Observer>>() {
                 @Override
-                public boolean removeConfirm(WeakReference<Observer> reference) {
+                public boolean process(WeakReference<Observer> reference) {
                     return reference != null && reference.get() == observer;
                 }
             });
