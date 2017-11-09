@@ -1,8 +1,14 @@
 package com.tk.tdroid.utils;
 
+import android.annotation.TargetApi;
+import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
+
+import com.tk.tdroid.R;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -125,9 +131,17 @@ public final class FileUtils {
      * @return
      */
     public static String getMIMEType(@NonNull File file) {
-        //即 */*
+        return getMIMEType(file.getName());
+    }
+
+    /**
+     * 获取文件的类型
+     *
+     * @param fileName
+     * @return
+     */
+    public static String getMIMEType(@NonNull String fileName) {
         String type = MIME_TYPE[MIME_TYPE.length - 1][1];
-        String fileName = file.getName();
         //获取后缀名前的分隔符"."在fName中的位置。
         int index = fileName.lastIndexOf(".");
         if (index < 0) {
@@ -145,6 +159,20 @@ public final class FileUtils {
             }
         }
         return type;
+    }
+
+    /**
+     * 适配Android 7.0的文件访问权限
+     *
+     * @param file
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public static Uri wrapperFile(@NonNull File file) {
+        //通过FileProvider创建一个content类型的Uri
+        return FileProvider.getUriForFile(Utils.getApp(),
+                Utils.getApp().getString(R.string.TDroid_file_provider),
+                file);
     }
 
     /**

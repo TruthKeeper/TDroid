@@ -7,6 +7,8 @@ import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.tk.tdroid.constants.TConstants;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,7 +41,7 @@ import static com.tk.tdroid.utils.Logger.Type.W;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 打Log
+ *     desc   : 打Log,默认记录日志的路径，在缓存文件下{@link TConstants#LOGGER_DIR}
  * </pre>
  */
 public final class Logger {
@@ -82,10 +84,6 @@ public final class Logger {
      * 默认是否记录日志
      */
     private static final boolean SAVE_LOG = false;
-    /**
-     * 默认记录日志的路径，在缓存文件下
-     */
-    private static final String LOG_PATH = null;
     /**
      * 单行Log最大长度
      */
@@ -267,11 +265,10 @@ public final class Logger {
         boolean saveLog = realConfig == null ? SAVE_LOG : realConfig.saveLog;
         boolean border = realConfig == null ? BORDER : realConfig.border;
         boolean header = realConfig == null ? HEADER : realConfig.header;
-        String logPath = realConfig == null ? LOG_PATH : realConfig.logPath;
+        String logPath = realConfig == null ? null : realConfig.logPath;
         if (TextUtils.isEmpty(logPath)) {
-            logPath = Utils.getApp().getCacheDir().getAbsolutePath();
+            logPath = Utils.getApp().getCacheDir().getAbsolutePath() + File.separator + TConstants.LOGGER_DIR;
         }
-
         if (print) {
             print2console(type & LOW, tagStr, headers, bodyStr, border, header);
         }
@@ -561,7 +558,7 @@ public final class Logger {
         private boolean header = Logger.HEADER;
         private int logStackDepth = Logger.LOG_STACK_DEPTH;
         private boolean saveLog = Logger.SAVE_LOG;
-        private String logPath = Logger.LOG_PATH;
+        private String logPath = null;
 
         public Builder() {
         }

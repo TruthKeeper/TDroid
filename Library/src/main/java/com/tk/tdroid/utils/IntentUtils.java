@@ -1,9 +1,11 @@
 package com.tk.tdroid.utils;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 
 import java.io.File;
@@ -66,6 +68,23 @@ public final class IntentUtils {
         return false;
     }
 
+    /**
+     * 打开文件
+     *
+     * @param uri
+     * @return
+     */
+    public static boolean openFile(@NonNull Uri uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        String type = FileUtils.getMIMEType(uri.getLastPathSegment());
+        intent.setDataAndType(uri, type);
+        if (isSafeActivity(intent)) {
+            Utils.getApp().startActivity(intent);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * 是否是一个可被开启的Activity
@@ -89,4 +108,15 @@ public final class IntentUtils {
         return !EmptyUtils.isEmpty(result);
     }
 
+    /**
+     * 适配Android 7.0的文件访问权限
+     *
+     * @param intent
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public static Intent wrapperIntent(@NonNull Intent intent) {
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        return intent;
+    }
 }
