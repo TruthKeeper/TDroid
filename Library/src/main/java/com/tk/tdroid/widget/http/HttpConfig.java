@@ -9,6 +9,7 @@ import com.tk.tdroid.utils.Utils;
 import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,10 @@ public final class HttpConfig {
     private List<Interceptor> interceptors;
     private List<Interceptor> networkInterceptors;
 
+    private boolean httpsEnabled;
+    private InputStream httpsCertificate;
+    private String httpsPassword;
+
     private HttpConfig(Builder builder) {
         baseUrl = builder.baseUrl;
         log = builder.log;
@@ -50,6 +55,9 @@ public final class HttpConfig {
         cookieLoadProvider = builder.cookieLoadProvider;
         interceptors = builder.interceptors;
         networkInterceptors = builder.networkInterceptors;
+        httpsEnabled = builder.httpsEnabled;
+        httpsCertificate = builder.httpsCertificate;
+        httpsPassword = builder.httpsPassword;
     }
 
     public String getBaseUrl() {
@@ -96,6 +104,18 @@ public final class HttpConfig {
         return networkInterceptors;
     }
 
+    public boolean isHttpsEnabled() {
+        return httpsEnabled;
+    }
+
+    public InputStream getHttpsCertificate() {
+        return httpsCertificate;
+    }
+
+    public String getHttpsPassword() {
+        return httpsPassword;
+    }
+
     public static final class Builder {
         private String baseUrl = null;
         private boolean log = true;
@@ -108,6 +128,9 @@ public final class HttpConfig {
         private CookieInterceptor.CookieLoadProvider cookieLoadProvider = null;
         private List<Interceptor> interceptors = null;
         private List<Interceptor> networkInterceptors = null;
+        private boolean httpsEnabled = false;
+        private InputStream httpsCertificate = null;
+        private String httpsPassword = null;
 
         public Builder() {
         }
@@ -236,6 +259,39 @@ public final class HttpConfig {
                 networkInterceptors = new ArrayList<>();
             }
             networkInterceptors.add(interceptor);
+            return this;
+        }
+
+        /**
+         * 是否开启Https的支持
+         *
+         * @param httpsEnabled
+         * @return
+         */
+        public Builder httpsEnabled(boolean httpsEnabled) {
+            this.httpsEnabled = httpsEnabled;
+            return this;
+        }
+
+        /**
+         * Https的证书 .bks文件
+         *
+         * @param httpsCertificate
+         * @return
+         */
+        public Builder httpsCertificate(@NonNull InputStream httpsCertificate) {
+            this.httpsCertificate = httpsCertificate;
+            return this;
+        }
+
+        /**
+         * 证书密钥
+         *
+         * @param httpsPassword
+         * @return
+         */
+        public Builder httpsPassword(@NonNull String httpsPassword) {
+            this.httpsPassword = httpsPassword;
             return this;
         }
 

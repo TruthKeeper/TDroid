@@ -61,7 +61,11 @@ public class App extends Application {
                         return true;
                     }
                 })
+                .httpsEnabled(true)
+                .httpsCertificate(getResources().openRawResource(R.raw.github))
+                .httpsPassword("github_test")
                 .build();
+
         HttpUtils.init(this, httpConfig);
         NetworkObservable.getInstance().init();
 

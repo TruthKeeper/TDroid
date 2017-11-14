@@ -45,6 +45,9 @@ public final class HttpUtils {
                 if (retrofit == null) {
                     OkHttpClient.Builder builder = new OkHttpClient.Builder()
                             .connectTimeout(httpConfig.getConnectTimeoutMilli(), TimeUnit.MILLISECONDS);
+                    //添加动态BaseUrl的支持
+                    builder = RuntimeUrlManager.getInstance().wrapper(builder);
+
                     if (httpConfig.getCacheDir() != null && httpConfig.getCacheSize() > 0) {
                         //Http缓存Cache-Control
                         // TODO: 2017/11/14 更多缓存模式支持
@@ -63,8 +66,7 @@ public final class HttpUtils {
                         // TODO: 2017/11/14  待系统测试
                         builder.addInterceptor(new CookieInterceptor(httpConfig.getCookieSaveProvider(), httpConfig.getCookieLoadProvider()));
                     }
-                    //添加动态BaseUrl的支持
-                    builder = RuntimeUrlManager.getInstance().wrapper(builder);
+
                     //自定义拦截器
                     List<Interceptor> interceptors = httpConfig.getInterceptors();
                     if (!EmptyUtils.isEmpty(interceptors)) {
@@ -78,6 +80,11 @@ public final class HttpUtils {
                         for (Interceptor interceptor : networkInterceptors) {
                             builder.addInterceptor(interceptor);
                         }
+                    }
+
+                    if (httpConfig.isHttpsEnabled()) {
+                        //Https的支持
+                        builder = HttpsSupport.wrapper(builder, httpConfig.getHttpsCertificate(), httpConfig.getHttpsPassword());
                     }
                     okHttpClient = builder.build();
 
