@@ -21,7 +21,7 @@ import java.util.zip.ZipOutputStream;
  * <pre>
  *      author : TK
  *      time : 2017/11/9
- *      desc :
+ *      desc : 压缩、解压文件工具类
  * </pre>
  */
 

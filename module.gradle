@@ -13,6 +13,10 @@ android {
             preDexLibraries = false
             maxProcessCount 8
         }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
         ndk {
             abiFilters 'armeabi', 'armeabi-v7a'
         }

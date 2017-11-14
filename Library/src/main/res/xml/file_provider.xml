@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--对应Context.getCacheDir() + /path/，应用内部缓存目录-->
+    <cache-path
+        name="T_Image"
+        path="images" />
+    <cache-path
+        name="T_Audio"
+        path="audio" />
+    <cache-path
+        name="T_Doc"
+        path="docs" />
+    <cache-path
+        name="T_Log"
+        path="log" />
+    <!--对应Context.getFilesDir() + /path/，应用内部文件目录-->
+    <files-path
+        name="T_Image"
+        path="images" />
+    <files-path
+        name="T_Audio"
+        path="audio" />
+    <files-path
+        name="T_Doc"
+        path="docs" />
+    <files-path
+        name="T_Log"
+        path="log" />
+    <!--对应Context.getExternalCacheDir() + /path/，应用外置缓存目录-->
+    <external-cache-path
+        name="T_Image"
+        path="images" />
+    <external-cache-path
+        name="T_Audio"
+        path="audio" />
+    <external-cache-path
+        name="T_Doc"
+        path="docs" />
+    <external-cache-path
+        name="T_Log"
+        path="log" />
+    <!--对应Context.getExternalFilesDir(String) + /path/，应用外置文件目录-->
+    <external-files-path
+        name="T_Image"
+        path="images" />
+    <external-files-path
+        name="T_Audio"
+        path="audio" />
+    <external-files-path
+        name="T_Doc"
+        path="docs" />
+    <external-files-path
+        name="T_Log"
+        path="log" />
+    <!--对应Environment.getExternalStorageDirectory() + /path/，外置目录-->
+    <external-path
+        name="T_Image"
+        path="images" />
+    <external-path
+        name="T_Audio"
+        path="audio" />
+    <external-path
+        name="T_Doc"
+        path="docs" />
+    <external-path
+        name="T_Log"
+        path="log" />
+</paths>

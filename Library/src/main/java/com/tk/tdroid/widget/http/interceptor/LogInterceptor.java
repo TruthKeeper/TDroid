@@ -1,6 +1,8 @@
 package com.tk.tdroid.widget.http.interceptor;
 
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
+import android.util.Log;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -13,18 +15,16 @@ import okhttp3.Connection;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.internal.http.HttpHeaders;
-import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSource;
 
-import static okhttp3.internal.platform.Platform.INFO;
+import static com.tk.tdroid.widget.http.interceptor.LogInterceptor.Level.*;
 
 /**
  * <pre>
@@ -33,18 +33,18 @@ import static okhttp3.internal.platform.Platform.INFO;
  *     desc   : Copy From OkHttp3
  * </pre>
  */
-public class LogInterceptor implements Interceptor {
+public final class LogInterceptor implements Interceptor {
+    private static final String TAG = "LogInterceptor";
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @IntDef({NONE, BASIC, HEADERS, BODY})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Level {
+        int NONE = 0;
+        int BASIC = 1;
+        int HEADERS = 2;
+        int BODY = 3;
     }
-
-    public static final int NONE = 0;
-    public static final int BASIC = 1;
-    public static final int HEADERS = 2;
-    public static final int BODY = 3;
 
     private int level = BODY;
 
@@ -54,7 +54,8 @@ public class LogInterceptor implements Interceptor {
         Logger DEFAULT = new Logger() {
             @Override
             public void log(String message) {
-                Platform.get().log(INFO, message, null);
+//                Platform.get().log(INFO, message, null);
+                Log.d(TAG, message);
             }
         };
     }
@@ -79,7 +80,7 @@ public class LogInterceptor implements Interceptor {
     }
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
         if (level == NONE) {
             return chain.proceed(request);
@@ -124,7 +125,7 @@ public class LogInterceptor implements Interceptor {
                 logger.log("--> END " + request.method());
             } else if (bodyEncoded(request.headers())) {
                 logger.log("--> END " + request.method() + " (encoded body omitted)");
-            } else if (!(requestBody instanceof MultipartBody)) {
+            } else {
                 Buffer buffer = new Buffer();
                 requestBody.writeTo(buffer);
 
@@ -206,7 +207,7 @@ public class LogInterceptor implements Interceptor {
      * Returns true if the body in question probably contains human readable text. Uses a small sample
      * of code points to detect unicode control characters commonly used in binary file signatures.
      */
-    static boolean isPlaintext(Buffer buffer) {
+    private static boolean isPlaintext(Buffer buffer) {
         try {
             Buffer prefix = new Buffer();
             long byteCount = buffer.size() < 64 ? buffer.size() : 64;

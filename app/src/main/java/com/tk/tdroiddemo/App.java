@@ -4,9 +4,17 @@ import android.app.Application;
 import android.util.Log;
 
 import com.tk.tdroid.utils.NetworkObservable;
+import com.tk.tdroid.utils.StorageUtils;
 import com.tk.tdroid.utils.Utils;
+import com.tk.tdroid.widget.http.HttpConfig;
 import com.tk.tdroid.widget.http.HttpUtils;
+import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
 import com.tk.tdroiddemo.aop.annotation.Logger;
+
+import java.io.File;
+
+import okhttp3.Headers;
+import okhttp3.HttpUrl;
 
 
 /**
@@ -29,7 +37,32 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-        HttpUtils.init(this);
+
+        HttpConfig httpConfig = new HttpConfig.Builder()
+                .baseUrl("https://www.baidu.com/")
+//                .baseUrl("https://api.github.com/")
+                .log(true)
+                .connectTimeoutMilli(10_000)
+                .offlineCacheMaxStale(Integer.MAX_VALUE)
+                .cacheDir(new File(StorageUtils.getCachePath(), "http_cache"))
+                .cacheSize(100 * 1024 * 1024)
+                .cookieEnabled(true)
+                .cookieLoadProvider(new CookieInterceptor.CookieLoadProvider() {
+                    @Override
+                    public boolean load(HttpUrl requestUrl, Headers requestHeaders) {
+                        //默认只要之前缓存过Cookie就设置
+                        return true;
+                    }
+                })
+                .cookieSaveProvider(new CookieInterceptor.CookieSaveProvider() {
+                    @Override
+                    public boolean save(HttpUrl requestUrl, Headers requestHeaders) {
+                        //默认只要有Set-Cookie就记录
+                        return true;
+                    }
+                })
+                .build();
+        HttpUtils.init(this, httpConfig);
         NetworkObservable.getInstance().init();
 
 //        A a = new A(1, "321", true);

@@ -140,14 +140,15 @@ public final class CollectionUtils {
     /**
      * 获取集合内容
      *
-     * @param iterator
+     * @param iterable
      * @param divide
      * @return
      */
-    public static String getContent(@Nullable Iterator iterator, String divide) {
-        if (iterator == null) {
+    public static String getContent(@Nullable Iterable iterable, String divide) {
+        if (iterable == null) {
             return "";
         }
+        Iterator iterator = iterable.iterator();
         StringBuilder sb = new StringBuilder();
         if (iterator.hasNext()) {
             sb.append(iterator.next());

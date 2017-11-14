@@ -1,5 +1,6 @@
 package com.tk.tdroid.utils;
 
+import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -41,7 +42,7 @@ import static com.tk.tdroid.utils.Logger.Type.W;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 打Log,默认记录日志的路径，在缓存文件下{@link TConstants#LOGGER_DIR}
+ *     desc   : 打Log,默认记录日志的路径，在{@link Context#getFilesDir()}目录下{@link TConstants#LOGGER_DIR}
  * </pre>
  */
 public final class Logger {
@@ -267,7 +268,7 @@ public final class Logger {
         boolean header = realConfig == null ? HEADER : realConfig.header;
         String logPath = realConfig == null ? null : realConfig.logPath;
         if (TextUtils.isEmpty(logPath)) {
-            logPath = Utils.getApp().getCacheDir().getAbsolutePath() + File.separator + TConstants.LOGGER_DIR;
+            logPath = Utils.getApp().getFilesDir().getAbsolutePath() + File.separator + TConstants.LOGGER_DIR;
         }
         if (print) {
             print2console(type & LOW, tagStr, headers, bodyStr, border, header);

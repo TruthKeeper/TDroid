@@ -12,8 +12,8 @@
         android:text="start" />
 
     <Button
-        android:id="@+id/interrupt"
+        android:id="@+id/change"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="interrupt" />
+        android:text="change" />
 </LinearLayout>

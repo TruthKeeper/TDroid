@@ -1,9 +1,8 @@
 package com.tk.tdroid.widget.http.interceptor;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
-import com.tk.tdroid.constants.HttpConstants;
-import com.tk.tdroid.utils.Logger;
 import com.tk.tdroid.utils.NetworkUtils;
 
 import java.io.IOException;
@@ -20,8 +19,21 @@ import okhttp3.Response;
  *     desc   : 离线缓存策略，仅限GET
  * </pre>
  */
-public class CustomCacheInterceptor implements Interceptor {
-    private static final String TAG = "CustomCacheInterceptor";
+public final class OfflineInterceptor implements Interceptor {
+
+    private static final String TAG = "OfflineInterceptor";
+    /**
+     * 离线缓存保留时长，默认永远
+     */
+    private int maxStale;
+
+    public OfflineInterceptor() {
+        this.maxStale = Integer.MAX_VALUE;
+    }
+
+    public OfflineInterceptor(int maxStale) {
+        this.maxStale = maxStale;
+    }
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
@@ -30,22 +42,15 @@ public class CustomCacheInterceptor implements Interceptor {
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
-            Logger.d(TAG, "no network");
+            Log.d(TAG, "offline");
         }
         Response originalResponse = chain.proceed(request);
-        if (NetworkUtils.isConnected()) {
-            //有网络无缓存
+        if (!NetworkUtils.isConnected()) {
             return originalResponse.newBuilder()
                     .removeHeader("Pragma")
-                    .header("Cache-Control", "public, max-age=" + 0)
-                    .build();
-        } else {
-            return originalResponse.newBuilder()
-                    .removeHeader("Pragma")
-                    .header("Cache-Control", "public, only-if-cached, max-stale=" + HttpConstants.CACHE_DATE)
+                    .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
                     .build();
         }
+        return originalResponse;
     }
-
-
 }
