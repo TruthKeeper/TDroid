@@ -1,11 +1,14 @@
 package com.tk.tdroid.utils;
 
 import android.app.ActivityManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 
@@ -174,5 +177,79 @@ public final class AppUtils {
             return (Utils.getApp().getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         }
         throw new RuntimeException("Application is null");
+    }
+
+    /**
+     * 获取meta-data数据
+     *
+     * @param metaDataName
+     * @return
+     */
+    public static String getAppMetaData(@NonNull String metaDataName) {
+        try {
+            PackageManager packageManager = Utils.getApp().getPackageManager();
+            ApplicationInfo info = packageManager.getApplicationInfo(Utils.getApp().getPackageName(), PackageManager.GET_META_DATA);
+            return info.metaData.getString(metaDataName, null);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取meta-data数据
+     *
+     * @param activityFullName Activity全类名
+     * @param metaDataName
+     * @return
+     */
+    public static String getActivityMetaData(@NonNull String activityFullName, @NonNull String metaDataName) {
+        try {
+            ComponentName componentName = new ComponentName(Utils.getApp().getPackageName(), activityFullName);
+            PackageManager packageManager = Utils.getApp().getPackageManager();
+            ActivityInfo info = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA);
+            return info.metaData.getString(metaDataName, null);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取meta-data数据
+     *
+     * @param serviceFullName Service全类名
+     * @param metaDataName
+     * @return
+     */
+    public static String getServiceMetaData(@NonNull String serviceFullName, @NonNull String metaDataName) {
+        try {
+            ComponentName componentName = new ComponentName(Utils.getApp().getPackageName(), serviceFullName);
+            PackageManager packageManager = Utils.getApp().getPackageManager();
+            ServiceInfo info = packageManager.getServiceInfo(componentName, PackageManager.GET_META_DATA);
+            return info.metaData.getString(metaDataName, null);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * 获取meta-data数据
+     *
+     * @param broadcastReceiverFullName 广播接收者全类名
+     * @param metaDataName
+     * @return
+     */
+    public static String getBroadcastReceiverMetaData(@NonNull String broadcastReceiverFullName, @NonNull String metaDataName) {
+        try {
+            ComponentName componentName = new ComponentName(Utils.getApp().getPackageName(), broadcastReceiverFullName);
+            PackageManager packageManager = Utils.getApp().getPackageManager();
+            ActivityInfo info = packageManager.getReceiverInfo(componentName, PackageManager.GET_META_DATA);
+            return info.metaData.getString(metaDataName, null);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
