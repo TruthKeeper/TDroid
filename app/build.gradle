@@ -34,12 +34,8 @@ android {
             outputFileName = "${rootProject.getName()}-${buildType.name}-${releaseTime()}-v${defaultConfig.versionName}-${defaultConfig.versionCode}.apk"
         }
     }
-    compileSdkVersion rootProject.ext.android.compileSdkVersion
-    buildToolsVersion rootProject.ext.android.buildToolsVersion
     defaultConfig {
         applicationId "com.tk.tdroiddemo"
-        minSdkVersion rootProject.ext.android.minSdkVersion
-        targetSdkVersion rootProject.ext.android.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

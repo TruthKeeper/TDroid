@@ -1,6 +1,11 @@
 //module全局配置
 android {
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+    buildToolsVersion rootProject.ext.android.buildToolsVersion
+
     defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
         //高斯模糊
         renderscriptTargetApi rootProject.ext.android.compileSdkVersion
         renderscriptSupportModeEnabled true

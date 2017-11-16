@@ -191,8 +191,7 @@ public final class CookieManager {
 
         private SharedPreferences hostSp;
         private SharedPreferences cookieSp;
-        private final String hostSeparate = ",";
-        private final String cookieSeparate = "\\|";
+        private final String separate = ",";
 
         DefaultProvider() {
             hostSp = Utils.getApp().getSharedPreferences(HOST_SP, Context.MODE_PRIVATE);
@@ -207,13 +206,13 @@ public final class CookieManager {
 
             for (Map.Entry<String, ?> entry : hostMapEntrySet) {
                 //Host对应的CookieKey数组
-                String[] cookieKeyArray = ((String) entry.getValue()).split(hostSeparate);
+                String[] cookieKeyArray = ((String) entry.getValue()).split(separate);
                 cookieMap = new ConcurrentHashMap<>();
 
                 for (String cookieKey : cookieKeyArray) {
                     String cookieListString = cookieSp.getString(cookieKey, null);
                     if (!EmptyUtils.isEmpty(cookieListString)) {
-                        String[] cookieStrArray = cookieListString.split(cookieSeparate);
+                        String[] cookieStrArray = cookieListString.split(separate);
                         //解析成Cookie
                         cookieMap.put(cookieKey, generate(cookieStrArray));
                     }
@@ -239,7 +238,7 @@ public final class CookieManager {
                     if (firstTime) {
                         firstTime = false;
                     } else {
-                        hostBuilder.append(hostSeparate);
+                        hostBuilder.append(separate);
                     }
                     //拼接一个Host下对应的所有CookieKey
                     hostBuilder.append(cookieEntry.getKey());
@@ -256,19 +255,19 @@ public final class CookieManager {
         private void saveCookie(@NonNull SharedPreferences.Editor editor, @NonNull String cookieKey, @NonNull Cookie cookie) {
             StringBuilder builder = new StringBuilder();
             builder.append(cookie.name())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.value())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.expiresAt())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.domain())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.path())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.secure())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.httpOnly())
-                    .append(cookieSeparate)
+                    .append(separate)
                     .append(cookie.hostOnly());
             editor.putString(cookieKey, builder.toString());
         }
