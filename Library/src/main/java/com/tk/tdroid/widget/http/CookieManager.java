@@ -192,7 +192,7 @@ public final class CookieManager {
         private SharedPreferences hostSp;
         private SharedPreferences cookieSp;
         private final String hostSeparate = ",";
-        private final String cookieSeparate = "|";
+        private final String cookieSeparate = "\\|";
 
         DefaultProvider() {
             hostSp = Utils.getApp().getSharedPreferences(HOST_SP, Context.MODE_PRIVATE);
