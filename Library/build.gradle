@@ -17,17 +17,17 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile project(':Annotation')
-    compile rootProject.ext.dependencies["appcompat-v7"]
-    compile rootProject.ext.dependencies["constraint"]
-    compile rootProject.ext.dependencies["recyclerview"]
-    compile rootProject.ext.dependencies["design"]
-    compile rootProject.ext.dependencies["glide"]
+    api project(':Annotation')
+    api rootProject.ext.dependencies["appcompat-v7"]
+    api rootProject.ext.dependencies["constraint"]
+    api rootProject.ext.dependencies["recyclerview"]
+    api rootProject.ext.dependencies["design"]
+    api rootProject.ext.dependencies["glide"]
     annotationProcessor rootProject.ext.dependencies["glide-processor"]
-    compile rootProject.ext.dependencies["glide-okhttp3"]
-    compile rootProject.ext.dependencies["retrofit2"]
-    compile rootProject.ext.dependencies["retrofit2-gson"]
-    compile rootProject.ext.dependencies["retrofit2-rxjava"]
-    compile rootProject.ext.dependencies["rxandroid"]
+    api rootProject.ext.dependencies["glide-okhttp3"]
+    api rootProject.ext.dependencies["retrofit2"]
+    api rootProject.ext.dependencies["retrofit2-gson"]
+    implementation rootProject.ext.dependencies["retrofit2-rxjava"]
+    api rootProject.ext.dependencies["rxandroid2"]
+    api rootProject.ext.dependencies["rxjava2"]
 }

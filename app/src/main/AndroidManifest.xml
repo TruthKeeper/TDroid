@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
 
-        <!--<meta-data-->
-            <!--android:name="holder_1"-->
-            <!--android:value="${holder_1}" />-->
-        <!--<meta-data-->
-            <!--android:name="holder_2"-->
-            <!--android:value="${holder_2}" />-->
+        <meta-data
+            android:name="sample_holder_1"
+            android:value="${sample_holder_1}" />
+        <meta-data
+            android:name="sample_holder_2"
+            android:value="${sample_holder_2}" />
     </application>
 
 </manifest>

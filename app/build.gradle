@@ -8,7 +8,7 @@ def keystorePropertiesFile = rootProject.file("local.properties");
 def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
-def releaseTime() {
+static def releaseTime() {
     return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
@@ -43,35 +43,46 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        //构建的维度为 default
+        flavorDimensions "default", "extra"
     }
     buildTypes {
         debug {
-//            manifestPlaceholders = [
-//                    "holder_1": "aaa",
-//                    "holder_2": "bbb",
-//            ]
-			ext.alwaysUpdateBuildId = false
+            manifestPlaceholders = [
+                    "sample_holder_1": "aaa",
+                    "sample_holder_2": "bbb",
+            ]
+            ext.alwaysUpdateBuildId = false
             signingConfig signingConfigs.debug
         }
         release {
-//            manifestPlaceholders = [
-//                    "holder_1": "111",
-//                    "holder_2": "222",
-//            ]
+            manifestPlaceholders = [
+                    "sample_holder_1": "111",
+                    "sample_holder_2": "222",
+            ]
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
     }
     productFlavors {
-//        a {
-//            resValue "string", "res", "111111"
-//            buildConfigField "String", "test", "\"aaa\""
-//        }
-//        b {
-//            resValue "string", "res", "222222"
-//            buildConfigField "String", "test", "\"bbb\""
-//        }
+        flavor1 {
+            dimension "default"
+            //追加或指定名为 testString 的 string 资源值为Hello TDroid
+            resValue "string", "testString", "Hello TDroid"
+            //追加名为 BuildConfig.testString 的类型为 String 值为Hello TDroid
+            buildConfigField "String", "testString", "\"Hello TDroid\""
+            //追加名为 BuildConfig.testBoolean 的类型为 Boolean 值为true
+            buildConfigField "boolean", "testBoolean", "true"
+            //追加名为 BuildConfig.testInt 的类型为 Int 值为23333
+            buildConfigField "int", "testInt", "23333"
+        }
+        flavor2 {
+            dimension "default"
+        }
+        flavor3 {
+            dimension "extra"
+        }
     }
 }
 
@@ -82,9 +93,9 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     //依赖的核心
-    compile project(':Library')
+    implementation project(':Library')
     //APT支持
     annotationProcessor project(':APT')
     //AOP切面的支持(2)
-    compile rootProject.ext.dependencies["aspect"]
+    implementation rootProject.ext.dependencies["aspect"]
 }

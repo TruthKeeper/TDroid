@@ -27,7 +27,7 @@ import javax.lang.model.util.Elements;
 //生成 META-INF 信息
 @AutoService(Processor.class)
 //支持的源码版本
-@SupportedSourceVersion(SourceVersion.RELEASE_7)
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 //处理的注解
 @SupportedAnnotationTypes({"com.apt.annotation.Instance"})
 public class AnnotationProcessor extends AbstractProcessor {
