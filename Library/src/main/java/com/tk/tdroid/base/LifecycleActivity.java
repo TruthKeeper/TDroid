@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
 
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
@@ -20,7 +19,7 @@ import io.reactivex.subjects.Subject;
  * <pre>
  *      author : TK
  *      time : 2017/11/16
- *      desc :
+ *      desc : 监听生命周期的Activity基类
  * </pre>
  */
 
@@ -37,11 +36,6 @@ public class LifecycleActivity extends AppCompatActivity implements ILifecyclePr
     public void setContentView(int layoutResID) {
         lifecycleSubject.onNext(ActivityLifecycleImpl.PRE_INFLATE);
         super.setContentView(layoutResID);
-    }
-
-    @Override
-    public void setContentView(View view) {
-        super.setContentView(view);
     }
 
     @Override
@@ -100,7 +94,6 @@ public class LifecycleActivity extends AppCompatActivity implements ILifecyclePr
     public <T> LifecycleTransformer<T> bindOnDestroy() {
         return RxUtils.bindLifecycle(lifecycleSubject, ActivityLifecycleImpl.ON_DESTROY);
     }
-
 
     /**
      * 在指定生命周期或之后执行
