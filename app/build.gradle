@@ -41,6 +41,12 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         //构建的维度为 default
         flavorDimensions "default", "extra"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                //开启EventBus的APT索引(1)
+                arguments = [eventBusIndex: defaultConfig.applicationId + '.EventBusIndex']
+            }
+        }
     }
     buildTypes {
         debug {
@@ -94,4 +100,6 @@ dependencies {
     annotationProcessor project(':APT')
     //AOP切面的支持(2)
     implementation rootProject.ext.dependencies["aspect"]
+    //开启EventBus的APT索引(2)
+    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
 }

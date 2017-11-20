@@ -2,6 +2,7 @@ package com.tk.tdroid.utils;
 
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
@@ -625,7 +626,7 @@ public final class Logger {
          * @param logStackDepth 默认深度1，当前调用者的信息
          * @return
          */
-        public Builder logStackDepth(int logStackDepth) {
+        public Builder logStackDepth(@IntRange(from = 1) int logStackDepth) {
             this.logStackDepth = logStackDepth;
             return this;
         }

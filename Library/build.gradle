@@ -7,6 +7,13 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    defaultConfig{
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [eventBusIndex: 'com.tk.tdroid.EventBusIndex']
+            }
+        }
+    }
 }
 
 dependencies {
@@ -15,12 +22,18 @@ dependencies {
     api rootProject.ext.dependencies["constraint"]
     api rootProject.ext.dependencies["recyclerview"]
     api rootProject.ext.dependencies["design"]
+
     api rootProject.ext.dependencies["glide"]
-    annotationProcessor rootProject.ext.dependencies["glide-processor"]
     api rootProject.ext.dependencies["glide-okhttp3"]
+    annotationProcessor rootProject.ext.dependencies["glide-processor"]
+
     api rootProject.ext.dependencies["retrofit2"]
     api rootProject.ext.dependencies["retrofit2-gson"]
     implementation rootProject.ext.dependencies["retrofit2-rxjava"]
+
     api rootProject.ext.dependencies["rxandroid2"]
     api rootProject.ext.dependencies["rxjava2"]
+
+    api rootProject.ext.dependencies["eventbus"]
+    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
 }
