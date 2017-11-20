@@ -1,6 +1,5 @@
 package com.tk.tdroid.utils;
 
-import android.content.Context;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -43,7 +42,18 @@ import static com.tk.tdroid.utils.Logger.Type.W;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 打Log,默认记录日志的路径，在{@link Context#getFilesDir()}目录下{@link TConstants#LOGGER_DIR}
+ *     desc   : 日志工具类
+ *     TODO 日志压缩、写入策略
+ *     <ul>通过{@link Config}配置
+ *         <li>Tag</li>
+ *         <li>是否输出到控制台</li>
+ *         <li>是否带边框</li>
+ *         <li>是否携带调用头</li>
+ *         <li>方法调用深度</li>
+ *         <li>日志是否本地保存</li>
+ *         <li>日志保存路径</li>
+ *         <li>局部配置</li>
+ *     </ul>
  * </pre>
  */
 public final class Logger {
@@ -268,7 +278,7 @@ public final class Logger {
         boolean border = realConfig == null ? BORDER : realConfig.border;
         boolean header = realConfig == null ? HEADER : realConfig.header;
         String logPath = realConfig == null ? null : realConfig.logPath;
-        if (TextUtils.isEmpty(logPath)) {
+        if (EmptyUtils.isEmpty(logPath)) {
             logPath = Utils.getApp().getFilesDir().getAbsolutePath() + File.separator + TConstants.LOGGER_DIR;
         }
         if (print) {

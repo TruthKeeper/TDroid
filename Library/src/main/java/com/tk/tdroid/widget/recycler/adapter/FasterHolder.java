@@ -10,7 +10,6 @@ import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -18,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.widget.image.GlideApp;
 import com.tk.tdroid.widget.image.NetCropUtils;
 
@@ -239,7 +239,7 @@ public class FasterHolder extends RecyclerView.ViewHolder {
      * @return
      */
     public final FasterHolder setTextOrNull(@IdRes int viewId, CharSequence text, CharSequence nullText) {
-        this.<TextView>findViewById(viewId).setText(TextUtils.isEmpty(text) ? nullText : text);
+        this.<TextView>findViewById(viewId).setText(EmptyUtils.isEmpty(text) ? nullText : text);
         return this;
     }
 

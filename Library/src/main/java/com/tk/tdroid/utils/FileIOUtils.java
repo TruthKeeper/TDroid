@@ -25,7 +25,7 @@ import okio.Okio;
  * <pre>
  *     author : TK
  *     time   : 2017/10/07
- *     desc   : 文件IO流操作工具，整合IO、NIO、OKIO的优缺点
+ *     desc   : 文件IO流操作工具类，整合IO、NIO、okio的优缺点
  *              写：NIO效率最高
  *              读String：okio大于IO，小于NIO，写法简洁
  * </pre>
@@ -80,7 +80,7 @@ public final class FileIOUtils {
             e.printStackTrace();
             return false;
         } finally {
-            IOUtils.closeQuietly(stream,os);
+            IOUtils.closeQuietly(stream, os);
         }
     }
 
@@ -158,7 +158,7 @@ public final class FileIOUtils {
             e.printStackTrace();
             return false;
         } finally {
-            IOUtils.closeQuietly(inputChannel,outputChannel);
+            IOUtils.closeQuietly(inputChannel, outputChannel);
         }
     }
 
@@ -244,7 +244,7 @@ public final class FileIOUtils {
         BufferedReader reader = null;
         try {
             StringBuilder builder = new StringBuilder();
-            if (TextUtils.isEmpty(charsetName)) {
+            if (EmptyUtils.isEmpty(charsetName)) {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)), BUFFER);
             } else {
                 reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), charsetName), BUFFER);

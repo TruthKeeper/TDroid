@@ -6,7 +6,7 @@ import android.content.res.Resources;
  * <pre>
  *     author : TK
  *     time   : 2017/03/17
- *     desc   : 屏幕工具
+ *     desc   : 屏幕工具类
  * </pre>
  */
 public final class ScreenUtils {

@@ -1,14 +1,15 @@
 package com.tk.tdroid.utils;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -50,6 +51,107 @@ public final class NetworkUtils {
     }
 
     /**
+     * 网络状况
+     */
+    public static class NetworkEntry {
+        final boolean networkOn;
+        @NetworkUtils.NetworkType
+        final int networkType;
+
+        public NetworkEntry(boolean networkOn, int networkType) {
+            this.networkOn = networkOn;
+            this.networkType = networkType;
+        }
+
+        public boolean isNetworkOn() {
+            return networkOn;
+        }
+
+        @NetworkUtils.NetworkType
+        public int getNetworkType() {
+            return networkType;
+        }
+
+        @Override
+        public String toString() {
+            return "NetworkEntry{" +
+                    "networkOn=" + networkOn +
+                    ", networkType=" + networkType +
+                    '}';
+        }
+    }
+
+    /**
+     * 网络广播接收者
+     */
+    public static abstract class NetworkBroadcast extends BroadcastReceiver {
+        private ConnectivityManager manager;
+        private int lastNetworkType = -1;
+
+        {
+            manager = (ConnectivityManager) Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())) {
+                NetworkInfo info = manager.getActiveNetworkInfo();
+                int networkType = NETWORK_NO;
+                if (info != null && info.isAvailable()) {
+                    if (info.getType() == ConnectivityManager.TYPE_WIFI) {
+                        networkType = NETWORK_WIFI;
+                    } else if (info.getType() == ConnectivityManager.TYPE_MOBILE) {
+                        switch (info.getSubtype()) {
+                            case TelephonyManager.NETWORK_TYPE_GSM:
+                            case TelephonyManager.NETWORK_TYPE_GPRS:
+                            case TelephonyManager.NETWORK_TYPE_CDMA:
+                            case TelephonyManager.NETWORK_TYPE_EDGE:
+                            case TelephonyManager.NETWORK_TYPE_1xRTT:
+                            case TelephonyManager.NETWORK_TYPE_IDEN:
+                                networkType = NETWORK_2G;
+                                break;
+                            case TelephonyManager.NETWORK_TYPE_TD_SCDMA:
+                            case TelephonyManager.NETWORK_TYPE_EVDO_A:
+                            case TelephonyManager.NETWORK_TYPE_UMTS:
+                            case TelephonyManager.NETWORK_TYPE_EVDO_0:
+                            case TelephonyManager.NETWORK_TYPE_HSDPA:
+                            case TelephonyManager.NETWORK_TYPE_HSUPA:
+                            case TelephonyManager.NETWORK_TYPE_HSPA:
+                            case TelephonyManager.NETWORK_TYPE_EVDO_B:
+                            case TelephonyManager.NETWORK_TYPE_EHRPD:
+                            case TelephonyManager.NETWORK_TYPE_HSPAP:
+                                networkType = NETWORK_3G;
+                                break;
+                            case TelephonyManager.NETWORK_TYPE_IWLAN:
+                            case TelephonyManager.NETWORK_TYPE_LTE:
+                                networkType = NETWORK_4G;
+                                break;
+                            default:
+                                String subtypeName = info.getSubtypeName();
+                                if (subtypeName.equalsIgnoreCase("TD-SCDMA")
+                                        || subtypeName.equalsIgnoreCase("WCDMA")
+                                        || subtypeName.equalsIgnoreCase("CDMA2000")) {
+                                    networkType = NETWORK_3G;
+                                } else {
+                                    networkType = NETWORK_UNKNOWN;
+                                }
+                                break;
+                        }
+                    } else {
+                        networkType = NETWORK_UNKNOWN;
+                    }
+                }
+                if (networkType != lastNetworkType) {
+                    onChange(new NetworkEntry(networkType != NETWORK_NO, networkType));
+                }
+                lastNetworkType = networkType;
+            }
+        }
+
+        public abstract void onChange(final NetworkEntry entry);
+    }
+
+    /**
      * 网络是否连接畅通
      *
      * @return
@@ -75,7 +177,7 @@ public final class NetworkUtils {
      * @return
      */
     public static boolean isAvailableByPing(@Nullable String ip) {
-        if (TextUtils.isEmpty(ip)) {
+        if (EmptyUtils.isEmpty(ip)) {
             // 中国互联网公共解析
             ip = "1.2.4.8";
         }

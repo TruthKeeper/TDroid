@@ -3,18 +3,15 @@ package com.tk.tdroid.utils;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.tk.tdroid.BuildConfig;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -62,48 +59,6 @@ public final class AppUtils {
         }
         return verName;
     }
-
-
-    /**
-     * 安装apk
-     *
-     * @param file APK文件
-     */
-    public static void installApk(@NonNull File file) {
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        Utils.getApp().startActivity(intent);
-    }
-
-
-    /**
-     * 安装apk
-     *
-     * @param file APK文件uri
-     */
-    public static void installApk(Uri file) {
-        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(file, "application/vnd.android.package-archive");
-        Utils.getApp().startActivity(intent);
-    }
-
-
-    /**
-     * 卸载apk
-     *
-     * @param packageName 包名
-     */
-    public static void uninstallApk(@NonNull String packageName) {
-        Intent intent = new Intent(Intent.ACTION_DELETE);
-        Uri packageURI = Uri.parse("package:" + packageName);
-        intent.setData(packageURI);
-        Utils.getApp().startActivity(intent);
-    }
-
 
     /**
      * 检测服务是否运行

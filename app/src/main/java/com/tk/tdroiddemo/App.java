@@ -3,9 +3,11 @@ package com.tk.tdroiddemo;
 import android.app.Application;
 import android.util.Log;
 
-import com.tk.tdroid.utils.NetworkObservable;
+import com.tk.tdroid.EventBusIndex;
+import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
 import com.tk.tdroid.utils.Utils;
+import com.tk.tdroid.widget.event.EventHelper;
 import com.tk.tdroid.widget.http.HttpConfig;
 import com.tk.tdroid.widget.http.HttpUtils;
 import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
@@ -29,7 +31,8 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-        NetworkObservable.getInstance().recycle();
+//        NetworkObservable.getInstance().recycle();
+        NetworkRxObservable.getInstance().recycle();
     }
 
     @Logger(type = Log.ERROR)
@@ -67,7 +70,10 @@ public class App extends Application {
                 .build();
 
         HttpUtils.init(this, httpConfig);
-        NetworkObservable.getInstance().init();
+//        NetworkObservable.getInstance().init();
+        NetworkRxObservable.getInstance().init();
+//
+        EventHelper.init(new EventBusIndex());
 
 //        A a = new A(1, "321", true);
 

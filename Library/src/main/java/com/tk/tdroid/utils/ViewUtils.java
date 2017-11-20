@@ -7,7 +7,7 @@ import android.view.ViewGroup;
  * <pre>
  *      author : TK
  *      time : 2017/11/1
- *      desc :
+ *      desc : View工具类
  * </pre>
  */
 

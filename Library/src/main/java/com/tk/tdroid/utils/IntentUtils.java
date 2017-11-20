@@ -15,13 +15,53 @@ import java.util.List;
  * <pre>
  *      author : TK
  *      time : 2017/11/7
- *      desc : 注意App内部文件目录会导致无权限打开！
+ *      desc : 常见意图工具类；
+ *      注意App内部文件目录会导致无权限打开！
  * </pre>
  */
 
 public final class IntentUtils {
     private IntentUtils() {
         throw new IllegalStateException();
+    }
+
+    /**
+     * 安装apk
+     *
+     * @param file APK文件
+     */
+    public static void installApk(@NonNull File file) {
+        if (!FileUtils.exist(file)) {
+            return;
+        }
+        installApk(Uri.fromFile(file));
+    }
+
+
+    /**
+     * 安装apk
+     *
+     * @param file APK文件uri
+     */
+    public static void installApk(@NonNull Uri file) {
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(file, "application/vnd.android.package-archive");
+        Utils.getApp().startActivity(intent);
+    }
+
+
+    /**
+     * 卸载apk
+     *
+     * @param packageName 包名
+     */
+    public static void uninstallApk(@NonNull String packageName) {
+        Intent intent = new Intent(Intent.ACTION_DELETE);
+        Uri packageURI = Uri.parse("package:" + packageName);
+        intent.setData(packageURI);
+        Utils.getApp().startActivity(intent);
     }
 
     /**
@@ -37,8 +77,10 @@ public final class IntentUtils {
     }
 
     /**
-     * @param phone
-     * @param immediately
+     * 拨打电话
+     *
+     * @param phone       电话
+     * @param immediately 立即拨出
      */
     public static void toCallPhone(@NonNull String phone, boolean immediately) {
         Uri uri = Uri.parse("tel:" + phone);

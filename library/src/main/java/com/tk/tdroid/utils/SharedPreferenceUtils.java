@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : SharedPreference工具
+ *     desc   : SharedPreference工具类
  *              配置过多时分割文件等注意事项 -> https://zhuanlan.zhihu.com/p/22913991
  * </pre>
  */
 public final class SharedPreferenceUtils {
-    private static final String DEFAULT = "";
+    private static final String DEFAULT = "TDroid_Default_SP";
 
     /**
      * @param key

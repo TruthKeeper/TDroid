@@ -6,7 +6,7 @@ import java.math.BigDecimal;
  * <pre>
  *     author : TK
  *     time   : 2017/10/20
- *     desc   : 大小转换工具
+ *     desc   : 大小转换工具类
  * </pre>
  */
 

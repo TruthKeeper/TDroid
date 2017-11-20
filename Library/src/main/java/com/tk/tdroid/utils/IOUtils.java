@@ -9,7 +9,7 @@ import java.io.IOException;
  * <pre>
  *     author : TK
  *     time   : 2017/03/17
- *     desc   : IO工具
+ *     desc   : IO工具类
  * </pre>
  */
 public final class IOUtils {

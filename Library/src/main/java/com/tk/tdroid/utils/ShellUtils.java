@@ -11,7 +11,7 @@ import java.util.List;
  * <pre>
  *      author : TK
  *      time : 2017/10/24
- *      desc :
+ *      desc : Shell命令工具类
  * </pre>
  */
 

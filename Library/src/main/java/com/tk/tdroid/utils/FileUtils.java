@@ -19,7 +19,7 @@ import java.io.IOException;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 文件工具 <ul>
+ *     desc   : 文件工具类 <ul>
  *         <li>判断文件是否存在</li>
  *         <li>重命名文件</li>
  *         <li>判断目录是否存在，不存在则判断是否创建成功</li>
@@ -111,7 +111,7 @@ public final class FileUtils {
      * @return
      */
     public static boolean exist(@Nullable String path) {
-        return !TextUtils.isEmpty(path) && exist(new File(path));
+        return !EmptyUtils.isEmpty(path) && exist(new File(path));
     }
 
     /**

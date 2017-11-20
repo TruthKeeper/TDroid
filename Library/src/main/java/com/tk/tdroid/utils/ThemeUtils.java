@@ -11,7 +11,7 @@ import android.util.TypedValue;
  * <pre>
  *      author : TK
  *      time : 2017/11/8
- *      desc : 获取主题下的配置
+ *      desc : 主题的配置工具类
  * </pre>
  */
 

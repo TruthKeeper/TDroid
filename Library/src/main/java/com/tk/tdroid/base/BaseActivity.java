@@ -11,6 +11,10 @@ import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
+import com.tk.tdroid.widget.event.Event;
+import com.tk.tdroid.widget.event.EventHelper;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -19,17 +23,21 @@ import io.reactivex.subjects.Subject;
  * <pre>
  *      author : TK
  *      time : 2017/11/16
- *      desc : 监听生命周期的Activity基类
+ *      desc : <ol>Activity基类
+ *          <li>监听Rx生命周期</li>
+ *          <li>回调事件接收</li>
+ *      </ol>
  * </pre>
  */
 
-public class LifecycleActivity extends AppCompatActivity implements ILifecycleProvider {
+public class RxActivity extends AppCompatActivity implements ILifecycleProvider {
     private Subject<ActivityLifecycleImpl> lifecycleSubject = PublishSubject.create();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lifecycleSubject.onNext(ActivityLifecycleImpl.ON_CREATE);
+        EventHelper.register(this);
     }
 
     @Override
@@ -72,6 +80,7 @@ public class LifecycleActivity extends AppCompatActivity implements ILifecyclePr
     protected void onDestroy() {
         super.onDestroy();
         lifecycleSubject.onNext(ActivityLifecycleImpl.ON_DESTROY);
+        EventHelper.unregister(this);
     }
 
     /**
@@ -103,5 +112,16 @@ public class LifecycleActivity extends AppCompatActivity implements ILifecyclePr
     @Override
     public <T> ExecuteTransformer<T> executeWhen(@NonNull ILifecycle event) {
         return RxUtils.executeWhen(lifecycleSubject, event);
+    }
+
+    /**
+     * EventBus事件接收
+     * <br>
+     * {@code Observable.just(event)}来转换成RxJava事件
+     *
+     * @param event
+     */
+    @Subscribe(sticky = true)
+    public void onEventReceived(Event<?> event) {
     }
 }

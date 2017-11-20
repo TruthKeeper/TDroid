@@ -3,9 +3,9 @@ package com.tk.tdroiddemo.aop.aspect;
 import android.os.Build;
 import android.os.Looper;
 import android.os.Trace;
-import android.text.TextUtils;
 import android.util.Log;
 
+import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroiddemo.aop.annotation.Logger;
 
 import org.aspectj.lang.JoinPoint;
@@ -112,7 +112,7 @@ public class LoggerAspect {
         }
         if (logger != null) {
             type = logger.type();
-            tag = TextUtils.isEmpty(logger.tag()) ? TAG : logger.tag();
+            tag = EmptyUtils.isEmpty(logger.tag()) ? TAG : logger.tag();
         }
 
         Class<?> cls = codeSignature.getDeclaringType();
@@ -172,7 +172,7 @@ public class LoggerAspect {
         }
         if (logger != null) {
             type = logger.type();
-            tag = TextUtils.isEmpty(logger.tag()) ? TAG : logger.tag();
+            tag = EmptyUtils.isEmpty(logger.tag()) ? TAG : logger.tag();
         }
 
         Class<?> cls = codeSignature.getDeclaringType();

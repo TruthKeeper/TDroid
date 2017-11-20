@@ -5,9 +5,9 @@ import android.media.MediaRecorder;
 import android.support.annotation.IntRange;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import com.tk.tdroid.rx.AsyncCall;
+import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.utils.FileUtils;
 import com.tk.tdroid.utils.StorageUtils;
 
@@ -327,11 +327,7 @@ public final class SoundRecordHelper {
          * @return
          */
         public Builder dir(@Nullable String dirPath) {
-            if (TextUtils.isEmpty(dirPath)) {
-                this.dir = null;
-            } else {
-                this.dir = new File(dirPath);
-            }
+            this.dir = EmptyUtils.isEmpty(dirPath) ? null : new File(dirPath);
             return this;
         }
 

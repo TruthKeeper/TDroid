@@ -9,7 +9,7 @@ import java.util.Locale;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 时间转换工具
+ *     desc   : 时间转换工具类
  * </pre>
  */
 

@@ -12,7 +12,7 @@ import java.util.List;
  * <pre>
  *     author : TK
  *     time   : 2017/9/13
- *     desc   : 集合处理工具
+ *     desc   : 集合处理工具类
  * </pre>
  */
 public final class CollectionUtils {

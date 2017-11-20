@@ -89,8 +89,8 @@ public final class SpannableHelper {
     private SpannableHelper() {
     }
 
-    public static Builder create(String text) {
-        return new Builder();
+    public static Builder create(@Nullable String text) {
+        return new Builder(text);
     }
 
     public static Builder create() {
@@ -118,7 +118,6 @@ public final class SpannableHelper {
         private static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
         private CharSequence tempText;
-
 
         private int foregroundColor;
         private int backgroundColor;
@@ -188,13 +187,16 @@ public final class SpannableHelper {
         private static final int TYPE_SPACE = 2;
 
         public Builder() {
+            this(null);
+        }
+
+        public Builder(String text) {
             mBuilder = new SpannableStringBuilder();
-            tempText = "";
+            tempText = EmptyUtils.isEmpty(text) ? "" : text;
             reset();
         }
 
         private void reset() {
-
             foregroundColor = -1;
             backgroundColor = -1;
             isBold = false;

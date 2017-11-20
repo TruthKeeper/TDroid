@@ -6,7 +6,7 @@ import android.content.res.Resources;
  * <pre>
  *     author : TK
  *     time   : 2017/03/16
- *     desc   : 像素转换工具
+ *     desc   : 像素转换工具类
  * </pre>
  */
 public final class DensityUtil {

@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
  * <pre>
  *     author : TK
  *     time   : 2017/03/17
- *     desc   : 粘贴板工具
+ *     desc   : 粘贴板工具类
  * </pre>
  */
 public final class ClipboardUtils {
