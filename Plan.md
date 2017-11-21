@@ -59,3 +59,7 @@
 - View代理工具类 utils.ViewProxyUtils
 - View工具类 utils.ViewUtils
 - 压缩、解压文件工具类 utils.ZipUtils
+
+### 控件
+
+- 过滤指定格式的**AppCompatEditText** view.FilterEditText
