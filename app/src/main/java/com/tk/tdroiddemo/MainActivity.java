@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import com.tk.tdroid.base.LifecycleActivity;
+import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroid.rx.AsyncCall;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
 import com.tk.tdroid.widget.http.HttpUtils;
@@ -15,7 +15,7 @@ import io.reactivex.SingleObserver;
 import io.reactivex.disposables.Disposable;
 
 
-public class MainActivity extends LifecycleActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +24,7 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
         findViewById(R.id.start).setOnClickListener(this);
         findViewById(R.id.change).setOnClickListener(this);
 //        RuntimeUrlManager.getInstance().addBaseUrl("github", "https://www.google.com");
+
     }
 
     @Override
@@ -56,4 +57,5 @@ public class MainActivity extends LifecycleActivity implements View.OnClickListe
                 break;
         }
     }
+
 }

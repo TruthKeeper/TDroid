@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
@@ -24,63 +25,89 @@ import io.reactivex.subjects.Subject;
  *      author : TK
  *      time : 2017/11/16
  *      desc : <ol>Activity基类
- *          <li>监听Rx生命周期</li>
- *          <li>回调事件接收</li>
+ *          <li>绑定Rx生命周期{@link BaseActivity#bindLifecycle(ILifecycle)} , {@link BaseActivity#bindOnDestroy()} , {@link BaseActivity#executeWhen(ILifecycle)}</li>
+ *          <li>EventBus事件接收{@link BaseActivity#onEventReceived(Event)}</li>
  *      </ol>
  * </pre>
  */
 
-public class RxActivity extends AppCompatActivity implements ILifecycleProvider {
-    private Subject<ActivityLifecycleImpl> lifecycleSubject = PublishSubject.create();
+public class BaseActivity extends AppCompatActivity implements ILifecycleProvider, IActivityProvider {
+    private Subject<ActivityLifecycleImpl> lifecycleSubject = null;
+
+    private boolean bindLifecycleEnabled;
+    private boolean eventBusEnabled;
+
+    static {
+        //SVG <Vector>的支持
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    {
+        bindLifecycleEnabled = bindLifecycleEnabled();
+        eventBusEnabled = eventBusEnabled();
+        if (bindLifecycleEnabled) {
+            lifecycleSubject = PublishSubject.create();
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_CREATE);
-        EventHelper.register(this);
+        onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
+        if (eventBusEnabled) {
+            EventHelper.register(this);
+        }
     }
 
     @Override
     public void setContentView(int layoutResID) {
-        lifecycleSubject.onNext(ActivityLifecycleImpl.PRE_INFLATE);
+        onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
         super.setContentView(layoutResID);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_START);
+        onLifecycleNext(ActivityLifecycleImpl.ON_START);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_RESUME);
+        onLifecycleNext(ActivityLifecycleImpl.ON_RESUME);
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_RESTART);
+        onLifecycleNext(ActivityLifecycleImpl.ON_RESTART);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_PAUSE);
+        onLifecycleNext(ActivityLifecycleImpl.ON_PAUSE);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_STOP);
+        onLifecycleNext(ActivityLifecycleImpl.ON_STOP);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        lifecycleSubject.onNext(ActivityLifecycleImpl.ON_DESTROY);
-        EventHelper.unregister(this);
+        onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
+        if (eventBusEnabled) {
+            EventHelper.unregister(this);
+        }
+    }
+
+    private void onLifecycleNext(ActivityLifecycleImpl lifecycle) {
+        if (bindLifecycleEnabled) {
+            lifecycleSubject.onNext(lifecycle);
+        }
     }
 
     /**
@@ -91,6 +118,9 @@ public class RxActivity extends AppCompatActivity implements ILifecycleProvider 
      */
     @Override
     public <T> LifecycleTransformer<T> bindLifecycle(@NonNull ILifecycle lifecycle) {
+        if (!bindLifecycleEnabled) {
+            throw new IllegalStateException("bindLifecycleEnabled is false !");
+        }
         return RxUtils.bindLifecycle(lifecycleSubject, lifecycle);
     }
 
@@ -101,6 +131,9 @@ public class RxActivity extends AppCompatActivity implements ILifecycleProvider 
      */
     @Override
     public <T> LifecycleTransformer<T> bindOnDestroy() {
+        if (!bindLifecycleEnabled) {
+            throw new IllegalStateException("bindLifecycleEnabled is false !");
+        }
         return RxUtils.bindLifecycle(lifecycleSubject, ActivityLifecycleImpl.ON_DESTROY);
     }
 
@@ -111,6 +144,9 @@ public class RxActivity extends AppCompatActivity implements ILifecycleProvider 
      */
     @Override
     public <T> ExecuteTransformer<T> executeWhen(@NonNull ILifecycle event) {
+        if (!bindLifecycleEnabled) {
+            throw new IllegalStateException("bindLifecycleEnabled is false !");
+        }
         return RxUtils.executeWhen(lifecycleSubject, event);
     }
 
@@ -123,5 +159,25 @@ public class RxActivity extends AppCompatActivity implements ILifecycleProvider 
      */
     @Subscribe(sticky = true)
     public void onEventReceived(Event<?> event) {
+    }
+
+    /**
+     * 是否支持Rx生命周期
+     *
+     * @return
+     */
+    @Override
+    public boolean bindLifecycleEnabled() {
+        return true;
+    }
+
+    /**
+     * 是否支持EventBus事件监听
+     *
+     * @return
+     */
+    @Override
+    public boolean eventBusEnabled() {
+        return true;
     }
 }
