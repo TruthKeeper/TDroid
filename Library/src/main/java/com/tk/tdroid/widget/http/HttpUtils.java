@@ -1,12 +1,12 @@
 package com.tk.tdroid.widget.http;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
 import com.tk.tdroid.widget.http.interceptor.LogInterceptor;
 import com.tk.tdroid.widget.http.interceptor.OfflineInterceptor;
+import com.tk.tdroid.widget.http.progress.ProgressManager;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,58 +36,54 @@ public final class HttpUtils {
 
     /**
      * 初始化
-     *
-     * @param context
      */
-    public static void init(@NonNull Context context, @NonNull HttpConfig httpConfig) {
+    public static void init(@NonNull HttpConfig httpConfig) {
         if (retrofit == null) {
             synchronized (HttpUtils.class) {
                 if (retrofit == null) {
-                    OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                    OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                             .connectTimeout(httpConfig.getConnectTimeoutMilli(), TimeUnit.MILLISECONDS);
-                    //添加动态BaseUrl的支持
-                    builder = RuntimeUrlManager.getInstance().wrapper(builder);
+                    //添加动态BaseUrl的支持 -> 将请求的Url进行修改，所以放在责任链第一位
+                    okHttpBuilder = RuntimeUrlManager.getInstance().wrapper(okHttpBuilder);
+
+                    //自定义的拦截器
+                    List<Interceptor> networkInterceptors = httpConfig.getNetworkInterceptors();
+                    if (!EmptyUtils.isEmpty(networkInterceptors)) {
+                        for (Interceptor interceptor : networkInterceptors) {
+                            okHttpBuilder.addNetworkInterceptor(interceptor);
+                        }
+                    }
+                    List<Interceptor> interceptors = httpConfig.getInterceptors();
+                    if (!EmptyUtils.isEmpty(interceptors)) {
+                        for (Interceptor interceptor : interceptors) {
+                            okHttpBuilder.addInterceptor(interceptor);
+                        }
+                    }
+                    //对Set-Cookie进行Cookie持久化  TODO: 2017/11/14  待系统测试
+                    if (httpConfig.isCookieEnabled()) {
+                        okHttpBuilder.addInterceptor(new CookieInterceptor(httpConfig.getCookieSaveProvider(), httpConfig.getCookieLoadProvider()));
+                    }
+                    //输出网络日志
+                    if (httpConfig.isLog()) {
+                        okHttpBuilder.addInterceptor(new LogInterceptor());
+                    }
+                    //开启离线缓存策略，底层仅限GET
+                    if (httpConfig.getOfflineCacheMaxStale() > 0) {
+                        okHttpBuilder.addInterceptor(new OfflineInterceptor(httpConfig.getOfflineCacheMaxStale()));
+                    }
+                    //添加监听进度的支持
+                    okHttpBuilder = ProgressManager.getInstance().wrapper(okHttpBuilder);
 
                     if (httpConfig.getCacheDir() != null && httpConfig.getCacheSize() > 0) {
                         //Http缓存Cache-Control
                         // TODO: 2017/11/14 更多缓存模式支持
-                        builder.cache(new Cache(httpConfig.getCacheDir(), httpConfig.getCacheSize()));
+                        okHttpBuilder.cache(new Cache(httpConfig.getCacheDir(), httpConfig.getCacheSize()));
                     }
-                    if (httpConfig.isLog()) {
-                        //日志
-                        builder.addInterceptor(new LogInterceptor());
-                    }
-                    if (httpConfig.getOfflineCacheMaxStale() > 0) {
-                        //开启离线缓存策略，底层仅限GET
-                        builder.addInterceptor(new OfflineInterceptor(httpConfig.getOfflineCacheMaxStale()));
-                    }
-                    if (httpConfig.isCookieEnabled()) {
-                        //对Set-Cookie进行Cookie持久化
-                        // TODO: 2017/11/14  待系统测试
-                        builder.addInterceptor(new CookieInterceptor(httpConfig.getCookieSaveProvider(), httpConfig.getCookieLoadProvider()));
-                    }
-
-                    //自定义拦截器
-                    List<Interceptor> interceptors = httpConfig.getInterceptors();
-                    if (!EmptyUtils.isEmpty(interceptors)) {
-                        for (Interceptor interceptor : interceptors) {
-                            builder.addInterceptor(interceptor);
-                        }
-                    }
-
-                    List<Interceptor> networkInterceptors = httpConfig.getNetworkInterceptors();
-                    if (!EmptyUtils.isEmpty(networkInterceptors)) {
-                        for (Interceptor interceptor : networkInterceptors) {
-                            builder.addInterceptor(interceptor);
-                        }
-                    }
-
                     if (httpConfig.isHttpsEnabled()) {
                         //Https的支持
-                        builder = HttpsSupport.wrapper(builder, httpConfig.getHttpsCertificate(), httpConfig.getHttpsPassword());
+                        okHttpBuilder = HttpsSupport.wrapper(okHttpBuilder, httpConfig.getHttpsCertificate(), httpConfig.getHttpsPassword());
                     }
-                    okHttpClient = builder.build();
-
+                    okHttpClient = okHttpBuilder.build();
                     retrofit = new Retrofit.Builder()
                             .baseUrl(httpConfig.getBaseUrl())
                             .client(okHttpClient)

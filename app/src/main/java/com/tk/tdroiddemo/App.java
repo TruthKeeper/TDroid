@@ -11,6 +11,7 @@ import com.tk.tdroid.widget.event.EventHelper;
 import com.tk.tdroid.widget.http.HttpConfig;
 import com.tk.tdroid.widget.http.HttpUtils;
 import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
+import com.tk.tdroid.widget.image.GlideModuleImpl;
 import com.tk.tdroiddemo.aop.annotation.Logger;
 
 import java.io.File;
@@ -40,6 +41,9 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
+        //启用Glide的OkHttpClient支持
+        new GlideModuleImpl.Builder()
+                .install();
 
         HttpConfig httpConfig = new HttpConfig.Builder()
                 .baseUrl("https://www.baidu.com/")
@@ -69,7 +73,7 @@ public class App extends Application {
                 .httpsPassword("github_test")
                 .build();
 
-        HttpUtils.init(this, httpConfig);
+        HttpUtils.init(httpConfig);
 //        NetworkObservable.getInstance().init();
         NetworkRxObservable.getInstance().init();
 //

@@ -37,11 +37,10 @@ public final class RuntimeUrlManager {
     public static final String BASE_GLOBAL = "base_global";
 
     private static volatile RuntimeUrlManager mRuntimeUrlManager = null;
-    private Map<String, HttpUrl> baseNameMap;
+    private final Map<String, HttpUrl> baseNameMap = new ConcurrentHashMap<>();
     private boolean enabled = true;
 
     private RuntimeUrlManager() {
-        baseNameMap = new ConcurrentHashMap<>();
     }
 
     /**
