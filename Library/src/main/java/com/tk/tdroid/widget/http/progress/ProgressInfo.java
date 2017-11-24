@@ -14,11 +14,11 @@ import android.support.annotation.IntRange;
 
 public class ProgressInfo implements Parcelable {
     /**
-     * 创建{@link okhttp3.Request}或{@link okhttp3.Response}的时间
+     * 创建{@link okhttp3.Request}或{@link okhttp3.Response}的时间戳
      */
     private long createAt;
     /**
-     * 数据总长度 , 当服务端{@link okhttp3.Response}头无Content-Length时会返回-1 , <br>例如 {@code https://api.github.com/users/JakeWharton}
+     * 数据总长度 , 建议服务端{@link okhttp3.Response}返回头Content-Length , 以避免偶尔会返回-1 , <br>例如 {@code https://api.github.com/users/JakeWharton}
      */
     private long contentLength;
     /**
@@ -26,8 +26,9 @@ public class ProgressInfo implements Parcelable {
      */
     private long currentBytes;
     /**
-     * 距离上次回调的时间间隔(毫秒)
+     * 距离上次回调的时间间隔(毫秒) >=1
      */
+    @IntRange(from = 1)
     private long intervalTime;
     /**
      * 距离上次回调的时间间隔内上传或下载的byte长度
@@ -105,7 +106,13 @@ public class ProgressInfo implements Parcelable {
      * @return 每秒的字节数
      */
     public long getSpeed() {
-        return currentBytes * 1000 / (System.currentTimeMillis() - createAt);
+        if (intervalBytes > 0) {
+            //间隔时间的速度
+            return intervalBytes * 1000 / intervalTime;
+        } else {
+            //平均速度
+            return currentBytes * 1000 / (System.currentTimeMillis() - createAt);
+        }
     }
 
     @Override

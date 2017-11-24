@@ -43,16 +43,16 @@ public final class HttpUtils {
                 if (retrofit == null) {
                     OkHttpClient.Builder okHttpBuilder = new OkHttpClient.Builder()
                             .connectTimeout(httpConfig.getConnectTimeoutMilli(), TimeUnit.MILLISECONDS);
-                    //添加动态BaseUrl的支持 -> 将请求的Url进行修改，所以放在责任链第一位
-                    okHttpBuilder = RuntimeUrlManager.getInstance().wrapper(okHttpBuilder);
 
-                    //自定义的拦截器
                     List<Interceptor> networkInterceptors = httpConfig.getNetworkInterceptors();
                     if (!EmptyUtils.isEmpty(networkInterceptors)) {
                         for (Interceptor interceptor : networkInterceptors) {
                             okHttpBuilder.addNetworkInterceptor(interceptor);
                         }
                     }
+                    //添加动态BaseUrl的支持 -> 将请求的Url进行修改，所以放在责任链第一位
+                    okHttpBuilder = RuntimeUrlManager.getInstance().wrapper(okHttpBuilder);
+                    //自定义的拦截器
                     List<Interceptor> interceptors = httpConfig.getInterceptors();
                     if (!EmptyUtils.isEmpty(interceptors)) {
                         for (Interceptor interceptor : interceptors) {
@@ -73,7 +73,6 @@ public final class HttpUtils {
                     }
                     //添加监听进度的支持
                     okHttpBuilder = ProgressManager.getInstance().wrapper(okHttpBuilder);
-
                     if (httpConfig.getCacheDir() != null && httpConfig.getCacheSize() > 0) {
                         //Http缓存Cache-Control
                         // TODO: 2017/11/14 更多缓存模式支持

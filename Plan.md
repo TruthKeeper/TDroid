@@ -2,14 +2,14 @@
 
 ### Http
 
-> Retrofit2 + OkHttp3 + RxJava2 + Gson
+> Retrofit2 + OkHttp3 + RxJava2 + Gson 示例代码见 sample.SampleHttp
 
-- 动态BaseUrl
+- 动态BaseUrl widget.http.RuntimeUrlManager
 - Https的支持
-- Cookie的管理
+- Cookie的管理 widget.http.CookieManager
 - 日志打印
 - 离线缓存
-- 全局监听请求和响应的进度，暂不支持重定向
+- 全局监听请求、响应、Glide请求的进度，支持API中动态、静态配置 , 适配重定向 widget.http.progress.ProgressManager
 
 ### APT
 

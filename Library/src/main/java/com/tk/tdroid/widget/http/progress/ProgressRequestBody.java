@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.SocketException;
 
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -83,7 +84,7 @@ class ProgressRequestBody extends RequestBody {
         /**
          * 上次回调的时间
          */
-        private long lastTime = SystemClock.elapsedRealtime();
+        private long mLastTime = SystemClock.elapsedRealtime();
         private long tempSize = 0L;
 
         CountingSink(Sink delegate) {
@@ -94,6 +95,8 @@ class ProgressRequestBody extends RequestBody {
         public void write(@NonNull Buffer source, long byteCount) throws IOException {
             try {
                 super.write(source, byteCount);
+            } catch (SocketException e) {
+
             } catch (IOException e) {
                 e.printStackTrace();
                 for (WeakReference<ProgressListener> reference : mReferences) {
@@ -111,11 +114,11 @@ class ProgressRequestBody extends RequestBody {
             tempSize += byteCount;
 
             long curTime = SystemClock.elapsedRealtime();
-            if (curTime - lastTime >= mIntervalTime || totalBytesRead == mProgressInfo.getContentLength()) {
+            if (curTime - mLastTime >= mIntervalTime || totalBytesRead == mProgressInfo.getContentLength()) {
                 //大于等于时间间隔或写入完毕时 回调到主线程
                 final long finalTempSize = tempSize;
                 final long finalTotalBytesRead = totalBytesRead;
-                final long finalIntervalTime = curTime - lastTime;
+                final long finalIntervalTime = Math.max(curTime - mLastTime, 1);
                 for (final WeakReference<ProgressListener> reference : mReferences) {
                     mHandler.post(new Runnable() {
                         @Override
@@ -131,7 +134,7 @@ class ProgressRequestBody extends RequestBody {
                     });
                 }
             }
-            lastTime = curTime;
+            mLastTime = curTime;
             tempSize = 0;
         }
     }

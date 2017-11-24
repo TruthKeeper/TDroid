@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.SocketException;
 
 import okhttp3.MediaType;
 import okhttp3.ResponseBody;
@@ -24,7 +25,7 @@ import okio.Source;
  */
 
 class ProgressResponseBody extends ResponseBody {
-    private String url;
+    private String httpUrlOrHeader;
     private Handler mHandler;
     private int mIntervalTime;
     private final ResponseBody mResponseBody;
@@ -32,8 +33,8 @@ class ProgressResponseBody extends ResponseBody {
     private final ProgressInfo mProgressInfo;
     private BufferedSource mBufferedSource;
 
-    ProgressResponseBody(String url, Handler handler, ResponseBody responseBody, WeakReference<ProgressListener>[] references, int intervalTime) {
-        this.url = url;
+    ProgressResponseBody(String httpUrlOrHeader, Handler handler, ResponseBody responseBody, WeakReference<ProgressListener>[] references, int intervalTime) {
+        this.httpUrlOrHeader = httpUrlOrHeader;
         this.mResponseBody = responseBody;
         this.mReferences = references;
         this.mHandler = handler;
@@ -79,11 +80,13 @@ class ProgressResponseBody extends ResponseBody {
 
                 try {
                     bytesRead = super.read(sink, byteCount);
+                } catch (SocketException e) {
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     for (WeakReference<ProgressListener> reference : mReferences) {
                         if (reference != null && reference.get() != null) {
-                            reference.get().onError(url, false, mProgressInfo.getCreateAt(), e);
+                            reference.get().onError(httpUrlOrHeader, false, mProgressInfo.getCreateAt(), e);
                         }
                     }
                     throw e;
@@ -107,7 +110,7 @@ class ProgressResponseBody extends ResponseBody {
                     final long finalBytesRead = bytesRead;
                     final long finalTempSize = tempSize;
                     final long finalTotalBytesRead = totalBytesRead;
-                    final long finalIntervalTime = curTime - mLastTime;
+                    final long finalIntervalTime = Math.max(curTime - mLastTime, 1);
 
                     for (final WeakReference<ProgressListener> reference : mReferences) {
                         mHandler.post(new Runnable() {
@@ -119,7 +122,7 @@ class ProgressResponseBody extends ResponseBody {
                                     mProgressInfo.setCurrentBytes(finalTotalBytesRead);
                                     mProgressInfo.setIntervalTime(finalIntervalTime);
                                     mProgressInfo.setFinish(isFinish);
-                                    reference.get().onProgress(url, false, mProgressInfo);
+                                    reference.get().onProgress(httpUrlOrHeader, false, mProgressInfo);
                                 }
                             }
                         });
