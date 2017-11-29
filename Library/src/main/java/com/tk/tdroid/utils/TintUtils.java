@@ -2,13 +2,17 @@ package com.tk.tdroid.utils;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StyleableRes;
 import android.support.graphics.drawable.VectorDrawableCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 
 /**
@@ -24,6 +28,19 @@ public final class TintUtils {
     }
 
     /**
+     * 获取Drawable , SVG的兼容处理 , 代替{@link android.support.v7.widget.TintTypedArray}
+     *
+     * @param array
+     * @param index
+     * @return
+     */
+    @Nullable
+    public static Drawable getTintDrawable(@NonNull TypedArray array, @StyleableRes int index) {
+        int resourceId = array.getResourceId(index, -1);
+        return resourceId == -1 ? null : ContextCompat.getDrawable(Utils.getApp(), resourceId);
+    }
+
+    /**
      * 着色
      *
      * @param drawable
@@ -32,6 +49,7 @@ public final class TintUtils {
     public static Drawable tint(@NonNull Drawable drawable, @ColorInt int color) {
         Drawable d = DrawableCompat.wrap(drawable.mutate());
         DrawableCompat.setTint(d, color);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         return d;
     }
 
@@ -47,6 +65,7 @@ public final class TintUtils {
         Drawable d = DrawableCompat.wrap(drawable.mutate());
         DrawableCompat.setTintMode(d, mode);
         DrawableCompat.setTint(d, color);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         return d;
     }
 
@@ -79,6 +98,7 @@ public final class TintUtils {
         }
         Drawable result = DrawableCompat.wrap(listDrawable);
         DrawableCompat.setTintList(result, colorStateList);
+        result.setBounds(0, 0, result.getIntrinsicWidth(), result.getIntrinsicHeight());
         return result;
     }
 
@@ -109,6 +129,7 @@ public final class TintUtils {
         }
         listDrawable.addState(new int[]{},
                 VectorDrawableCompat.create(context.getResources(), defaultRes, context.getTheme()));
+        listDrawable.setBounds(0, 0, listDrawable.getIntrinsicWidth(), listDrawable.getIntrinsicHeight());
         return listDrawable;
     }
 }

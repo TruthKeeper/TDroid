@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="FilterEditText">
+        <attr name="fet_filter">
+            <flag name="emoji" value="1" />
+            <flag name="space" value="2" />
+            <flag name="newline" value="4" />
+        </attr>
+    </declare-styleable>
+</resources>
