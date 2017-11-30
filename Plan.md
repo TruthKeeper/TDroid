@@ -40,6 +40,7 @@
 - 判空工具类 utils.EmptyUtils
 - 文件IO流操作工具类 utils.FileIOUtils
 - 文件工具类 utils.FileUtils
+- Fragment切换帮助类,解决重叠问题 utils.FragmentHelper
 - 常见意图工具类 utils.IntentUtils
 - IO工具类 utils.IOUtils
 - 日志工具类 utils.Logger
