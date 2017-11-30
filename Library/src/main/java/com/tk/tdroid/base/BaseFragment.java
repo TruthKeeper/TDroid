@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,14 @@ public class BaseFragment extends Fragment implements ILifecycleProvider, IFragm
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (visibleObserverEnabled) {
+            onVisibleChange(!hidden);
+        }
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         onLifecycleNext(FragmentLifecycleImpl.ON_ATTACH);
@@ -97,6 +106,10 @@ public class BaseFragment extends Fragment implements ILifecycleProvider, IFragm
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         onLifecycleNext(FragmentLifecycleImpl.ON_ACTIVITY_CREATED);
+        hasCreated = true;
+        if (getUserVisibleHint() && visibleObserverEnabled) {
+            onVisibleChange(true);
+        }
     }
 
     @Override
@@ -194,6 +207,10 @@ public class BaseFragment extends Fragment implements ILifecycleProvider, IFragm
 
     /**
      * 用于{@link ViewPager}场景下的懒加载 , 重写
+     * <ul>
+     * <li>{@link ViewPager}场景下的懒加载</li>
+     * <li>{@link FragmentTransaction#show(Fragment)} 和 {@link FragmentTransaction#hide(Fragment)} 的回调</li>
+     * </ul>
      *
      * @param isVisible <br>{@code true} : 不可见 -> 可见<br>{@code false} : 可见 -> 不可见
      */

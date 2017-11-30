@@ -1,5 +1,7 @@
 package com.tk.tdroid.base;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 /**
@@ -26,7 +28,11 @@ interface IFragmentProvider {
     boolean eventBusEnabled();
 
     /**
-     * 是否支持观察页面可见性变化 , 用于{@link ViewPager}场景下的懒加载 , 重写{@link BaseFragment#onVisibleChange(boolean)}
+     * 是否支持观察页面可见性变化 , 回调{@link BaseFragment#onVisibleChange(boolean)}
+     * <ul>
+     * <li>{@link ViewPager}场景下的懒加载</li>
+     * <li>{@link FragmentTransaction#show(Fragment)} 和 {@link FragmentTransaction#hide(Fragment)} 的回调</li>
+     * </ul>
      *
      * @return
      */
