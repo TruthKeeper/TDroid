@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import java.io.File;
@@ -160,5 +161,27 @@ public final class IntentUtils {
     public static Intent wrapperIntent(@NonNull Intent intent) {
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         return intent;
+    }
+
+    /**
+     * 跳转本应用的设置中心
+     *
+     * @return
+     */
+    public static void toSetting() {
+        toSetting(Utils.getApp().getPackageName());
+    }
+
+    /**
+     * 跳转某个应用的设置中心
+     *
+     * @param packageName
+     * @return
+     */
+    public static void toSetting(String packageName) {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setData(Uri.fromParts("package", packageName, null));
+        Utils.getApp().startActivity(intent);
     }
 }

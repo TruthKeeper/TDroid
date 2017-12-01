@@ -1,11 +1,7 @@
 package com.tk.tdroid.widget.permission;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -112,18 +108,5 @@ public class PermissionManager {
      */
     public static PermissionManager with(@NonNull FragmentActivity activity) {
         return new PermissionManager(activity);
-    }
-
-    /**
-     * 当用户勾选不再提示且拒绝权限时
-     *
-     * @param activity
-     * @return
-     */
-    public static void toSetting(@NonNull Activity activity) {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", activity.getPackageName(), null);
-        intent.setData(uri);
-        activity.startActivity(intent);
     }
 }

@@ -1,6 +1,6 @@
 package com.tk.tdroid.widget.permission;
 
-import android.app.Activity;
+import com.tk.tdroid.utils.IntentUtils;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *     desc   : 申请权限结果
  *     if(isSuccessful()):成功GET
  *        if(!isDisable()):用户拒绝了权限
- *        if(isDisable()):用户勾选了不再提示，并且拒绝了权限,需要手动开启{@link PermissionManager#toSetting(Activity)}
+ *        if(isDisable()):用户勾选了不再提示，并且拒绝了权限,需要手动开启{@link {@link IntentUtils#toSetting()}}
  * </pre>
  */
 public class PermissionResult {
@@ -46,5 +46,4 @@ public class PermissionResult {
     public List<Permission> getPermissions() {
         return permissions;
     }
-
 }

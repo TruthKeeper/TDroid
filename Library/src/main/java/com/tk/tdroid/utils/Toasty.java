@@ -1,11 +1,15 @@
 package com.tk.tdroid.utils;
 
+import android.app.AppOpsManager;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Binder;
+import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -14,6 +18,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.TextUtils;
@@ -25,6 +30,7 @@ import android.widget.Toast;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Method;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -60,6 +66,30 @@ public class Toasty {
     private static Toast toast = null;
 
     private Toasty() {
+    }
+
+    /**
+     * 判断当前Toast是否可用
+     *
+     * @return 不可用时需用户手动开启 {@link IntentUtils#toSetting()}
+     */
+    public static boolean checkEnabled() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return NotificationManagerCompat.from(Utils.getApp()).areNotificationsEnabled();
+        } else {
+            AppOpsManager mAppOps = (AppOpsManager) Utils.getApp().getSystemService(Context.APP_OPS_SERVICE);
+            Class<? extends AppOpsManager> cls = mAppOps.getClass();
+            try {
+                Method method = cls.getDeclaredMethod("noteOpNoThrow", int.class, int.class, String.class);
+                if (method.invoke(mAppOps, 11, Binder.getCallingUid(), Utils.getApp().getPackageName()).equals(AppOpsManager.MODE_ALLOWED)) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (Exception e) {
+            }
+            return true;
+        }
     }
 
     /**
