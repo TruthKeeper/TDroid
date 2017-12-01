@@ -56,6 +56,7 @@
 - 主题的配置工具类 utils.ThemeUtils
 - 时间转换工具类 utils.TimeUtils
 - 着色工具类 utils.TintUtils
+- Toast打印工具 utils.Toasty
 - Url工具类 utils.UrlUtils 
 - **综合工具类** utils.Utils
 - View代理工具类 utils.ViewProxyUtils
