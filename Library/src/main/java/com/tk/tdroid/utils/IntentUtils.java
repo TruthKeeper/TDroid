@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
@@ -183,5 +184,20 @@ public final class IntentUtils {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setData(Uri.fromParts("package", packageName, null));
         Utils.getApp().startActivity(intent);
+    }
+
+    /**
+     * 跳转到通知栏设置权限
+     */
+    public static void toNotifySetting() {
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra("app_package", Utils.getApp().getPackageName());
+            intent.putExtra("app_uid", Binder.getCallingUid());
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Utils.getApp().startActivity(intent);
+        } else {
+            toSetting();
+        }
     }
 }

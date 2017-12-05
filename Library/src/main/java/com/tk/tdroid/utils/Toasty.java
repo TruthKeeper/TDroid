@@ -71,7 +71,7 @@ public class Toasty {
     /**
      * 判断当前Toast是否可用
      *
-     * @return 不可用时需用户手动开启 {@link IntentUtils#toSetting()}
+     * @return 不可用时需用户手动开启 {@link IntentUtils#toNotifySetting()}
      */
     public static boolean checkEnabled() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {

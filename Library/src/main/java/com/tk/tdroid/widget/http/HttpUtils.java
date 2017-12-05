@@ -2,6 +2,7 @@ package com.tk.tdroid.widget.http;
 
 import android.support.annotation.NonNull;
 
+import com.google.gson.GsonBuilder;
 import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
 import com.tk.tdroid.widget.http.interceptor.LogInterceptor;
@@ -86,7 +87,9 @@ public final class HttpUtils {
                     retrofit = new Retrofit.Builder()
                             .baseUrl(httpConfig.getBaseUrl())
                             .client(okHttpClient)
-                            .addConverterFactory(GsonConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create(new GsonBuilder()
+                                    .setDateFormat("yyyy-MM-dd HH:mm:ss")
+                                    .create()))
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build();
                 }

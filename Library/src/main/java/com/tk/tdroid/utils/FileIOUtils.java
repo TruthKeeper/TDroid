@@ -2,11 +2,11 @@ package com.tk.tdroid.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,9 +25,9 @@ import okio.Okio;
  * <pre>
  *     author : TK
  *     time   : 2017/10/07
- *     desc   : 文件IO流操作工具类，整合IO、NIO、okio的优缺点
- *              写：NIO效率最高
- *              读String：okio大于IO，小于NIO，写法简洁
+ *     desc   : 文件IO流操作工具类
+ *              写：NIO效率 > IO > okio
+ *              读：NIO效率 > okio > IO okio
  * </pre>
  */
 public final class FileIOUtils {
@@ -81,6 +81,45 @@ public final class FileIOUtils {
             return false;
         } finally {
             IOUtils.closeQuietly(stream, os);
+        }
+    }
+
+    /**
+     * 将字节数组写入文件
+     *
+     * @param filePath 路径
+     * @param bytes    字节数组
+     * @param append   是否追加在文件末
+     * @return
+     */
+    public static boolean writeBytesByIO(@NonNull String filePath, @NonNull byte[] bytes, boolean append) {
+        return writeBytesByIO(new File(filePath), bytes, append);
+    }
+
+
+    /**
+     * 将字节数组写入文件
+     *
+     * @param file   目标文件
+     * @param bytes  字节数组
+     * @param append 是否追加在文件末
+     * @return
+     */
+    public static boolean writeBytesByIO(@NonNull File file, @NonNull byte[] bytes, boolean append) {
+        if (!FileUtils.createOrExistsFile(file)) {
+            return false;
+        }
+        OutputStream os = null;
+        try {
+            os = new FileOutputStream(file, append);
+            os.write(bytes);
+            os.flush();
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            IOUtils.closeQuietly(os);
         }
     }
 
@@ -159,6 +198,44 @@ public final class FileIOUtils {
             return false;
         } finally {
             IOUtils.closeQuietly(inputChannel, outputChannel);
+        }
+    }
+
+    /**
+     * 将字节数组写入文件
+     *
+     * @param filePath 路径
+     * @param bytes    字节数组
+     * @param append   是否追加在文件末
+     * @return
+     */
+    public static boolean writeBytesByNIO(@NonNull String filePath, @NonNull byte[] bytes, boolean append) {
+        return writeBytesByNIO(new File(filePath), bytes, append);
+    }
+
+
+    /**
+     * 将字节数组写入文件
+     *
+     * @param file   目标文件
+     * @param bytes  字节数组
+     * @param append 是否追加在文件末
+     * @return
+     */
+    public static boolean writeBytesByNIO(@NonNull File file, @NonNull byte[] bytes, boolean append) {
+        if (!FileUtils.createOrExistsFile(file)) {
+            return false;
+        }
+        FileChannel fileChannel = null;
+        try {
+            fileChannel = new FileOutputStream(file, append).getChannel();
+            fileChannel.write(ByteBuffer.wrap(bytes));
+            return true;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            IOUtils.closeQuietly(fileChannel);
         }
     }
 
@@ -262,6 +339,81 @@ public final class FileIOUtils {
             return null;
         } finally {
             IOUtils.closeQuietly(reader);
+        }
+    }
+
+    /**
+     * 读取文件到字符串中
+     *
+     * @param filePath 路径
+     * @return
+     */
+    public static byte[] readBytesByIO(@NonNull String filePath) {
+        return readBytesByIO(new File(filePath));
+    }
+
+    /**
+     * 读取文件到字节数组中
+     *
+     * @param file 文件路径
+     * @return
+     */
+    public static byte[] readBytesByIO(@NonNull File file) {
+        if (!FileUtils.exist(file)) {
+            return null;
+        }
+        FileInputStream fis = null;
+        ByteArrayOutputStream os = null;
+        try {
+            fis = new FileInputStream(file);
+            os = new ByteArrayOutputStream();
+            byte[] b = new byte[BUFFER];
+            int len;
+            while ((len = fis.read(b)) != -1) {
+                os.write(b, 0, len);
+            }
+            return os.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            IOUtils.closeQuietly(fis, os);
+        }
+    }
+
+    /**
+     * 读取文件到字符串中
+     *
+     * @param filePath 路径
+     * @return
+     */
+    public static byte[] readBytesByNIO(@NonNull String filePath) {
+        return readBytesByNIO(new File(filePath));
+    }
+
+    /**
+     * 读取文件到字节数组中
+     *
+     * @param file 文件路径
+     * @return
+     */
+    public static byte[] readBytesByNIO(@NonNull File file) {
+        if (!FileUtils.exist(file)) {
+            return null;
+        }
+        FileChannel fileChannel = null;
+        try {
+            fileChannel = new FileInputStream(file).getChannel();
+            ByteBuffer byteBuffer = ByteBuffer.allocate((int) fileChannel.size());
+            while (true) {
+                if (!((fileChannel.read(byteBuffer)) > 0)) break;
+            }
+            return byteBuffer.array();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            IOUtils.closeQuietly(fileChannel);
         }
     }
 
