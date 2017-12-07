@@ -22,4 +22,11 @@ interface IActivityProvider {
      * @return
      */
     boolean eventBusEnabled();
+
+    /**
+     * 是否触摸隐藏软键盘
+     *
+     * @return
+     */
+    boolean touchHideSoftKeyboard();
 }

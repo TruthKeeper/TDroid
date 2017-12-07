@@ -5,6 +5,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.EditText;
 
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
@@ -12,6 +15,7 @@ import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
+import com.tk.tdroid.utils.SoftKeyboardUtils;
 import com.tk.tdroid.widget.event.Event;
 import com.tk.tdroid.widget.event.EventHelper;
 
@@ -36,6 +40,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
 
     private boolean bindLifecycleEnabled;
     private boolean eventBusEnabled;
+    private boolean touchHideSoftKeyboard;
 
     static {
         //SVG <Vector>的支持
@@ -48,6 +53,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
         }
+        eventBusEnabled = touchHideSoftKeyboard();
     }
 
     @Override
@@ -102,6 +108,40 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         if (eventBusEnabled) {
             EventHelper.unregister(this);
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (touchHideSoftKeyboard && ev.getAction() == MotionEvent.ACTION_DOWN) {
+            View v = getCurrentFocus();
+            if (v != null && (v instanceof EditText)) {
+                if (!isInSpace(v, ev)) {
+                    //当前触摸位置不处于焦点控件中，需要隐藏软键盘
+                    SoftKeyboardUtils.hideSoftKeyboard(v);
+                }
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    /**
+     * 触摸位置是否处于控件区域中
+     *
+     * @param v
+     * @param event
+     * @return
+     */
+    private static boolean isInSpace(View v, MotionEvent event) {
+        int[] location = new int[2];
+        v.getLocationInWindow(location);
+        int left = location[0];
+        int top = location[1];
+        int bottom = top + v.getHeight();
+        int right = left + v.getWidth();
+        return event.getX() > left
+                && event.getX() < right
+                && event.getY() > top
+                && event.getY() < bottom;
     }
 
     private void onLifecycleNext(ActivityLifecycleImpl lifecycle) {
@@ -178,6 +218,16 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
      */
     @Override
     public boolean eventBusEnabled() {
+        return true;
+    }
+
+    /**
+     * 是否触摸隐藏软键盘
+     *
+     * @return
+     */
+    @Override
+    public boolean touchHideSoftKeyboard() {
         return true;
     }
 }

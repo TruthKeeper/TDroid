@@ -36,7 +36,7 @@ import io.reactivex.subjects.Subject;
  * </pre>
  */
 
-public class BaseFragment extends Fragment implements ILifecycleProvider, IFragmentProvider {
+public abstract class BaseFragment extends Fragment implements ILifecycleProvider, IFragmentProvider {
     private Subject<FragmentLifecycleImpl> lifecycleSubject = null;
 
     private boolean bindLifecycleEnabled;
@@ -44,6 +44,8 @@ public class BaseFragment extends Fragment implements ILifecycleProvider, IFragm
     private boolean visibleObserverEnabled;
 
     private boolean hasCreated;
+
+    private View rootView;
 
     {
         bindLifecycleEnabled = bindLifecycleEnabled();
@@ -93,8 +95,17 @@ public class BaseFragment extends Fragment implements ILifecycleProvider, IFragm
             EventHelper.register(this);
         }
         onLifecycleNext(FragmentLifecycleImpl.PRE_INFLATE);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        if (rootView == null) {
+            rootView = inflater.inflate(getLayoutId(), container, false);
+        }
+        ViewGroup parent = (ViewGroup) rootView.getParent();
+        if (parent != null) {
+            parent.removeView(rootView);
+        }
+        return rootView;
     }
+
+    protected abstract int getLayoutId();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {

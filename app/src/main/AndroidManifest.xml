@@ -18,7 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".sample.SampleSpannableActivity" />
         <activity android:name=".sample.SampleHttpActivity" />
+        <activity android:name=".sample.SamplePlaceholderUIActivity" />
 
         <meta-data
             android:name="sample_holder_1"
