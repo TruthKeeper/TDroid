@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -50,11 +51,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
 
-import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_BASELINE;
-import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_BOTTOM;
-import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_CENTER;
-import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_TOP;
-
 /**
  * <pre>
  *      author : TK
@@ -63,24 +59,25 @@ import static com.tk.tdroid.utils.SpannableHelper.Builder.Align.ALIGN_TOP;
  * </pre>
  * 支持：
  * <ul>
- * <li>前景色（字体颜色）</li>
- * <li>背景色</li>
- * <li>加粗、倾斜、粗斜体</li>
- * <li>删除线</li>
- * <li>下划线</li>
- * <li>上标、下标</li>
- * <li>字体大小</li>
- * <li>点击事件</li>
- * <li>超链接</li>
- * <li>图文混排（支持对齐方式）</li>
- * <li>行高设置</li>
- * <li>首行缩进</li>
- * <li>引用线</li>
- * <li>列表项</li>
- * <li>支持空格</li>
- * <li>文字对齐方式</li>
- * <li>Shader模式</li>
- * <li>阴影</li>
+ * <li>前景色（字体颜色）{@link Builder#foregroundColor(int)} , {@link Builder#foregroundResColor(int)}</li>
+ * <li>背景色{@link Builder#backgroundColor(int)} , {@link Builder#backgroundResColor(int)}</li>
+ * <li>加粗、倾斜、粗斜体{@link Builder#boldItalic()}</li>
+ * <li>删除线{@link Builder#strikeThrough()}</li>
+ * <li>下划线{@link Builder#underline()}</li>
+ * <li>上标、下标{@link Builder#superscript()} , {@link Builder#subscript()}</li>
+ * <li>字体大小{@link Builder#fontSize(int)} , {@link Builder#fontProportion(float)} , {@link Builder#fontXProportion(float)}</li>
+ * <li>点击事件{@link Builder#click(ClickableSpan)}</li>
+ * <li>超链接{@link Builder#url}</li>
+ * <li>图文混排（支持对齐方式）{@link Builder#appendImage}</li>
+ * <li>行高设置{@link Builder#lineHeight}</li>
+ * <li>首行缩进{@link Builder#leadingMargin(int, int)}</li>
+ * <li>引用线{@link Builder#quote(int, int, int)}</li>
+ * <li>列表项{@link Builder#bullet}</li>
+ * <li>支持空格{@link Builder#appendSpace}</li>
+ * <li>文字对齐方式{@link Builder#alignment(Layout.Alignment)}</li>
+ * <li>Shader模式{@link Builder#shader(Shader)}</li>
+ * <li>阴影{@link Builder#shadow(float, float, float, int)}</li>
+ * <li>边框{@link Builder#border(int, int)} , {@link Builder#border(int, int, int, int)} </li>
  * </ul>
  * <a href="http://blog.csdn.net/liao277218962/article/details/50623722">PS: Android中各种Span的用法</a>
  */
@@ -98,7 +95,7 @@ public final class SpannableHelper {
     }
 
     public static class Builder {
-        @IntDef({ALIGN_BOTTOM, ALIGN_BASELINE, ALIGN_CENTER, ALIGN_TOP})
+        @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
         @Retention(RetentionPolicy.SOURCE)
         public @interface Align {
             int ALIGN_BOTTOM = 0;
@@ -108,9 +105,8 @@ public final class SpannableHelper {
         }
 
         /**
-         * 默认颜色
+         * 默认标志
          */
-//        private static final int DEFAULT_COLOR = -1;
         private static final int FLAG = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE;
         /**
          * 换行符
@@ -178,6 +174,13 @@ public final class SpannableHelper {
         private float shadowDx;
         private float shadowDy;
         private int shadowColor;
+        /**
+         * 边框
+         */
+        private int border;
+        private int borderColor;
+        private int borderHorizontalPadding;
+        private int borderRadius;
 
         private SpannableStringBuilder mBuilder;
 
@@ -221,6 +224,9 @@ public final class SpannableHelper {
             alignment = null;
             shader = null;
             shadowColor = -1;
+
+            border = -1;
+
         }
 
         /**
@@ -415,7 +421,7 @@ public final class SpannableHelper {
          * @return
          */
         public Builder lineHeight(@IntRange(from = 0) final int lineHeight) {
-            return lineHeight(lineHeight, ALIGN_CENTER);
+            return lineHeight(lineHeight, Align.ALIGN_CENTER);
         }
 
         /**
@@ -542,6 +548,39 @@ public final class SpannableHelper {
         }
 
         /**
+         * 设置边框
+         *
+         * @param border
+         * @param borderColor
+         * @return
+         */
+        public Builder border(@IntRange(from = 0) int border, @ColorInt int borderColor) {
+            this.border = border;
+            this.borderColor = borderColor;
+            return this;
+        }
+
+        /**
+         * 设置边框
+         *
+         * @param border
+         * @param borderColor
+         * @param borderHorizontalPadding
+         * @param radius
+         * @return
+         */
+        public Builder border(@IntRange(from = 0) int border,
+                              @ColorInt int borderColor,
+                              @IntRange(from = 0) int borderHorizontalPadding,
+                              @IntRange(from = 0) int radius) {
+            this.border = border;
+            this.borderColor = borderColor;
+            this.borderHorizontalPadding = borderHorizontalPadding;
+            this.borderRadius = radius;
+            return this;
+        }
+
+        /**
          * 追加字符串
          *
          * @param text 文本
@@ -582,7 +621,7 @@ public final class SpannableHelper {
          * @return
          */
         public Builder appendImage(@NonNull final Bitmap bitmap) {
-            return appendImage(bitmap, ALIGN_BOTTOM);
+            return appendImage(bitmap, Align.ALIGN_BOTTOM);
         }
 
         /**
@@ -612,7 +651,7 @@ public final class SpannableHelper {
          * @return
          */
         public Builder appendImage(@NonNull final Drawable drawable) {
-            return appendImage(drawable, ALIGN_BOTTOM);
+            return appendImage(drawable, Align.ALIGN_BOTTOM);
         }
 
         /**
@@ -642,7 +681,7 @@ public final class SpannableHelper {
          * @return
          */
         public Builder appendImage(@NonNull final Uri uri) {
-            return appendImage(uri, ALIGN_BOTTOM);
+            return appendImage(uri, Align.ALIGN_BOTTOM);
         }
 
         /**
@@ -672,7 +711,7 @@ public final class SpannableHelper {
          * @return
          */
         public Builder appendImage(@DrawableRes final int resourceId) {
-            return appendImage(resourceId, ALIGN_BOTTOM);
+            return appendImage(resourceId, Align.ALIGN_BOTTOM);
         }
 
         /**
@@ -811,6 +850,9 @@ public final class SpannableHelper {
             if (shadowColor != -1) {
                 mBuilder.setSpan(new TShadowSpan(shadowRadius, shadowDx, shadowDy, shadowColor), from, to, FLAG);
             }
+            if (border != -1) {
+                mBuilder.setSpan(new BorderSpan(border, borderColor, borderHorizontalPadding, borderRadius), from, to, FLAG);
+            }
         }
 
         /**
@@ -897,7 +939,7 @@ public final class SpannableHelper {
             private WeakReference<Drawable> mDrawableRef;
 
             private TDynamicDrawableSpan() {
-                mVerticalAlignment = ALIGN_BOTTOM;
+                mVerticalAlignment = Align.ALIGN_BOTTOM;
             }
 
             private TDynamicDrawableSpan(final int verticalAlignment) {
@@ -915,9 +957,9 @@ public final class SpannableHelper {
                 final int fontHeight = (int) (paint.getFontMetrics().descent - paint.getFontMetrics().ascent);
                 if (fm != null) {
                     if (rect.height() > fontHeight) {
-                        if (mVerticalAlignment == ALIGN_TOP) {
+                        if (mVerticalAlignment == Align.ALIGN_TOP) {
                             fm.descent += rect.height() - fontHeight;
-                        } else if (mVerticalAlignment == ALIGN_CENTER) {
+                        } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
                             fm.ascent -= (rect.height() - fontHeight) / 2;
                             fm.descent += (rect.height() - fontHeight) / 2;
                         } else {
@@ -938,11 +980,11 @@ public final class SpannableHelper {
                 final float fontHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
                 int transY = bottom - rect.bottom;
                 if (rect.height() < fontHeight) {
-                    if (mVerticalAlignment == ALIGN_BASELINE) {
+                    if (mVerticalAlignment == Align.ALIGN_BASELINE) {
                         transY -= paint.getFontMetricsInt().descent;
-                    } else if (mVerticalAlignment == ALIGN_CENTER) {
+                    } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
                         transY -= (fontHeight - rect.height()) / 2;
-                    } else if (mVerticalAlignment == ALIGN_TOP) {
+                    } else if (mVerticalAlignment == Align.ALIGN_TOP) {
                         transY -= fontHeight - rect.height();
                     }
                 }
@@ -983,9 +1025,9 @@ public final class SpannableHelper {
             public void chooseHeight(final CharSequence text, final int start, final int end, final int spanstartv, final int v, final Paint.FontMetricsInt fm) {
                 int need = height - (v + fm.descent - fm.ascent - spanstartv);
                 if (need > 0) {
-                    if (mVerticalAlignment == ALIGN_TOP) {
+                    if (mVerticalAlignment == Align.ALIGN_TOP) {
                         fm.descent += need;
-                    } else if (mVerticalAlignment == ALIGN_CENTER) {
+                    } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
                         fm.descent += need / 2;
                         fm.ascent -= need / 2;
                     } else {
@@ -994,9 +1036,9 @@ public final class SpannableHelper {
                 }
                 need = height - (v + fm.bottom - fm.top - spanstartv);
                 if (need > 0) {
-                    if (mVerticalAlignment == ALIGN_TOP) {
+                    if (mVerticalAlignment == Align.ALIGN_TOP) {
                         fm.top += need;
-                    } else if (mVerticalAlignment == ALIGN_CENTER) {
+                    } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
                         fm.bottom += need / 2;
                         fm.top -= need / 2;
                     } else {
@@ -1190,6 +1232,57 @@ public final class SpannableHelper {
             @Override
             public void updateDrawState(final TextPaint tp) {
                 tp.setShadowLayer(radius, dx, dy, shadowColor);
+            }
+        }
+
+        /**
+         * 边框扩展
+         */
+        private static class BorderSpan extends ReplacementSpan {
+            private final Paint mPaint;
+            private RectF rectF;
+            private int mTextWidth;
+            private int border;
+            private int borderInnerPadding;
+            private int radius;
+
+            BorderSpan(int border, @ColorInt int borderColor, int borderInnerPadding, int radius) {
+                mPaint = new Paint();
+                mPaint.setDither(true);
+                mPaint.setAntiAlias(true);
+                mPaint.setStyle(Paint.Style.STROKE);
+                mPaint.setColor(borderColor);
+                mPaint.setStrokeWidth(border);
+
+                this.border = border;
+                this.borderInnerPadding = borderInnerPadding;
+                this.radius = radius;
+            }
+
+            @Override
+            public int getSize(@NonNull Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+                mTextWidth = (int) paint.measureText(text, start, end);
+                return mTextWidth + border * 2 + borderInnerPadding * 2;
+            }
+
+            @Override
+            public void draw(@NonNull Canvas canvas, CharSequence text, int start, int end,
+                             float x, int top, int y, int bottom, @NonNull Paint paint) {
+                rectF = new RectF(x + border / 2,
+                        top,
+                        x + mTextWidth + border * 3 / 2 + borderInnerPadding * 2,
+                        bottom);
+                if (radius > 0) {
+                    canvas.drawRoundRect(rectF, radius, radius, mPaint);
+                } else {
+                    canvas.drawRect(rectF, mPaint);
+                }
+                canvas.drawText(text,
+                        start,
+                        end,
+                        x + borderInnerPadding + border,
+                        y,
+                        paint);
             }
         }
     }

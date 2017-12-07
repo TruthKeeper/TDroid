@@ -50,6 +50,24 @@ public final class ViewUtils {
     /**
      * 通过Drawable来获取Bitmap
      *
+     * @param resId
+     * @param outputWidth
+     * @param outputHeight
+     * @return
+     */
+    public static Bitmap drawable2Bitmap(@DrawableRes int resId, int outputWidth, int outputHeight) {
+        Drawable drawable = ContextCompat.getDrawable(Utils.getApp(), resId);
+        Bitmap bitmap = Bitmap.createBitmap(outputWidth, outputHeight, drawable.getOpacity() != PixelFormat.OPAQUE
+                ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, outputWidth, outputHeight);
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    /**
+     * 通过Drawable来获取Bitmap
+     *
      * @param drawable
      * @return
      */
@@ -67,6 +85,23 @@ public final class ViewUtils {
                 ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         drawable.setBounds(0, 0, w, h);
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
+    /**
+     * 通过Drawable来获取Bitmap
+     *
+     * @param drawable
+     * @param outputWidth
+     * @param outputHeight
+     * @return
+     */
+    public static Bitmap drawable2Bitmap(@NonNull Drawable drawable, int outputWidth, int outputHeight) {
+        Bitmap bitmap = Bitmap.createBitmap(outputWidth, outputHeight, drawable.getOpacity() != PixelFormat.OPAQUE
+                ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, outputWidth, outputHeight);
         drawable.draw(canvas);
         return bitmap;
     }

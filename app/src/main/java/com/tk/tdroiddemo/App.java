@@ -165,6 +165,7 @@ public class App extends Application {
 //                .appendLine("反向对齐").alignment(Layout.Alignment.ALIGN_OPPOSITE).backgroundColor(Color.YELLOW)
 //                .appendLine("这是一个渐变文本").fontProportion(2).shader(linearShader)
 //                .appendLine("这是一个阴影文本").foregroundColor(Color.RED).fontProportion(2).shadow(4, 10, 10, Color.GRAY)
+//                .appendLine("这是一个边框").border(2,Color.RED)
 //                .build());
 
 //        GlideApp.with(this)
