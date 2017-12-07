@@ -1161,12 +1161,7 @@ public final class SpannableHelper {
             private final int spaceWidth;
             private final int spaceColor;
 
-            private TSpaceSpan(final int spaceWidth) {
-                this(spaceWidth, Color.TRANSPARENT);
-            }
-
             private TSpaceSpan(final int spaceWidth, @ColorInt final int spaceColor) {
-                super();
                 this.spaceWidth = spaceWidth;
                 this.spaceColor = spaceColor;
             }
@@ -1246,7 +1241,7 @@ public final class SpannableHelper {
             private int borderInnerPadding;
             private int radius;
 
-            BorderSpan(int border, @ColorInt int borderColor, int borderInnerPadding, int radius) {
+            private  BorderSpan(int border, @ColorInt int borderColor, int borderInnerPadding, int radius) {
                 mPaint = new Paint();
                 mPaint.setDither(true);
                 mPaint.setAntiAlias(true);
