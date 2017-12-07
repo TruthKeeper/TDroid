@@ -7,7 +7,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    defaultConfig{
+    defaultConfig {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [eventBusIndex: 'com.tk.tdroid.EventBusIndex']
@@ -17,23 +17,53 @@ android {
 }
 
 dependencies {
+    /**
+     * api 等同 compile
+     * implementation 和api的区别在于不会被外部感知
+     * compileOnly 只参与编译，不打包
+     * runtimeOnly 不参与编译，打包（一般不用）
+     */
     api project(':Annotation')
-    api rootProject.ext.dependencies["appcompat-v7"]
-    api rootProject.ext.dependencies["constraint"]
-    api rootProject.ext.dependencies["recyclerview"]
-    api rootProject.ext.dependencies["design"]
-
-    api rootProject.ext.dependencies["glide"]
-    api rootProject.ext.dependencies["glide-okhttp3"]
+    api(rootProject.ext.dependencies["appcompat-v7"]) {
+        exclude module: 'support-annotations'
+    }
+    api(rootProject.ext.dependencies["constraint"]) {
+        exclude module: 'support-annotations'
+    }
+    api(rootProject.ext.dependencies["recyclerview"]) {
+        exclude module: 'support-annotations'
+    }
+    api(rootProject.ext.dependencies["design"]) {
+        exclude module: 'support-v4'
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-annotations'
+    }
+    api(rootProject.ext.dependencies["glide"]) {
+        exclude module: 'support-v4'
+    }
+    implementation(rootProject.ext.dependencies["glide-okhttp3"]) {
+        exclude module: 'okhttp'
+    }
     annotationProcessor rootProject.ext.dependencies["glide-processor"]
-
-    api rootProject.ext.dependencies["retrofit2"]
-    api rootProject.ext.dependencies["retrofit2-gson"]
-    implementation rootProject.ext.dependencies["retrofit2-rxjava"]
-
-    api rootProject.ext.dependencies["rxandroid2"]
+    api(rootProject.ext.dependencies["retrofit2"]) {
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+    }
+    implementation(rootProject.ext.dependencies["retrofit2-gson"]) {
+        exclude module: 'gson'
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+        exclude module: 'retrofit'
+    }
+    implementation(rootProject.ext.dependencies["retrofit2-rxjava"]) {
+        exclude module: 'rxjava'
+    }
+    api rootProject.ext.dependencies["okhttp3"]
+    api rootProject.ext.dependencies["gson"]
     api rootProject.ext.dependencies["rxjava2"]
-
+    api(rootProject.ext.dependencies["rxandroid2"]) {
+        exclude module: 'rxjava'
+    }
     api rootProject.ext.dependencies["eventbus"]
     annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
 }
