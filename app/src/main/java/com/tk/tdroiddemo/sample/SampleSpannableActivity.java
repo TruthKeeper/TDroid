@@ -8,15 +8,18 @@ import android.os.Bundle;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.View;
 import android.widget.Toast;
 
 import com.tk.tdroid.base.BaseActivity;
+import com.tk.tdroid.utils.ImageUtils;
 import com.tk.tdroid.utils.SpannableHelper;
-import com.tk.tdroid.utils.ViewUtils;
 import com.tk.tdroiddemo.R;
+
+import java.util.List;
 
 /**
  * <pre>
@@ -40,8 +43,8 @@ public class SampleSpannableActivity extends BaseActivity {
         text.setTextSize(16);
         text.setTextColor(0xFF969696);
 
-        Bitmap bitmap_1 = ViewUtils.drawable2Bitmap(android.R.drawable.ic_input_add, 24, 24);
-        Bitmap bitmap_2 = ViewUtils.drawable2Bitmap(R.mipmap.ic_launcher, 160, 160);
+        Bitmap bitmap_1 = ImageUtils.drawable2Bitmap(android.R.drawable.ic_input_add, 24, 24);
+        Bitmap bitmap_2 = ImageUtils.drawable2Bitmap(R.mipmap.ic_launcher, 160, 160);
 
         Shader linearShader = new LinearGradient(0, 0, text.getPaint().measureText("这是一个渐变文本") * 2, 0,
                 new int[]{Color.GREEN, Color.BLUE, Color.RED},
@@ -63,7 +66,7 @@ public class SampleSpannableActivity extends BaseActivity {
                 .appendLine("32dp字体").fontSize(32, true)
                 .appendLine("1.5倍字体").fontProportion(1.5F)
                 .appendLine("横向2倍字体").fontXProportion(2F)
-                .append("这是一个").appendLine("边框").border(2, Color.RED)
+                .append("这是一个").append("边框").border(2, Color.RED, 10, 12).appendLine()
                 .append("这是一个").appendLine("点击事件").click(new ClickableSpan() {
                     @Override
                     public void onClick(View widget) {
@@ -95,7 +98,12 @@ public class SampleSpannableActivity extends BaseActivity {
                 .appendLine("反向对齐").alignment(Layout.Alignment.ALIGN_OPPOSITE).backgroundColor(Color.YELLOW)
                 .appendLine("这是一个渐变文本").fontProportion(2).shader(linearShader)
                 .appendLine("这是一个阴影文本").foregroundColor(Color.RED).fontProportion(2).shadow(4, 10, 10, Color.GRAY)
+                .appendLine("支持Emoji场景下的ImageTags设置")
+                .append("logo:").appendImage(bitmap_2, SpannableHelper.Builder.Align.ALIGN_BOTTOM, "logo")
                 .build());
+
+        List<String> imageTags = SpannableHelper.findImageTagByText(text.getText());
+        text.append("\n获取到的ImageTags: " + TextUtils.join(",", imageTags));
     }
 
 }

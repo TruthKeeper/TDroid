@@ -50,6 +50,10 @@ import java.io.InputStream;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.ref.WeakReference;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <pre>
@@ -68,7 +72,7 @@ import java.lang.ref.WeakReference;
  * <li>字体大小{@link Builder#fontSize(int)} , {@link Builder#fontProportion(float)} , {@link Builder#fontXProportion(float)}</li>
  * <li>点击事件{@link Builder#click(ClickableSpan)}</li>
  * <li>超链接{@link Builder#url}</li>
- * <li>图文混排（支持对齐方式）{@link Builder#appendImage}</li>
+ * <li>图文混排（支持对齐方式、Emoji场景下的通过ImageTags来获取）{@link Builder#appendImage}</li>
  * <li>行高设置{@link Builder#lineHeight}</li>
  * <li>首行缩进{@link Builder#leadingMargin(int, int)}</li>
  * <li>引用线{@link Builder#quote(int, int, int)}</li>
@@ -83,18 +87,51 @@ import java.lang.ref.WeakReference;
  */
 
 public final class SpannableHelper {
+    private static Pattern pattern;
+
     private SpannableHelper() {
+    }
+
+
+    public static Builder create() {
+        return new Builder();
     }
 
     public static Builder create(@Nullable String text) {
         return new Builder(text);
     }
 
-    public static Builder create() {
-        return new Builder();
+    /**
+     * 查找设置的ImageTags
+     *
+     * @param charSequence
+     * @return
+     */
+    public static List<String> findImageTagByText(@NonNull CharSequence charSequence) {
+        List<String> list = new LinkedList<>();
+        if (EmptyUtils.isEmpty(charSequence)) {
+            return list;
+        }
+        if (pattern == null) {
+            pattern = Pattern.compile(Builder.IMAGE_PLACEHOLDER_START + "[^" + Builder.IMAGE_PLACEHOLDER_END + "]+?>{1}");
+        }
+        Matcher matcher = pattern.matcher(charSequence);
+        while (matcher.find()) {
+            int from = matcher.start();
+            int to = matcher.end();
+            String str = charSequence.subSequence(from, to).toString().replace(Builder.IMAGE_PLACEHOLDER_START, "");
+            list.add(str.substring(0, str.length() - 1));
+        }
+        return list;
     }
 
     public static class Builder {
+
+        private static final String IMAGE_PLACEHOLDER_START = "<IMG@";
+        private static final String IMAGE_PLACEHOLDER_END = ">";
+
+        private static final String SPACE_PLACEHOLDER = "<SPACE>";
+
         @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
         @Retention(RetentionPolicy.SOURCE)
         public @interface Align {
@@ -133,6 +170,7 @@ public final class SpannableHelper {
         private Drawable imageDrawable;
         private Uri imageUri;
         private int imageAlign;
+        private String imageTag;
         /**
          * 行高配置
          */
@@ -216,6 +254,8 @@ public final class SpannableHelper {
             url = null;
             imageDrawable = null;
             imageUri = null;
+            imageTag = null;
+            imageAlign = Align.ALIGN_BOTTOM;
             lineHeight = -1;
 
             lineFirst = -1;
@@ -638,9 +678,28 @@ public final class SpannableHelper {
          * @return
          */
         public Builder appendImage(@NonNull final Bitmap bitmap, @Align final int align) {
+            return appendImage(bitmap, align, null);
+        }
+
+        /**
+         * 追加图片
+         *
+         * @param bitmap   位图
+         * @param align    对齐方式
+         *                 <ul>
+         *                 <li>{@link Align#ALIGN_TOP}顶部对齐</li>
+         *                 <li>{@link Align#ALIGN_CENTER}居中对齐</li>
+         *                 <li>{@link Align#ALIGN_BASELINE}基线对齐</li>
+         *                 <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
+         *                 </ul>
+         * @param imageTag 标记 用于Emoji场景下通过{@link CharSequence}获取拼接的图片Tag
+         * @return
+         */
+        public Builder appendImage(@NonNull Bitmap bitmap, @Align final int align, @Nullable String imageTag) {
             update(TYPE_IMAGE);
-            this.imageDrawable = new BitmapDrawable(Utils.getApp().getResources(), bitmap);
+            this.imageDrawable = ImageUtils.bitmap2Drawable(bitmap);
             this.imageAlign = align;
+            this.imageTag = imageTag;
             return this;
         }
 
@@ -727,6 +786,7 @@ public final class SpannableHelper {
             this.imageAlign = align;
             return this;
         }
+
 
         /**
          * 追加空格
@@ -860,7 +920,11 @@ public final class SpannableHelper {
          */
         private void updateImage() {
             int from = mBuilder.length();
-            mBuilder.append("<Img>");
+            mBuilder.append(IMAGE_PLACEHOLDER_START);
+            if (!EmptyUtils.isEmpty(imageTag)) {
+                mBuilder.append(imageTag);
+            }
+            mBuilder.append(IMAGE_PLACEHOLDER_END);
             int to = mBuilder.length();
             if (imageDrawable != null) {
                 mBuilder.setSpan(new TImageSpan(imageDrawable, imageAlign), from, to, FLAG);
@@ -874,7 +938,7 @@ public final class SpannableHelper {
          */
         private void updateSpace() {
             int from = mBuilder.length();
-            mBuilder.append("<Space>");
+            mBuilder.append(SPACE_PLACEHOLDER);
             int to = mBuilder.length();
             mBuilder.setSpan(new TSpaceSpan(spaceWidth, spaceColor), from, to, FLAG);
         }
@@ -935,12 +999,8 @@ public final class SpannableHelper {
          */
         private static abstract class TDynamicDrawableSpan extends ReplacementSpan {
 
-            private final int mVerticalAlignment;
+            private int mVerticalAlignment = Align.ALIGN_BOTTOM;
             private WeakReference<Drawable> mDrawableRef;
-
-            private TDynamicDrawableSpan() {
-                mVerticalAlignment = Align.ALIGN_BOTTOM;
-            }
 
             private TDynamicDrawableSpan(final int verticalAlignment) {
                 mVerticalAlignment = verticalAlignment;
@@ -1241,7 +1301,7 @@ public final class SpannableHelper {
             private int borderInnerPadding;
             private int radius;
 
-            private  BorderSpan(int border, @ColorInt int borderColor, int borderInnerPadding, int radius) {
+            private BorderSpan(int border, @ColorInt int borderColor, int borderInnerPadding, int radius) {
                 mPaint = new Paint();
                 mPaint.setDither(true);
                 mPaint.setAntiAlias(true);
