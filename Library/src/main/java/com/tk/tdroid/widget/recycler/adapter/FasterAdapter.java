@@ -1838,10 +1838,9 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
          *
          * @param cls
          * @param strategy
-         * @param <T>
          * @return
          */
-        public <T> Builder<D> bind(@NonNull Class<T> cls, @NonNull Strategy<T> strategy) {
+        public Builder<D> bind(@NonNull Class cls, @NonNull Strategy strategy) {
             if (null == bindMap) {
                 bindMap = new ArrayMap<>();
             }

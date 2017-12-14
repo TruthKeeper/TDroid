@@ -61,6 +61,24 @@ public final class AppUtils {
     }
 
     /**
+     * 当前主进程是否存在
+     *
+     * @return
+     */
+    public static boolean isProcessRunning() {
+        ActivityManager activityManager = ((ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE));
+        List<ActivityManager.RunningAppProcessInfo> infoList = activityManager.getRunningAppProcesses();
+        final String mainProcessName = Utils.getApp().getPackageName();
+        final int myPid = android.os.Process.myPid();
+        for (ActivityManager.RunningAppProcessInfo info : infoList) {
+            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 检测服务是否运行
      *
      * @param className 类名
