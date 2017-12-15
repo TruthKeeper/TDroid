@@ -5,7 +5,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.tk.tdroid.constants.TConstants;
@@ -102,10 +101,10 @@ public final class Logger {
     private static final int MAX_LENGTH = 3200;
 
     private static final String LINE_SEP = System.getProperty("line.separator");
-    private static final String TOP_BORDER = "╔═══════════════════════════════════════════════════════════════════════════════════════════════════";
-    private static final String SPLIT_BORDER = "╟───────────────────────────────────────────────────────────────────────────────────────────────────";
-    private static final String LEFT_BORDER = "║ ";
-    private static final String BOTTOM_BORDER = "╚═══════════════════════════════════════════════════════════════════════════════════════════════════";
+    private static final String TOP_BORDER = "┌-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+    private static final String SPLIT_BORDER = "├-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
+    private static final String LEFT_BORDER = "│ ";
+    private static final String BOTTOM_BORDER = "└-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------";
 
     private static final String PARAM = "Param";
     private static final String NULL = "null";
