@@ -53,7 +53,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
         }
-        eventBusEnabled = touchHideSoftKeyboard();
+        touchHideSoftKeyboard = touchHideSoftKeyboard();
     }
 
     @Override

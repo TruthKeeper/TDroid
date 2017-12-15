@@ -10,12 +10,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationManagerCompat;
@@ -63,7 +64,8 @@ public class Toasty {
     @interface Duration {
     }
 
-    private static Toast toast = null;
+    private static Toast mToast = null;
+    private static Handler mHandler = new Handler(Looper.getMainLooper());
 
     private Toasty() {
     }
@@ -95,26 +97,44 @@ public class Toasty {
     /**
      * 显示
      *
-     * @param config
+     * @param resId
      */
-    @MainThread
-    public static void show(Toasty.Config config) {
-        if (toast != null) {
-            toast.cancel();
+    public static void show(@StringRes int resId, @Nullable final Config config) {
+        show(Utils.getApp().getString(resId), config);
+    }
+
+    /**
+     * 显示
+     *
+     * @param text
+     */
+    public static void show(@Nullable CharSequence text, @Nullable final Config config) {
+        if (mToast != null) {
+            mToast.cancel();
         }
-        toast = new Toast(Utils.getApp());
+        final Config realConfig = config == null ? new Config.Builder().build() : config;
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    show(text, realConfig);
+                }
+            });
+        } else {
+            mToast = new Toast(Utils.getApp());
 
-        TextView view = generateTextView(config);
-        view.setPadding(config.horizontalPadding, config.verticalPadding,
-                config.horizontalPadding, config.verticalPadding);
-        //手动测量
-        int measureSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        view.measure(measureSize, measureSize);
-        view.setBackground(generateShape(view, config));
+            TextView view = generateTextView(text, realConfig);
+            view.setPadding(realConfig.horizontalPadding, realConfig.verticalPadding,
+                    realConfig.horizontalPadding, realConfig.verticalPadding);
+            //手动测量
+            int measureSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+            view.measure(measureSize, measureSize);
+            view.setBackground(generateShape(view, realConfig));
 
-        toast.setView(view);
-        toast.setDuration(config.duration);
-        toast.show();
+            mToast.setView(view);
+            mToast.setDuration(realConfig.duration);
+            mToast.show();
+        }
     }
 
     private static GradientDrawable generateShape(View view, Toasty.Config config) {
@@ -126,10 +146,10 @@ public class Toasty {
         return gradientDrawable;
     }
 
-    private static TextView generateTextView(Toasty.Config config) {
+    private static TextView generateTextView(CharSequence text, Toasty.Config config) {
         TextView textView = new TextView(Utils.getApp());
+        textView.setText(text);
         textView.setGravity(Gravity.CENTER);
-        textView.setText(config.text);
         textView.setTextColor(config.textColor);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, config.textSizeSp);
         textView.setTypeface(config.typeface);
@@ -137,7 +157,7 @@ public class Toasty {
         textView.setEllipsize(TextUtils.TruncateAt.END);
 
         if (config.icon != null) {
-            if (!EmptyUtils.isEmpty(config.text)) {
+            if (!EmptyUtils.isEmpty(text)) {
                 textView.setCompoundDrawablePadding(config.iconPadding);
             }
             Drawable icon = DrawableCompat.wrap(config.icon.mutate());
@@ -152,7 +172,6 @@ public class Toasty {
     }
 
     public static class Config {
-        private CharSequence text;
         private int textColor;
         private int textSizeSp;
         private Typeface typeface;
@@ -175,7 +194,6 @@ public class Toasty {
         private int duration;
 
         private Config(Builder builder) {
-            text = builder.text;
             textColor = builder.textColor;
             textSizeSp = builder.textSizeSp;
             typeface = builder.typeface;
@@ -199,7 +217,6 @@ public class Toasty {
         }
 
         public static final class Builder {
-            private CharSequence text = null;
             private int textColor = Color.WHITE;
             private int textSizeSp = 16;
             private Typeface typeface = Typeface.DEFAULT;
@@ -220,27 +237,6 @@ public class Toasty {
             private int verticalPadding = DEFAULT_VERTICAL_PADDING;
 
             private int duration = LENGTH_SHORT;
-
-            public Builder() {
-            }
-
-            /**
-             * @param resId {@code @string}资源
-             * @return
-             */
-            public Builder text(@StringRes int resId) {
-                this.text = Utils.getApp().getString(resId);
-                return this;
-            }
-
-            /**
-             * @param text 文本
-             * @return
-             */
-            public Builder text(@Nullable CharSequence text) {
-                this.text = text;
-                return this;
-            }
 
             /**
              * @param textColor 文字颜色

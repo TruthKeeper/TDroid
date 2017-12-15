@@ -20,7 +20,8 @@
         </activity>
         <activity android:name=".sample.SampleSpannableActivity" />
         <activity android:name=".sample.SampleHttpActivity" />
-        <activity android:name=".sample.SamplePlaceholderUIActivity" />
+        <activity android:name=".sample.SampleViewLoaderActivity" />
+        <activity android:name=".sample.SampleToastActivity" />
 
         <meta-data
             android:name="sample_holder_1"

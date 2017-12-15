@@ -13,8 +13,9 @@ import com.tk.tdroid.widget.recycler.adapter.FasterAdapter;
 import com.tk.tdroid.widget.recycler.adapter.FasterHolder;
 import com.tk.tdroid.widget.recycler.adapter.Strategy;
 import com.tk.tdroiddemo.sample.SampleHttpActivity;
-import com.tk.tdroiddemo.sample.SamplePlaceholderUIActivity;
+import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
 import com.tk.tdroiddemo.sample.SampleSpannableActivity;
+import com.tk.tdroiddemo.sample.SampleToastActivity;
 
 
 public class MainActivity extends BaseActivity implements FasterAdapter.OnItemClickListener {
@@ -35,7 +36,8 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
                 .fillBySingleStrategy(new Item[]{
                         new Item(SampleSpannableActivity.class, "Spannable"),
                         new Item(SampleHttpActivity.class, "Http测试"),
-                        new Item(SamplePlaceholderUIActivity.class, "占位视图"),
+                        new Item(SampleViewLoaderActivity.class, "View视图加载"),
+                        new Item(SampleToastActivity.class, "Toast测试 "),
                 }, new MainStrategy())
                 .itemClickListener(this)
                 .build();

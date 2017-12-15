@@ -29,4 +29,6 @@ interface IActivityProvider {
      * @return
      */
     boolean touchHideSoftKeyboard();
+
+
 }
