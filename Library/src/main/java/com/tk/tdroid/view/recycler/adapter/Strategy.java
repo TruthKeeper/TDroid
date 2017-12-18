@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.recycler.adapter;
+package com.tk.tdroid.view.recycler.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;

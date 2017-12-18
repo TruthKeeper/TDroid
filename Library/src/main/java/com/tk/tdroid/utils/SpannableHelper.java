@@ -87,6 +87,16 @@ import java.util.regex.Pattern;
  */
 
 public final class SpannableHelper {
+
+    @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface Align {
+        int ALIGN_BOTTOM = 0;
+        int ALIGN_BASELINE = 1;
+        int ALIGN_CENTER = 2;
+        int ALIGN_TOP = 3;
+    }
+
     private static Pattern pattern;
 
     private SpannableHelper() {
@@ -132,14 +142,6 @@ public final class SpannableHelper {
 
         private static final String SPACE_PLACEHOLDER = "<SPACE>";
 
-        @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
-        @Retention(RetentionPolicy.SOURCE)
-        public @interface Align {
-            int ALIGN_BOTTOM = 0;
-            int ALIGN_BASELINE = 1;
-            int ALIGN_CENTER = 2;
-            int ALIGN_TOP = 3;
-        }
 
         /**
          * 默认标志
@@ -736,6 +738,28 @@ public final class SpannableHelper {
         /**
          * 追加图片
          *
+         * @param drawable 图片
+         * @param align    对齐方式
+         *                 <ul>
+         *                 <li>{@link Align#ALIGN_TOP}顶部对齐</li>
+         *                 <li>{@link Align#ALIGN_CENTER}居中对齐</li>
+         *                 <li>{@link Align#ALIGN_BASELINE}基线对齐</li>
+         *                 <li>{@link Align#ALIGN_BOTTOM}底部对齐</li>
+         *                 </ul>
+         * @param imageTag 标记 用于Emoji场景下通过{@link CharSequence}获取拼接的图片Tag
+         * @return
+         */
+        public Builder appendImage(@NonNull Drawable drawable, @Align final int align, @Nullable String imageTag) {
+            update(TYPE_IMAGE);
+            this.imageDrawable = drawable;
+            this.imageAlign = align;
+            this.imageTag = imageTag;
+            return this;
+        }
+
+        /**
+         * 追加图片
+         *
          * @param uri 图片uri
          * @return
          */
@@ -963,7 +987,9 @@ public final class SpannableHelper {
             private TImageSpan(@NonNull final Drawable drawable, final int verticalAlignment) {
                 super(verticalAlignment);
                 mDrawable = drawable;
-                mDrawable.setBounds(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
+                if (mDrawable.getBounds().isEmpty()) {
+                    mDrawable.setBounds(0, 0, mDrawable.getIntrinsicWidth(), mDrawable.getIntrinsicHeight());
+                }
             }
 
             private TImageSpan(@NonNull final Uri uri, final int verticalAlignment) {
@@ -1014,16 +1040,25 @@ public final class SpannableHelper {
                                final Paint.FontMetricsInt fm) {
                 Drawable d = getCachedDrawable();
                 Rect rect = d.getBounds();
-                final int fontHeight = (int) (paint.getFontMetrics().descent - paint.getFontMetrics().ascent);
                 if (fm != null) {
+                    final int descent = (int) paint.getFontMetrics().descent;
+                    final int ascent = (int) paint.getFontMetrics().ascent;
+                    final int fontHeight = descent - ascent;
                     if (rect.height() > fontHeight) {
+                        //图片大于字体大小时需要调整字体绘制位置
+                        //获取到的fm为同一实例对象，故重新赋值
                         if (mVerticalAlignment == Align.ALIGN_TOP) {
-                            fm.descent += rect.height() - fontHeight;
+                            fm.ascent = ascent;
+                            fm.descent = descent + (rect.height() - fontHeight);
                         } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
-                            fm.ascent -= (rect.height() - fontHeight) / 2;
-                            fm.descent += (rect.height() - fontHeight) / 2;
+                            fm.ascent = ascent - (rect.height() - fontHeight) / 2;
+                            fm.descent = descent + (rect.height() - fontHeight) / 2;
+                        } else if (mVerticalAlignment == Align.ALIGN_BOTTOM) {
+                            fm.ascent = ascent - (rect.height() - fontHeight);
+                            fm.descent = descent;
                         } else {
-                            fm.ascent -= rect.height() - fontHeight;
+                            fm.ascent = ascent - (rect.height() - fontHeight) - descent;
+                            fm.descent = 0;
                         }
                     }
                 }
@@ -1038,15 +1073,14 @@ public final class SpannableHelper {
                 Rect rect = d.getBounds();
                 canvas.save();
                 final float fontHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
-                int transY = bottom - rect.bottom;
-                if (rect.height() < fontHeight) {
-                    if (mVerticalAlignment == Align.ALIGN_BASELINE) {
-                        transY -= paint.getFontMetricsInt().descent;
-                    } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
-                        transY -= (fontHeight - rect.height()) / 2;
-                    } else if (mVerticalAlignment == Align.ALIGN_TOP) {
-                        transY -= fontHeight - rect.height();
-                    }
+                //不用bottom以兼容lineSpace场景
+                int transY = (int) (paint.getFontMetrics().descent + y - rect.bottom);
+                if (mVerticalAlignment == Align.ALIGN_BASELINE) {
+                    transY -= paint.getFontMetricsInt().descent;
+                } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
+                    transY -= (fontHeight - rect.height()) / 2;
+                } else if (mVerticalAlignment == Align.ALIGN_TOP) {
+                    transY -= fontHeight - rect.height();
                 }
                 canvas.translate(x, transY);
                 d.draw(canvas);

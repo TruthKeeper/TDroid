@@ -1,21 +1,24 @@
-package com.tk.tdroid.utils;
+package com.tk.tdroid.view.viewloader;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewStub;
 import android.widget.FrameLayout;
 
-import com.tk.tdroid.widget.viewloader.IViewLoader;
-import com.tk.tdroid.widget.viewloader.LoaderViewContainer;
+import com.tk.tdroid.utils.Utils;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static com.tk.tdroid.utils.ViewLoader.Status.*;
+import static com.tk.tdroid.view.viewloader.ViewLoader.Status.content;
+import static com.tk.tdroid.view.viewloader.ViewLoader.Status.empty;
+import static com.tk.tdroid.view.viewloader.ViewLoader.Status.error;
+import static com.tk.tdroid.view.viewloader.ViewLoader.Status.loading;
+import static com.tk.tdroid.view.viewloader.ViewLoader.Status.networkInvalid;
 
 /**
  * <pre>
@@ -43,38 +46,45 @@ public final class ViewLoader implements IViewLoader {
     }
 
     private View mEmptyView;
-    private ViewStub mEmptyViewStub;
-
+    private int mEmptyViewRes;
     private View mErrorView;
-    private ViewStub mErrorViewStub;
-
+    private int mErrorViewRes;
     private View mLoadingView;
-    private ViewStub mLoadingViewStub;
-
+    private int mLoadingViewRes;
     private View mNetworkInvalidView;
-    private ViewStub mNetworkInvalidViewStub;
-
+    private int mNetworkInvalidViewRes;
     private View mContentView;
     private LoaderViewContainer container;
 
     private int status = content;
 
+    /**
+     * 获取一个ViewLoader构造器
+     *
+     * @param view
+     * @return
+     */
     public static ViewLoader.Builder with(@Nullable View view) {
         return new ViewLoader.Builder(view);
     }
 
     private ViewLoader(Builder builder) {
         mEmptyView = builder.mEmptyView;
-        mEmptyViewStub = builder.mEmptyViewStub;
+        mEmptyViewRes = builder.mEmptyViewRes;
         mErrorView = builder.mErrorView;
-        mErrorViewStub = builder.mErrorViewStub;
+        mErrorViewRes = builder.mErrorViewRes;
         mLoadingView = builder.mLoadingView;
-        mLoadingViewStub = builder.mLoadingViewStub;
+        mLoadingViewRes = builder.mLoadingViewRes;
         mNetworkInvalidView = builder.mNetworkInvalidView;
-        mNetworkInvalidViewStub = builder.mNetworkInvalidViewStub;
+        mNetworkInvalidViewRes = builder.mNetworkInvalidViewRes;
         mContentView = builder.mContentView;
     }
 
+    /**
+     * 创建
+     *
+     * @return
+     */
     public ViewLoader create() {
         ViewGroup parent = (ViewGroup) mContentView.getParent();
         if (parent == null) {
@@ -93,23 +103,31 @@ public final class ViewLoader implements IViewLoader {
         }
         if (mEmptyView != null) {
             container.addView(mEmptyView);
-        } else if (mEmptyViewStub != null) {
-            container.addView(mEmptyViewStub);
+        } else if (mEmptyViewRes != 0) {
+            mEmptyView = LayoutInflater.from(Utils.getApp()).inflate(mEmptyViewRes, container, false);
+            mEmptyViewRes = 0;
+            container.addView(mEmptyView);
         }
         if (mErrorView != null) {
             container.addView(mErrorView);
-        } else if (mErrorViewStub != null) {
-            container.addView(mErrorViewStub);
+        } else if (mErrorViewRes != 0) {
+            mErrorView = LayoutInflater.from(Utils.getApp()).inflate(mErrorViewRes, container, false);
+            mErrorViewRes = 0;
+            container.addView(mErrorView);
         }
         if (mLoadingView != null) {
             container.addView(mLoadingView);
-        } else if (mLoadingViewStub != null) {
-            container.addView(mLoadingViewStub);
+        } else if (mLoadingViewRes != 0) {
+            mLoadingView = LayoutInflater.from(Utils.getApp()).inflate(mLoadingViewRes, container, false);
+            mLoadingViewRes = 0;
+            container.addView(mLoadingView);
         }
         if (mNetworkInvalidView != null) {
             container.addView(mNetworkInvalidView);
-        } else if (mNetworkInvalidViewStub != null) {
-            container.addView(mNetworkInvalidViewStub);
+        } else if (mNetworkInvalidViewRes != 0) {
+            mNetworkInvalidView = LayoutInflater.from(Utils.getApp()).inflate(mNetworkInvalidViewRes, container, false);
+            mNetworkInvalidViewRes = 0;
+            container.addView(mNetworkInvalidView);
         }
 
         return this;
@@ -137,9 +155,10 @@ public final class ViewLoader implements IViewLoader {
 
     @Override
     public void showEmptyView() {
-        if (mEmptyViewStub != null) {
-            mEmptyView = mEmptyViewStub.inflate();
-            mEmptyViewStub = null;
+        if (mEmptyViewRes != 0) {
+            mEmptyView = LayoutInflater.from(Utils.getApp()).inflate(mEmptyViewRes, container, false);
+            container.addView(mEmptyView);
+            mEmptyViewRes = 0;
         }
         if (showView(mEmptyView)) {
             status = empty;
@@ -148,9 +167,10 @@ public final class ViewLoader implements IViewLoader {
 
     @Override
     public void showErrorView() {
-        if (mErrorViewStub != null) {
-            mErrorView = mErrorViewStub.inflate();
-            mErrorViewStub = null;
+        if (mErrorViewRes != 0) {
+            mErrorView = LayoutInflater.from(Utils.getApp()).inflate(mErrorViewRes, container, false);
+            container.addView(mErrorView);
+            mErrorViewRes = 0;
         }
         if (showView(mErrorView)) {
             status = error;
@@ -159,9 +179,10 @@ public final class ViewLoader implements IViewLoader {
 
     @Override
     public void showLoadingView() {
-        if (mLoadingViewStub != null) {
-            mLoadingView = mLoadingViewStub.inflate();
-            mLoadingViewStub = null;
+        if (mLoadingViewRes != 0) {
+            mLoadingView = LayoutInflater.from(Utils.getApp()).inflate(mLoadingViewRes, container, false);
+            container.addView(mLoadingView);
+            mLoadingViewRes = 0;
         }
         if (showView(mLoadingView)) {
             status = loading;
@@ -170,9 +191,10 @@ public final class ViewLoader implements IViewLoader {
 
     @Override
     public void showNetworkInvalidView() {
-        if (mNetworkInvalidViewStub != null) {
-            mNetworkInvalidView = mNetworkInvalidViewStub.inflate();
-            mNetworkInvalidViewStub = null;
+        if (mNetworkInvalidViewRes != 0) {
+            mNetworkInvalidView = LayoutInflater.from(Utils.getApp()).inflate(mNetworkInvalidViewRes, container, false);
+            container.addView(mNetworkInvalidView);
+            mNetworkInvalidViewRes = 0;
         }
         if (showView(mNetworkInvalidView)) {
             status = networkInvalid;
@@ -187,14 +209,14 @@ public final class ViewLoader implements IViewLoader {
     }
 
     public static final class Builder {
-        private View mEmptyView;
-        private ViewStub mEmptyViewStub;
-        private View mErrorView;
-        private ViewStub mErrorViewStub;
-        private View mLoadingView;
-        private ViewStub mLoadingViewStub;
-        private View mNetworkInvalidView;
-        private ViewStub mNetworkInvalidViewStub;
+        private View mEmptyView = null;
+        private int mEmptyViewRes = 0;
+        private View mErrorView = null;
+        private int mErrorViewRes = 0;
+        private View mLoadingView = null;
+        private int mLoadingViewRes = 0;
+        private View mNetworkInvalidView = null;
+        private int mNetworkInvalidViewRes = 0;
         private View mContentView;
 
         public Builder(@NonNull View view) {
@@ -202,70 +224,59 @@ public final class ViewLoader implements IViewLoader {
         }
 
         public Builder emptyView(@Nullable View view) {
-            mEmptyViewStub = null;
             mEmptyView = view;
+            mEmptyViewRes = 0;
             return this;
         }
 
         public Builder emptyView(@LayoutRes int layoutId) {
             mEmptyView = null;
-            if (mEmptyViewStub == null) {
-                mEmptyViewStub = new ViewStub(mContentView.getContext(), layoutId);
-            } else {
-                mEmptyViewStub.setLayoutResource(layoutId);
-            }
+            mEmptyViewRes = layoutId;
             return this;
         }
 
         public Builder errorView(@Nullable View view) {
-            mErrorViewStub = null;
             mErrorView = view;
+            mErrorViewRes = 0;
             return this;
         }
 
         public Builder errorView(@LayoutRes int layoutId) {
             mErrorView = null;
-            if (mErrorViewStub == null) {
-                mErrorViewStub = new ViewStub(mContentView.getContext(), layoutId);
-            } else {
-                mErrorViewStub.setLayoutResource(layoutId);
-            }
+            mErrorViewRes = layoutId;
             return this;
         }
 
         public Builder loadingView(@Nullable View view) {
-            mLoadingViewStub = null;
             mLoadingView = view;
+            mLoadingViewRes = 0;
             return this;
         }
 
         public Builder loadingView(@LayoutRes int layoutId) {
             mLoadingView = null;
-            if (mLoadingViewStub == null) {
-                mLoadingViewStub = new ViewStub(mContentView.getContext(), layoutId);
-            } else {
-                mLoadingViewStub.setLayoutResource(layoutId);
-            }
+            mLoadingViewRes = layoutId;
             return this;
         }
 
 
         public Builder networkInvalidView(@Nullable View view) {
-            mNetworkInvalidViewStub = null;
             mNetworkInvalidView = view;
+            mNetworkInvalidViewRes = 0;
             return this;
         }
 
         public Builder networkInvalidView(@LayoutRes int layoutId) {
             mNetworkInvalidView = null;
-            if (mNetworkInvalidViewStub == null) {
-                mNetworkInvalidViewStub = new ViewStub(mContentView.getContext(), layoutId);
-            } else {
-                mNetworkInvalidViewStub.setLayoutResource(layoutId);
-            }
+            mNetworkInvalidViewRes = layoutId;
             return this;
         }
 
+        /**
+         * 创建
+         *
+         * @return
+         */
         public ViewLoader create() {
             return new ViewLoader(this).create();
         }

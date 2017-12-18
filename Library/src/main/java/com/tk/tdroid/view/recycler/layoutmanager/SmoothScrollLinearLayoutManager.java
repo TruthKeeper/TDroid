@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.recycler.layoutmanager;
+package com.tk.tdroid.view.recycler.layoutmanager;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;

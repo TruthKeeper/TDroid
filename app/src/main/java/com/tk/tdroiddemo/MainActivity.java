@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
-import com.tk.tdroid.widget.recycler.adapter.FasterAdapter;
-import com.tk.tdroid.widget.recycler.adapter.FasterHolder;
-import com.tk.tdroid.widget.recycler.adapter.Strategy;
+import com.tk.tdroid.view.recycler.adapter.FasterAdapter;
+import com.tk.tdroid.view.recycler.adapter.FasterHolder;
+import com.tk.tdroid.view.recycler.adapter.Strategy;
 import com.tk.tdroiddemo.sample.SampleHttpActivity;
 import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
 import com.tk.tdroiddemo.sample.SampleSpannableActivity;

@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.viewloader;
+package com.tk.tdroid.view.viewloader;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

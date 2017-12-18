@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.viewloader;
+package com.tk.tdroid.view.viewloader;
 
 /**
  * <pre>

@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.recycler.layoutmanager;
+package com.tk.tdroid.view.recycler.layoutmanager;
 
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;

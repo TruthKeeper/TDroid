@@ -1,4 +1,4 @@
-package com.tk.tdroid.widget.recycler;
+package com.tk.tdroid.view.recycler;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,7 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.tk.tdroid.widget.recycler.adapter.FasterAdapter;
+import com.tk.tdroid.view.recycler.adapter.FasterAdapter;
 
 
 /**

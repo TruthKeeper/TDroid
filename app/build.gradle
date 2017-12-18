@@ -55,6 +55,7 @@ android {
                     "sample_holder_2": "bbb",
             ]
             ext.alwaysUpdateBuildId = false
+            aaptOptions.cruncherEnabled = false
             signingConfig signingConfigs.debug
         }
         release {

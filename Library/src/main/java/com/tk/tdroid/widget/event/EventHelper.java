@@ -24,7 +24,7 @@ import java.util.Locale;
  */
 public final class EventHelper {
     private static final String TAG = "EventHelper";
-    private static boolean EVENT_LOG = true;
+    public static boolean EVENT_LOG = true;
 
     private EventHelper() {
         throw new IllegalStateException();

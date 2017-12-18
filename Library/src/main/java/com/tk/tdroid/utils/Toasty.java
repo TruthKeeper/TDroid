@@ -227,11 +227,11 @@ public class Toasty {
             private int iconPadding = DEFAULT_ICON_PADDING;
             private boolean tintByTextColor = true;
 
-            private int backgroundColor = Color.BLACK;
+            private int backgroundColor = 0xFF494949;
             private int strokeColor = Color.TRANSPARENT;
             private int strokeWidth = 0;
-            private int cornerRadius = 0;
-            private int alpha = 255;
+            private int cornerRadius = Integer.MAX_VALUE;
+            private int alpha = 200;
 
             private int horizontalPadding = DEFAULT_HORIZONTAL_PADDING;
             private int verticalPadding = DEFAULT_VERTICAL_PADDING;

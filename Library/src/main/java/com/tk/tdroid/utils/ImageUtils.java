@@ -5,8 +5,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -49,6 +51,7 @@ public final class ImageUtils {
         }
         return 0;
     }
+
     /**
      * 通过Drawable来获取Bitmap
      *
@@ -116,6 +119,18 @@ public final class ImageUtils {
         drawable.setBounds(0, 0, outputWidth, outputHeight);
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    /**
+     * 获取纯色Bitmap
+     *
+     * @param color
+     * @param outputWidth
+     * @param outputHeight
+     * @return
+     */
+    public static Bitmap color2Bitmap(@ColorInt int color, int outputWidth, int outputHeight) {
+        return drawable2Bitmap(new ColorDrawable(color), outputWidth, outputHeight);
     }
 
     /**
