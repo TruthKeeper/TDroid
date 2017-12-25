@@ -4,14 +4,14 @@ import android.app.Application;
 import android.util.Log;
 
 import com.tk.tdroid.EventBusIndex;
+import com.tk.tdroid.event.EventHelper;
+import com.tk.tdroid.http.HttpConfig;
+import com.tk.tdroid.http.HttpUtils;
+import com.tk.tdroid.http.interceptor.CookieInterceptor;
+import com.tk.tdroid.image.ImageLoader;
 import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
 import com.tk.tdroid.utils.Utils;
-import com.tk.tdroid.widget.event.EventHelper;
-import com.tk.tdroid.widget.http.HttpConfig;
-import com.tk.tdroid.widget.http.HttpUtils;
-import com.tk.tdroid.widget.http.interceptor.CookieInterceptor;
-import com.tk.tdroid.widget.image.GlideModuleImpl;
 import com.tk.tdroiddemo.aop.annotation.Logger;
 
 import java.io.File;
@@ -41,9 +41,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-        //启用Glide的OkHttpClient支持
-        new GlideModuleImpl.Builder()
-                .install();
+        //初始化ImageLoader
+        ImageLoader.init();
 
         HttpConfig httpConfig = new HttpConfig.Builder()
                 .baseUrl("https://www.baidu.com/")
@@ -104,7 +103,6 @@ public class App extends Application {
 //        Logger.d(TimeUtils.formatSpanByNow(new Date().getTime() - 1000 * 1000*10));
 
 //        ABC abc = InstanceFactory.create(ABC.class);
-
 
 
 //        GlideApp.with(this)

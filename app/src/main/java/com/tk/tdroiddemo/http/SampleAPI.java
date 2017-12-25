@@ -1,7 +1,7 @@
 package com.tk.tdroiddemo.http;
 
-import com.tk.tdroid.widget.http.RuntimeUrlManager;
-import com.tk.tdroid.widget.http.progress.ProgressManager;
+import com.tk.tdroid.http.RuntimeUrlManager;
+import com.tk.tdroid.http.progress.ProgressManager;
 import com.tk.tdroiddemo.bean.GitHubUser;
 import com.tk.tdroiddemo.bean.IpBean;
 

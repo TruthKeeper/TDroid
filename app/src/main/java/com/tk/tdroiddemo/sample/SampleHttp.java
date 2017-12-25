@@ -1,5 +1,6 @@
 package com.tk.tdroiddemo.sample;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.widget.Toast;
 
@@ -7,12 +8,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.tk.tdroid.http.HttpUtils;
+import com.tk.tdroid.http.RuntimeUrlManager;
+import com.tk.tdroid.http.progress.ProgressManager;
+import com.tk.tdroid.image.ImageLoader;
+import com.tk.tdroid.image.LoaderCallback;
+import com.tk.tdroid.image.glide.GlideApp;
 import com.tk.tdroid.rx.AsyncCall;
 import com.tk.tdroid.utils.Utils;
-import com.tk.tdroid.widget.http.HttpUtils;
-import com.tk.tdroid.widget.http.RuntimeUrlManager;
-import com.tk.tdroid.widget.http.progress.ProgressManager;
-import com.tk.tdroid.widget.image.GlideApp;
 import com.tk.tdroiddemo.bean.GitHubUser;
 import com.tk.tdroiddemo.bean.IpBean;
 import com.tk.tdroiddemo.http.SampleAPI;
@@ -242,13 +245,13 @@ public class SampleHttp {
         final String imageUrl = "https://raw.githubusercontent.com/TruthKeeper/Note/master/Http/OSI%E4%B8%83%E5%B1%82%E5%8D%8F%E8%AE%AE.png";
         //监听动态Header
         ProgressManager.getInstance().addResponseListener(imageUrl, activity);
-        GlideApp.with(activity)
+        ImageLoader.with(activity)
                 .load(imageUrl)
-                .skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(new SimpleTarget<Drawable>() {
+                .memoryCache(false)
+                .diskCache(false)
+                .into(new LoaderCallback() {
                     @Override
-                    public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
+                    public void onSuccess(Bitmap bitmap) {
                         Toast.makeText(Utils.getApp(), "加载图像完毕", Toast.LENGTH_SHORT).show();
                         ProgressManager.getInstance().removeListener(imageUrl);
                     }

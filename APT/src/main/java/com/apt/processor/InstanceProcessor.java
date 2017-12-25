@@ -50,6 +50,9 @@ public class InstanceProcessor implements IProcessor {
 
         List<String> classNameList = new ArrayList<>();
         CodeBlock.Builder blockBuilder = CodeBlock.builder();
+        blockBuilder.beginControlFlow("if(cls==null)");
+        blockBuilder.addStatement("return null");
+        blockBuilder.endControlFlow();
         blockBuilder.beginControlFlow("try");
         blockBuilder.beginControlFlow("switch (cls.getName())");
         try {

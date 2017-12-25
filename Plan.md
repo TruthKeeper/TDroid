@@ -1,6 +1,12 @@
 # Plan
 
-### Http
+## 功能组件
+
+### EventBus事件总线 widget.event
+
+
+
+### Http widget.http
 
 > Retrofit2 + OkHttp3 + RxJava2 + Gson 示例代码见 sample.SampleHttp
 
@@ -11,26 +17,34 @@
 - 离线缓存
 - 全局监听请求、响应、Glide请求的进度，支持API中动态、静态配置 , 适配重定向 widget.http.progress.ProgressManager
 
-### APT
+### Image widget.image
+
+
+
+### 6.0+权限动态获取 By RxJava2 widget.permission
+
+> PermissionManager.with().request()
+
+## APT
 
 > 编译时生成注解
 
 - 反射实例化工具`com.apt.InstanceFactory`，对支持APT的类添加注解`com.apt.annotation.Instance`
 
-### AOP
+## AOP
 
 > 切面编程
 
 - 日志打印，`@com.tk.tdroiddemo.aop.annotation.Logger`，修饰类、构造方法、方法，打印参数、方法耗时
 - 校验网络，无网络不执行，`@com.tk.tdroiddemo.aop.annotation.CheckNetwork`，修饰方法
 
-### Base Activity && Fragment
+## Base Activity && Fragment
 
 - ViewStub初始化、加载中、错误视图、网络异常占位图设置 **TODO**
 - **RxJava**绑定生命周期
 - EventBus事件总线
 
-### 工具类
+## 工具类
 
 - App工具类 utils.AppUtils
 - 位操作工具类 utils.BitUtils
@@ -48,6 +62,8 @@
 - 日志工具类 utils.Logger
 - 网络环境观察者 utils.NetworkObservable
 - 网络环境观察者 **By RxJava** utils.NetworkRxObservable
+- 反射工具类 utils.ReflectUtils
+- 截屏工具类 utils.ScreenShotUtils
 - 屏幕工具类 utils.ScreenUtils
 - SharedPreference工具类 utils.SharedPreferenceUtils
 - Shell命令工具类 utils.ShellUtils
@@ -65,6 +81,10 @@
 - View工具类 utils.ViewUtils
 - 压缩、解压文件工具类 utils.ZipUtils
 
-### 控件
+## 控件
 
 - 过滤指定格式的**AppCompatEditText** view.FilterEditText
+- View视图加载器，支持空视图、错误视图、加载中视图、无网络视图的配置 view.viewloader
+- RecyclerView的工具 view.recycler
+
+

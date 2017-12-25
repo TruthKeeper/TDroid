@@ -17,8 +17,8 @@ import com.tk.tdroid.rx.lifecycle.FragmentLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
-import com.tk.tdroid.widget.event.Event;
-import com.tk.tdroid.widget.event.EventHelper;
+import com.tk.tdroid.event.Event;
+import com.tk.tdroid.event.EventHelper;
 
 import org.greenrobot.eventbus.Subscribe;
 

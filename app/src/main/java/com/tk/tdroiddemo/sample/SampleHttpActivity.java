@@ -6,9 +6,9 @@ import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroid.utils.SizeUtils;
-import com.tk.tdroid.widget.http.progress.ProgressInfo;
-import com.tk.tdroid.widget.http.progress.ProgressListener;
-import com.tk.tdroid.widget.http.progress.ProgressManager;
+import com.tk.tdroid.http.progress.ProgressInfo;
+import com.tk.tdroid.http.progress.ProgressListener;
+import com.tk.tdroid.http.progress.ProgressManager;
 import com.tk.tdroiddemo.R;
 
 import retrofit2.http.POST;
