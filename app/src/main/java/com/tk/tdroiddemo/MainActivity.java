@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
+import com.tk.tdroiddemo.sample.SampleUIActivity;
 import com.tk.widget.recycler.adapter.FasterAdapter;
 import com.tk.widget.recycler.adapter.FasterHolder;
 import com.tk.widget.recycler.adapter.Strategy;
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
                         new Item(SampleHttpActivity.class, "Http测试"),
                         new Item(SampleViewLoaderActivity.class, "View视图加载"),
                         new Item(SampleToastActivity.class, "Toast测试 "),
+                        new Item(SampleUIActivity.class, "UI封装 "),
                 }, new MainStrategy())
                 .itemClickListener(this)
                 .build();

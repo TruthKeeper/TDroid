@@ -59,7 +59,7 @@ import java.util.regex.Pattern;
  * <pre>
  *      author : TK
  *      time : 2017/9/30
- *      desc : Spannable辅助类
+ *      desc : Spannable生成工具
  * </pre>
  * 支持：
  * <ul>
@@ -86,7 +86,7 @@ import java.util.regex.Pattern;
  * <a href="http://blog.csdn.net/liao277218962/article/details/50623722">PS: Android中各种Span的用法</a>
  */
 
-public final class SpannableHelper {
+public final class SpannableFactory {
 
     @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
     @Retention(RetentionPolicy.SOURCE)
@@ -99,7 +99,7 @@ public final class SpannableHelper {
 
     private static Pattern pattern;
 
-    private SpannableHelper() {
+    private SpannableFactory() {
     }
 
 
@@ -107,7 +107,7 @@ public final class SpannableHelper {
         return new Builder();
     }
 
-    public static Builder create(@Nullable String text) {
+    public static Builder create(@Nullable CharSequence text) {
         return new Builder(text);
     }
 
@@ -233,7 +233,7 @@ public final class SpannableHelper {
             this(null);
         }
 
-        public Builder(String text) {
+        public Builder(CharSequence text) {
             mBuilder = new SpannableStringBuilder();
             tempText = EmptyUtils.isEmpty(text) ? "" : text;
             reset();

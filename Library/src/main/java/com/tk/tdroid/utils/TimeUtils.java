@@ -19,13 +19,16 @@ public final class TimeUtils {
     private static final int MINUTE = 60 * SECOND;
     private static final int HOUR = 60 * MINUTE;
     private static final int DAY = 24 * HOUR;
-    private static final int WEEK = 7 * DAY;
+
+    private static final int DEFAULT_JUST_NOW = 5 * MINUTE;
 
     private static final String SECOND_STR = "秒";
-    private static final String MINUTE_STR = "分";
+    private static final String MINUTE_STR = "分钟";
     private static final String HOUR_STR = "小时";
     private static final String DAY_STR = "天";
-    private static final String WEEK_STR = "周";
+
+    private static final String TODAY_STR = "今天";
+    private static final String YESTERDAY_STR = "昨天";
 
     private static final SimpleDateFormat exactDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
 
@@ -39,7 +42,7 @@ public final class TimeUtils {
      * @param millisecond
      * @return 2017-08-08 20:20:20
      */
-    public static String formatExactDate(long millisecond) {
+    public static String toExactDate(long millisecond) {
         return exactDate.format(new Date(millisecond));
     }
 
@@ -49,7 +52,7 @@ public final class TimeUtils {
      * @param millisecond
      * @return 12:34
      */
-    public static String formatHourMinute(long millisecond) {
+    public static String toHourMinute(long millisecond) {
         if (millisecond < MINUTE) {
             return "00:00";
         }
@@ -70,10 +73,10 @@ public final class TimeUtils {
      * 解析成时 分 秒
      *
      * @param millisecond
-     * @param fully       保持2个冒号分隔符 like 12:34:56
+     * @param fully       是否保持2个冒号分隔符 like 12:34:56
      * @return 12:34:56 or 12:34
      */
-    public static String formatHourMinuteSecond(long millisecond, boolean fully) {
+    public static String toHourMinuteSecond(long millisecond, boolean fully) {
         if (millisecond < SECOND) {
             return fully ? "00:00:00" : "00:00";
         }
@@ -105,13 +108,13 @@ public final class TimeUtils {
     }
 
     /**
-     * 解析成中文时间
+     * 解析成剩余时间
      *
      * @param millisecond
      * @param withSecond  是否在最后携带秒数
-     * @return 12小时34分钟（56秒）
+     * @return 2天12小时34分钟（56秒）
      */
-    public static String formatBySurplus(long millisecond, boolean withSecond) {
+    public static String toSurplus(long millisecond, boolean withSecond) {
         StringBuilder builder = new StringBuilder();
         if (millisecond < MINUTE) {
             if (withSecond) {
@@ -175,16 +178,17 @@ public final class TimeUtils {
      * @param millisecond 小于当前时间
      * @return
      */
-    public static String formatSpanByNow(final long millisecond) {
+    public static String toTimeSpan(long millisecond) {
         long now = new Date().getTime();
         long span = now - millisecond;
-
-        if (span < 3 * MINUTE) {
-            //3分钟内
+        if (span < 0) {
+            return "";
+        }
+        if (span <= DEFAULT_JUST_NOW) {
             return "刚刚";
         }
         if (span < HOUR) {
-            return String.format(Locale.getDefault(), "%d分钟前", span / MINUTE);
+            return String.format(Locale.getDefault(), "%d%s前", span / MINUTE, MINUTE_STR);
         }
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, 0);
@@ -195,11 +199,11 @@ public final class TimeUtils {
         long morning = calendar.getTimeInMillis();
         calendar.clear();
         if (millisecond >= morning) {
-            return "今天 " + formatHourMinute(millisecond - morning);
+            return TODAY_STR + " " + toHourMinute(millisecond - morning);
         } else if (millisecond < morning && millisecond >= morning - DAY) {
-            return "昨天 " + formatHourMinute(millisecond - (morning - DAY));
+            return YESTERDAY_STR + " " + toHourMinute(millisecond - (morning - DAY));
         } else {
-            return formatExactDate(millisecond);
+            return toExactDate(millisecond);
         }
     }
 }

@@ -17,7 +17,7 @@ import android.view.View;
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroid.utils.DensityUtil;
 import com.tk.tdroid.utils.ImageUtils;
-import com.tk.tdroid.utils.SpannableHelper;
+import com.tk.tdroid.utils.SpannableFactory;
 import com.tk.tdroid.utils.Toasty;
 import com.tk.tdroiddemo.R;
 
@@ -58,7 +58,7 @@ public class SampleSpannableActivity extends BaseActivity {
         Shader linearShader = new LinearGradient(0, 0, text.getPaint().measureText("这是一个渐变文本") * 2, 0,
                 new int[]{Color.GREEN, Color.BLUE, Color.RED},
                 new float[]{0F, 0.5F, 1F}, Shader.TileMode.CLAMP);
-        text.setText(new SpannableHelper.Builder()
+        text.setText(new SpannableFactory.Builder()
                 .appendLine("前景色_色值").foregroundColor(Color.BLUE)
                 .appendLine("前景色_资源").foregroundResColor(R.color.colorAccent)
                 .appendLine("背景色_色值").backgroundColor(Color.BLUE)
@@ -83,18 +83,18 @@ public class SampleSpannableActivity extends BaseActivity {
                 })
                 .append("这是一个").appendLine("超链接").url("https://www.github.com/")
                 .append("顶部、居中、基线、底部对齐：")
-                .appendImage(ImageUtils.color2Bitmap(Color.RED, smallSize, smallSize), SpannableHelper.Align.ALIGN_TOP)
-                .appendImage(ImageUtils.color2Bitmap(Color.YELLOW, smallSize, smallSize), SpannableHelper.Align.ALIGN_CENTER)
-                .appendImage(ImageUtils.color2Bitmap(Color.BLUE, smallSize, smallSize), SpannableHelper.Align.ALIGN_BASELINE)
-                .appendImage(ImageUtils.color2Bitmap(Color.BLACK, smallSize, smallSize), SpannableHelper.Align.ALIGN_BOTTOM)
+                .appendImage(ImageUtils.color2Bitmap(Color.RED, smallSize, smallSize), SpannableFactory.Align.ALIGN_TOP)
+                .appendImage(ImageUtils.color2Bitmap(Color.YELLOW, smallSize, smallSize), SpannableFactory.Align.ALIGN_CENTER)
+                .appendImage(ImageUtils.color2Bitmap(Color.BLUE, smallSize, smallSize), SpannableFactory.Align.ALIGN_BASELINE)
+                .appendImage(ImageUtils.color2Bitmap(Color.BLACK, smallSize, smallSize), SpannableFactory.Align.ALIGN_BOTTOM)
                 .appendLine()
-                .append("顶部对齐：").appendImage(ImageUtils.color2Bitmap(Color.RED, largeSize, largeSize), SpannableHelper.Align.ALIGN_TOP).append("：顶部对齐").appendLine()
-                .append("居中对齐：").appendImage(ImageUtils.color2Bitmap(Color.YELLOW, largeSize, largeSize), SpannableHelper.Align.ALIGN_CENTER).append("：居中对齐").appendLine()
-                .append("基线对齐：").appendImage(ImageUtils.color2Bitmap(Color.BLUE, largeSize, largeSize), SpannableHelper.Align.ALIGN_BASELINE).append("：基线对齐").appendLine()
-                .append("底部对齐：").appendImage(ImageUtils.color2Bitmap(Color.BLACK, largeSize, largeSize), SpannableHelper.Align.ALIGN_BOTTOM).append("：底部对齐").appendLine()
-                .appendLine("行内顶部对齐").backgroundColor(Color.RED).lineHeight(150, SpannableHelper.Align.ALIGN_TOP)
-                .appendLine("行内居中对齐").backgroundColor(Color.BLUE).lineHeight(150, SpannableHelper.Align.ALIGN_CENTER)
-                .appendLine("行内底部对齐").backgroundColor(Color.YELLOW).lineHeight(150, SpannableHelper.Align.ALIGN_BOTTOM)
+                .append("顶部对齐：").appendImage(ImageUtils.color2Bitmap(Color.RED, largeSize, largeSize), SpannableFactory.Align.ALIGN_TOP).append("：顶部对齐").appendLine()
+                .append("居中对齐：").appendImage(ImageUtils.color2Bitmap(Color.YELLOW, largeSize, largeSize), SpannableFactory.Align.ALIGN_CENTER).append("：居中对齐").appendLine()
+                .append("基线对齐：").appendImage(ImageUtils.color2Bitmap(Color.BLUE, largeSize, largeSize), SpannableFactory.Align.ALIGN_BASELINE).append("：基线对齐").appendLine()
+                .append("底部对齐：").appendImage(ImageUtils.color2Bitmap(Color.BLACK, largeSize, largeSize), SpannableFactory.Align.ALIGN_BOTTOM).append("：底部对齐").appendLine()
+                .appendLine("行内顶部对齐").backgroundColor(Color.RED).lineHeight(150, SpannableFactory.Align.ALIGN_TOP)
+                .appendLine("行内居中对齐").backgroundColor(Color.BLUE).lineHeight(150, SpannableFactory.Align.ALIGN_CENTER)
+                .appendLine("行内底部对齐").backgroundColor(Color.YELLOW).lineHeight(150, SpannableFactory.Align.ALIGN_BOTTOM)
                 .appendLine("首行缩进首行缩进首行缩进首行缩进首行缩进首行缩进首行缩进首行缩进首行缩进").backgroundColor(Color.BLUE).leadingMargin((int) (text.getTextSize() * 2), 0)
                 .appendLine("引用线，可配置颜色、宽度、间距\n换行效果").quote(Color.CYAN, 10, 20)
                 .appendLine("列表项，可配置颜色、大小、距离\n换行效果").bullet(Color.RED, 16, 8)
@@ -107,14 +107,14 @@ public class SampleSpannableActivity extends BaseActivity {
                 .appendLine("这是一个渐变文本").fontProportion(2).shader(linearShader)
                 .appendLine("这是一个阴影文本").foregroundColor(Color.RED).fontProportion(2).shadow(4, 10, 10, Color.GRAY)
                 .appendLine("支持Emoji场景下的ImageTags设置:")
-                .appendImage(emoji1, SpannableHelper.Align.ALIGN_CENTER, "[撇嘴]")
-                .appendImage(emoji0, SpannableHelper.Align.ALIGN_CENTER, "[微笑]")
-                .appendImage(emoji2, SpannableHelper.Align.ALIGN_CENTER, "[色]")
-                .appendImage(emoji1, SpannableHelper.Align.ALIGN_CENTER, "[撇嘴]")
-                .appendImage(emoji2, SpannableHelper.Align.ALIGN_CENTER, "[色]")
+                .appendImage(emoji1, SpannableFactory.Align.ALIGN_CENTER, "[撇嘴]")
+                .appendImage(emoji0, SpannableFactory.Align.ALIGN_CENTER, "[微笑]")
+                .appendImage(emoji2, SpannableFactory.Align.ALIGN_CENTER, "[色]")
+                .appendImage(emoji1, SpannableFactory.Align.ALIGN_CENTER, "[撇嘴]")
+                .appendImage(emoji2, SpannableFactory.Align.ALIGN_CENTER, "[色]")
                 .build());
 
-        List<String> imageTags = SpannableHelper.findImageTagByText(text.getText());
+        List<String> imageTags = SpannableFactory.findImageTagByText(text.getText());
         text.append("\n↑获取到的ImageTags: " + TextUtils.join(",", imageTags));
     }
 

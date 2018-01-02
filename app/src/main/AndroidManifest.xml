@@ -22,6 +22,7 @@
         <activity android:name=".sample.SampleHttpActivity" />
         <activity android:name=".sample.SampleViewLoaderActivity" />
         <activity android:name=".sample.SampleToastActivity" />
+        <activity android:name=".sample.SampleUIActivity" />
 
         <meta-data
             android:name="sample_holder_1"

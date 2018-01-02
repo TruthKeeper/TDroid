@@ -488,7 +488,7 @@ public final class Logger {
      */
     private static void print2file(int type, @NonNull String tagStr,
                                    @NonNull String[] headers, @NonNull String bodyStr, @NonNull String logPath) {
-        String date = TimeUtils.formatExactDate(System.currentTimeMillis());
+        String date = TimeUtils.toExactDate(System.currentTimeMillis());
         String day = date.substring(0, date.lastIndexOf(" "));
         final File file = new File(logPath, String.format(Locale.getDefault(), "%s_%s.log", TAG, day));
         if (!FileUtils.createOrExistsFile(file)) {

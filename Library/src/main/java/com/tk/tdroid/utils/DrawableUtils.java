@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.StateListDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
@@ -19,11 +20,11 @@ import android.support.v4.graphics.drawable.DrawableCompat;
  * <pre>
  *     author : TK
  *     time   : 2017/03/13
- *     desc   : 着色工具类
+ *     desc   : Drawable工具类
  * </pre>
  */
-public final class TintUtils {
-    private TintUtils() {
+public final class DrawableUtils {
+    private DrawableUtils() {
         throw new IllegalStateException();
     }
 
@@ -131,5 +132,19 @@ public final class TintUtils {
                 VectorDrawableCompat.create(context.getResources(), defaultRes, context.getTheme()));
         listDrawable.setBounds(0, 0, listDrawable.getIntrinsicWidth(), listDrawable.getIntrinsicHeight());
         return listDrawable;
+    }
+
+    /**
+     * StateListDrawable是否为空
+     *
+     * @param drawable
+     * @return
+     */
+    public static boolean isStateListDrawableEmpty(@Nullable StateListDrawable drawable) {
+        if (drawable == null) {
+            return true;
+        }
+        DrawableContainer.DrawableContainerState state = ((DrawableContainer.DrawableContainerState) drawable.getConstantState());
+        return state == null || state.getChildCount() < 1;
     }
 }

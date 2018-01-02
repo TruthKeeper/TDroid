@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="UI封装"
+        app:titleTextColor="@android:color/white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.tk.widget.ui.TUITextView
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_margin="12dp"
+                android:clickable="true"
+                android:gravity="center"
+                android:text="Ripple的按钮"
+                android:textSize="16sp"
+                app:tui_bg_corner="6dp"
+                app:tui_bg_ripplePressed="@color/colorPrimaryDark"
+                app:tui_bg_solid_default="@color/colorPrimary"
+                app:tui_textColor_default="@android:color/white"
+                app:tui_textColor_pressed="@android:color/black" />
+
+
+            <com.tk.widget.ui.TUITextView
+                android:id="@+id/tv_selected"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:text="一个TUITextView就可以办到"
+                android:textSize="16sp"
+                app:tui_bg_solid_default="@android:color/white"
+                app:tui_bg_solid_pressed="#f0f0f0"
+                app:tui_drawableLeftHeight="24dp"
+                app:tui_drawableLeftTint_default="@color/colorPrimary"
+                app:tui_drawableLeftWidth="24dp"
+                app:tui_drawableLeft_default="@mipmap/ic_launcher"
+                app:tui_drawableRightHeight="18dp"
+                app:tui_drawableRightTint_default="@android:color/holo_red_dark"
+                app:tui_drawableRightTint_selected="@android:color/holo_green_light"
+                app:tui_drawableRightWidth="18dp"
+                app:tui_drawableRight_default="@drawable/vector_error"
+                app:tui_drawableRight_selected="@drawable/vector_right"
+                app:tui_textColor_default="@android:color/black"
+                app:tui_textColor_selected="@android:color/holo_green_light" />
+
+            <com.tk.widget.ui.TUITextView
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_margin="12dp"
+                android:background="#f0f0f0"
+                android:gravity="center"
+                android:text="TUITextView支持Drawable多种对齐方式"
+                android:textSize="16sp"
+                app:tui_drawableLeftAlign="top"
+                app:tui_drawableLeftHeight="48dp"
+                app:tui_drawableLeftWidth="48dp"
+                app:tui_drawableLeft_default="@mipmap/ic_launcher"
+                app:tui_drawableRightAlign="bottom"
+                app:tui_drawableRightHeight="32dp"
+                app:tui_drawableRightTint_default="@android:color/holo_orange_light"
+                app:tui_drawableRightWidth="32dp"
+                app:tui_drawableRight_default="@mipmap/ic_launcher" />
+
+            <com.tk.widget.ui.TUIRelativeLayout
+                android:id="@+id/rl_container"
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                app:tui_bg_corner="6dp"
+                app:tui_bg_gradientDirection_default="left_to_Right"
+                app:tui_bg_gradientDirection_selected="top_to_Bottom"
+                app:tui_bg_gradientEndColor_default="@color/colorAccent"
+                app:tui_bg_gradientEndColor_selected="@android:color/holo_green_light"
+                app:tui_bg_gradientStartColor_default="@color/colorPrimary"
+                app:tui_bg_gradientStartColor_selected="@color/colorAccent">
+
+                <com.tk.widget.ui.TUITextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="RelativeLayout的封装"
+                    android:textSize="16sp"
+                    app:tui_textColor_default="@android:color/white"
+                    app:tui_textColor_pressed="@android:color/black" />
+
+                <com.tk.widget.ui.TUITextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:duplicateParentState="true"
+                    android:padding="6dp"
+                    android:text="点我试试"
+                    android:textSize="16sp"
+                    app:tui_bg_corner="4dp"
+                    app:tui_bg_solid_selected="@android:color/white"
+                    app:tui_bg_strokeColor_selected="@android:color/darker_gray"
+                    app:tui_bg_stroke_selected="2dp"
+                    app:tui_textColor_default="@android:color/white"
+                    app:tui_textColor_selected="@color/colorAccent" />
+            </com.tk.widget.ui.TUIRelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
