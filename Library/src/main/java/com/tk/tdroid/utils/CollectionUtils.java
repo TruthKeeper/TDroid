@@ -24,10 +24,6 @@ public final class CollectionUtils {
         boolean process(D d);
     }
 
-    public interface Search<T, D> {
-        D apply(T t);
-    }
-
     private CollectionUtils() {
         throw new IllegalStateException();
     }
@@ -70,7 +66,7 @@ public final class CollectionUtils {
      * @param element
      * @return
      */
-    public static <T> int searchFirst(@NonNull T[] objects, @NonNull T element) {
+    public static <T> int searchFirstIndex(@NonNull T[] objects, @NonNull T element) {
         int index = -1;
         for (int i = 0; i < objects.length; i++) {
             if (element.equals(objects[i])) {
@@ -84,16 +80,15 @@ public final class CollectionUtils {
      * 数组中搜索元素第一次出现位置
      *
      * @param objects
-     * @param condition
-     * @param search
+     * @param predicate
      * @param <T>
      * @param <D>
      * @return
      */
-    public static <T, D> int searchFirst(@NonNull T[] objects, @NonNull D condition, @NonNull Search<T, D> search) {
+    public static <T, D> int searchFirstIndex(@NonNull T[] objects, @NonNull Predicate<T> predicate) {
         int index = -1;
         for (int i = 0; i < objects.length; i++) {
-            if (search.apply(objects[i]).equals(condition)) {
+            if (predicate.process(objects[i])) {
                 return i;
             }
         }
@@ -107,7 +102,7 @@ public final class CollectionUtils {
      * @param element
      * @return
      */
-    public static <T> int searchFirst(@NonNull List<T> list, @NonNull T element) {
+    public static <T> int searchFirstIndex(@NonNull List<T> list, @NonNull T element) {
         int index = -1;
         for (int i = 0; i < list.size(); i++) {
             if (element.equals(list.get(i))) {
@@ -121,16 +116,15 @@ public final class CollectionUtils {
      * 集合中搜索元素第一次出现位置
      *
      * @param list
-     * @param condition
-     * @param search
+     * @param predicate
      * @param <T>
      * @param <D>
      * @return
      */
-    public static <T, D> int searchFirst(@NonNull List<T> list, @NonNull D condition, @NonNull Search<T, D> search) {
+    public static <T, D> int searchFirstIndex(@NonNull List<T> list, @NonNull Predicate<T> predicate) {
         int result = -1;
         for (int i = 0; i < list.size(); i++) {
-            if (search.apply(list.get(i)).equals(condition)) {
+            if (predicate.process(list.get(i))) {
                 return i;
             }
         }
@@ -141,10 +135,10 @@ public final class CollectionUtils {
      * 获取集合内容
      *
      * @param iterable
-     * @param divide
+     * @param divider
      * @return
      */
-    public static String getContent(@Nullable Iterable iterable, String divide) {
+    public static String getContent(@Nullable Iterable iterable, String divider) {
         if (iterable == null) {
             return "";
         }
@@ -153,7 +147,7 @@ public final class CollectionUtils {
         if (iterator.hasNext()) {
             sb.append(iterator.next());
             while (iterator.hasNext()) {
-                sb.append(divide);
+                sb.append(divider);
                 sb.append(iterator.next());
             }
         }
@@ -164,11 +158,11 @@ public final class CollectionUtils {
      * 获取数组内容
      *
      * @param ts
-     * @param divide
+     * @param divider
      * @param <T>
      * @return
      */
-    public static <T> String getContent(@Nullable T[] ts, String divide) {
+    public static <T> String getContent(@Nullable T[] ts, String divider) {
         if (ts == null) {
             return "";
         }
@@ -178,7 +172,7 @@ public final class CollectionUtils {
             if (firstTime) {
                 firstTime = false;
             } else {
-                sb.append(divide);
+                sb.append(divider);
             }
             sb.append(t);
         }

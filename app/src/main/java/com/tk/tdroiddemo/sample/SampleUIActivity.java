@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroiddemo.R;
-import com.tk.widget.ui.TUIRelativeLayout;
-import com.tk.widget.ui.TUITextView;
+import com.tk.tdroid.ui.TUIRelativeLayout;
+import com.tk.tdroid.ui.TUITextView;
 
 /**
  * <pre>
@@ -22,7 +22,6 @@ public class SampleUIActivity extends BaseActivity implements View.OnClickListen
     private TUIRelativeLayout rlContainer;
     private TUITextView tvSelected;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,9 +31,7 @@ public class SampleUIActivity extends BaseActivity implements View.OnClickListen
         tvSelected = findViewById(R.id.tv_selected);
         rlContainer.setOnClickListener(this);
         tvSelected.setOnClickListener(this);
-
     }
-
 
     @Override
     public void onClick(View v) {

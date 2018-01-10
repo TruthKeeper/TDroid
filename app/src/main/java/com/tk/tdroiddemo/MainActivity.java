@@ -10,9 +10,9 @@ import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroiddemo.sample.SampleUIActivity;
-import com.tk.widget.recycler.adapter.FasterAdapter;
-import com.tk.widget.recycler.adapter.FasterHolder;
-import com.tk.widget.recycler.adapter.Strategy;
+import com.tk.tdroid.recycler.adapter.FasterAdapter;
+import com.tk.tdroid.recycler.adapter.FasterHolder;
+import com.tk.tdroid.recycler.adapter.Strategy;
 import com.tk.tdroiddemo.sample.SampleHttpActivity;
 import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
 import com.tk.tdroiddemo.sample.SampleSpannableActivity;

@@ -99,8 +99,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     //依赖的核心
     implementation project(':Library')
-    //选择开发的组件
-    implementation project(':Widget')
     //APT支持
     annotationProcessor project(':APT')
     //AOP切面的支持(2)
