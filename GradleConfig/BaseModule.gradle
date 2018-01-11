@@ -1,0 +1,36 @@
+//module的基类配置
+//当前module是否是主App Module
+boolean isAppModule = project.plugins.hasPlugin('com.android.application')
+android {
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        if (isAppModule) {
+            //不管是组件化的主App壳还是App壳都是一样的包名
+            applicationId "com.tk.tdroiddemo"
+        }
+        //为Glide支持高斯模糊(可选)
+        renderscriptTargetApi rootProject.ext.compileSdkVersion
+        renderscriptSupportModeEnabled true
+        //SVG
+        vectorDrawables.useSupportLibrary = true
+        //DEX
+//        multiDexEnabled true
+        dexOptions {
+            javaMaxHeapSize "4g"
+            preDexLibraries = false
+            maxProcessCount 8
+        }
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+        ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'
+        }
+    }
+}

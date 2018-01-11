@@ -18,6 +18,9 @@ import io.reactivex.functions.Predicate;
  */
 
 public final class RxUtils {
+    private RxUtils() {
+        throw new IllegalStateException();
+    }
 
     /**
      * 绑定生命周期

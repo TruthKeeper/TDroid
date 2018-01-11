@@ -136,6 +136,9 @@ public class FragmentHelper {
         private Class<? extends Fragment> cls;
         private String tag;
 
+        private FragmentData() {
+        }
+
         public static FragmentData create(@NonNull Class<? extends Fragment> cls) {
             return create(cls, null);
         }

@@ -1,4 +1,5 @@
-apply from: "config.gradle"
+//导入全局配置
+apply from: "./GradleConfig/Config.gradle"
 
 buildscript {
     repositories {

@@ -1,0 +1,21 @@
+apply plugin: 'com.android.library'
+
+apply from: rootProject.ext.baseModuleFile
+apply from: rootProject.ext.processorFile
+
+android {
+    resourcePrefix 'mine_'
+
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),rootProject.file("proguard-rules.pro")
+        }
+    }
+}
+
+dependencies {
+    //依赖的核心
+    implementation project(':Library')
+}

@@ -12,7 +12,7 @@ import com.tk.tdroid.image.ImageLoader;
 import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
 import com.tk.tdroid.utils.Utils;
-import com.tk.tdroiddemo.aop.annotation.Logger;
+import com.tk.tdroid.aop.annotation.Logger;
 
 import java.io.File;
 

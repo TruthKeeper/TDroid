@@ -1,0 +1,7 @@
+//APT Processor的基类配置
+//AOP
+apply plugin: 'com.tdroid-aspect'
+dependencies {
+    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
+    annotationProcessor project(':APT')
+}

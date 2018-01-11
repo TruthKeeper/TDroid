@@ -1,7 +1,9 @@
 apply plugin: 'com.android.application'
-apply from: rootProject.file('module.gradle')
+
+apply from: rootProject.ext.baseModuleFile
+apply from: rootProject.ext.processorFile
+apply from: rootProject.ext.versionFile
 //AOP切面的支持(1)
-apply plugin: 'com.tk.tdroid-aspect'
 
 //读取打包签名
 def keystorePropertiesFile = rootProject.file("local.properties");
@@ -35,12 +37,6 @@ android {
         }
     }
     defaultConfig {
-        applicationId "com.tk.tdroiddemo"
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        //测试环境时加速编译
-        minSdkVersion 21
         //构建的维度为 default
 //        flavorDimensions "default", "extra"
         javaCompileOptions {
@@ -66,7 +62,7 @@ android {
                     "sample_holder_2": "222",
             ]
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), rootProject.file("proguard-rules.pro")
             signingConfig signingConfigs.release
         }
     }
@@ -100,9 +96,11 @@ dependencies {
     //依赖的核心
     implementation project(':Library')
     //APT支持
-    annotationProcessor project(':APT')
-    //AOP切面的支持(2)
-    implementation rootProject.ext.dependencies["aspect"]
+//    annotationProcessor project(':APT')
+
     //开启EventBus的APT索引(2)
-    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
+//    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
+    //组件化
+    implementation project(':Home')
+    implementation project(':Mine')
 }

@@ -293,6 +293,17 @@ public class FasterHolder extends RecyclerView.ViewHolder {
     }
 
     /**
+     * 设置背景
+     *
+     * @param viewId
+     * @return
+     */
+    public FasterHolder setBackground(@IdRes int viewId, Drawable background) {
+        this.<TextView>findViewById(viewId).setBackground(background);
+        return this;
+    }
+
+    /**
      * 设置进度
      *
      * @param viewId

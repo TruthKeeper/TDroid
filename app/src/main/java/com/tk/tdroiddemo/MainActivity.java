@@ -35,11 +35,12 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
         recyclerview.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new FasterAdapter.Builder<Item>()
                 .fillBySingleStrategy(new Item[]{
+                        new Item(ComponentsActivity.class, "组件化"),
                         new Item(SampleSpannableActivity.class, "Spannable"),
                         new Item(SampleHttpActivity.class, "Http测试"),
                         new Item(SampleViewLoaderActivity.class, "View视图加载"),
-                        new Item(SampleToastActivity.class, "Toast测试 "),
-                        new Item(SampleUIActivity.class, "UI封装 "),
+                        new Item(SampleToastActivity.class, "Toast测试"),
+                        new Item(SampleUIActivity.class, "UI封装"),
                 }, new MainStrategy())
                 .itemClickListener(this)
                 .build();
