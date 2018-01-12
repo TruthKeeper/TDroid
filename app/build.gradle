@@ -3,8 +3,17 @@ apply plugin: 'com.android.application'
 apply from: rootProject.ext.baseModuleFile
 apply from: rootProject.ext.processorFile
 apply from: rootProject.ext.versionFile
-//AOP切面的支持(1)
-
+apply plugin: 'auto-register'
+//autoregister {
+//    registerInfo = [
+//            [
+//                    'scanInterface'          : 'com.tk.tdroid.instance.IInstance'
+//                    , 'codeInsertToClassName': 'com.tk.tdroid.instance.InstanceFactory'
+//                    //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
+//                    , 'registerMethodName'   : 'register'
+//            ]
+//    ]
+//}
 //读取打包签名
 def keystorePropertiesFile = rootProject.file("local.properties");
 def keystoreProperties = new Properties()

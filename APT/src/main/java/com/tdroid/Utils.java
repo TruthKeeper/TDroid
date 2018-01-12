@@ -1,4 +1,4 @@
-package com.apt;
+package com.tdroid;
 
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.ElementKind;

@@ -1,8 +1,8 @@
-package com.apt.processor;
+package com.tdroid.processor;
 
-import com.apt.AnnotationProcessor;
-import com.apt.Utils;
-import com.apt.annotation.Instance;
+import com.tdroid.AnnotationProcessor;
+import com.tdroid.Utils;
+import com.tdroid.annotation.Instance;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;

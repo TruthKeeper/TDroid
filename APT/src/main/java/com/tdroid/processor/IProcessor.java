@@ -1,6 +1,6 @@
-package com.apt.processor;
+package com.tdroid.processor;
 
-import com.apt.AnnotationProcessor;
+import com.tdroid.AnnotationProcessor;
 
 import javax.annotation.processing.RoundEnvironment;
 

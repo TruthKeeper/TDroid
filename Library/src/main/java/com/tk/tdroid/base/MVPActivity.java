@@ -37,7 +37,7 @@ public class MVPActivity<P extends IContract.IPresenter> extends BaseActivity im
     }
 
     /**
-     * 子类开启APT支持后可通过{@link com.apt.InstanceFactory}代替反射实例化
+     * 子类开启APT支持后可反射实例化
      *
      * @param pClass
      * @return
@@ -49,7 +49,6 @@ public class MVPActivity<P extends IContract.IPresenter> extends BaseActivity im
         try {
             return pClass.newInstance();
         } catch (Exception e) {
-
         }
         return null;
     }

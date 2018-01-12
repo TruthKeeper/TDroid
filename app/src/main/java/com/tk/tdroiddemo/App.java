@@ -1,7 +1,6 @@
 package com.tk.tdroiddemo;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.tk.tdroid.EventBusIndex;
 import com.tk.tdroid.event.EventHelper;
@@ -12,7 +11,6 @@ import com.tk.tdroid.image.ImageLoader;
 import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
 import com.tk.tdroid.utils.Utils;
-import com.tk.tdroid.aop.annotation.Logger;
 
 import java.io.File;
 
@@ -32,11 +30,9 @@ public class App extends Application {
     @Override
     public void onTerminate() {
         super.onTerminate();
-//        NetworkObservable.getInstance().recycle();
         NetworkRxObservable.getInstance().recycle();
     }
 
-    @Logger(type = Log.ERROR)
     @Override
     public void onCreate() {
         super.onCreate();

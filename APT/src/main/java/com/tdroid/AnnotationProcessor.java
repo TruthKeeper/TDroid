@@ -1,6 +1,5 @@
-package com.apt;
+package com.tdroid;
 
-import com.apt.processor.InstanceProcessor;
 import com.google.auto.service.AutoService;
 
 import java.util.Set;
@@ -29,7 +28,7 @@ import javax.lang.model.util.Elements;
 //支持的源码版本
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 //处理的注解
-@SupportedAnnotationTypes({"com.apt.annotation.Instance"})
+@SupportedAnnotationTypes({"com.tdroid.annotation.Instance"})
 public class AnnotationProcessor extends AbstractProcessor {
     /**
      * 基于元素进行操作的工具方法
@@ -55,7 +54,8 @@ public class AnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         //转发
-        new InstanceProcessor().process(roundEnvironment, this);
+        //TODO 组件化时不适用
+//        new InstanceProcessor().process(roundEnvironment, this);
         return true;
     }
 

@@ -3,28 +3,20 @@ apply from: "./GradleConfig/Config.gradle"
 
 buildscript {
     repositories {
-        maven {
-            //插件的地址：项目路径下
-            url uri('repo')
-        }
+        google()
         jcenter()
-
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
-        /**
-         * 自定义插件：http://blog.csdn.net/yulong0809/article/details/77752098
-         * 1.AOP切面支持
-         */
-        classpath 'com.tk.tdroid:plugin:1.0.0'
+        //https://github.com/luckybilly/AutoRegister
+        classpath 'com.billy.android:autoregister:1.1.0'
     }
 }
 
 allprojects {
     repositories {
+        google()
         jcenter()
-        maven { url "https://maven.google.com" }
-        maven { url "https://jitpack.io" }
     }
 }
 
