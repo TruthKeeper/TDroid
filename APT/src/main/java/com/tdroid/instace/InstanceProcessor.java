@@ -1,6 +1,7 @@
-package com.tdroid.processor;
+package com.tdroid.instace;
 
 import com.tdroid.AnnotationProcessor;
+import com.tdroid.IProcessor;
 import com.tdroid.Utils;
 import com.tdroid.annotation.Instance;
 import com.squareup.javapoet.ClassName;

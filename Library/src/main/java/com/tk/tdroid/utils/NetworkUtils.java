@@ -319,7 +319,7 @@ public final class NetworkUtils {
     }
 
     /**
-     * 获取IP地址
+     * 获取IP地址 , 获取到的是内网Ip 外网通过解析JSON http://pv.sohu.com/cityjson?ie=utf-8
      *
      * @param useIPv4 是否用IPv4
      * @return

@@ -11,14 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tk.tdroid.event.Event;
+import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.FragmentLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
-import com.tk.tdroid.event.Event;
-import com.tk.tdroid.event.EventHelper;
+import com.tk.tdroid.save.SaveHelper;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -39,9 +40,10 @@ import io.reactivex.subjects.Subject;
 public abstract class BaseFragment extends Fragment implements ILifecycleProvider, IFragmentProvider {
     private Subject<FragmentLifecycleImpl> lifecycleSubject = null;
 
-    private boolean bindLifecycleEnabled;
-    private boolean eventBusEnabled;
-    private boolean visibleObserverEnabled;
+    private final boolean bindLifecycleEnabled;
+    private final boolean eventBusEnabled;
+    private final boolean visibleObserverEnabled;
+    private final boolean saveData;
 
     private boolean hasCreated;
 
@@ -54,6 +56,7 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
         }
+        saveData = saveData();
     }
 
     @Override
@@ -89,9 +92,20 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         onLifecycleNext(FragmentLifecycleImpl.ON_CREATE);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (saveData) {
+            SaveHelper.onSaveInstanceState(this, outState);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (saveData) {
+            SaveHelper.onRestoreInstanceState(this, savedInstanceState);
+        }
         if (eventBusEnabled) {
             EventHelper.register(this);
         }
@@ -257,5 +271,15 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     @Override
     public boolean visibleObserverEnabled() {
         return true;
+    }
+
+    /**
+     * 是否自动恢复数据 {@link com.tdroid.annotation.Save}修饰
+     *
+     * @return
+     */
+    @Override
+    public boolean saveData() {
+        return false;
     }
 }

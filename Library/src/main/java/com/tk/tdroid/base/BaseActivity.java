@@ -9,12 +9,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 
+import com.tdroid.annotation.Save;
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
+import com.tk.tdroid.save.SaveHelper;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
 import com.tk.tdroid.event.Event;
 import com.tk.tdroid.event.EventHelper;
@@ -38,9 +40,10 @@ import io.reactivex.subjects.Subject;
 public class BaseActivity extends AppCompatActivity implements ILifecycleProvider, IActivityProvider {
     private Subject<ActivityLifecycleImpl> lifecycleSubject = null;
 
-    private boolean bindLifecycleEnabled;
-    private boolean eventBusEnabled;
-    private boolean touchHideSoftKeyboard;
+    private final boolean bindLifecycleEnabled;
+    private final boolean eventBusEnabled;
+    private final boolean touchHideSoftKeyboard;
+    private final boolean saveData;
 
     static {
         //SVG <Vector>的支持
@@ -54,6 +57,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
             lifecycleSubject = PublishSubject.create();
         }
         touchHideSoftKeyboard = touchHideSoftKeyboard();
+        saveData = saveData();
     }
 
     @Override
@@ -69,6 +73,22 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     public void setContentView(int layoutResID) {
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
         super.setContentView(layoutResID);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (saveData) {
+            SaveHelper.onSaveInstanceState(this, outState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (saveData) {
+            SaveHelper.onRestoreInstanceState(this, savedInstanceState);
+        }
     }
 
     @Override
@@ -229,5 +249,15 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public boolean touchHideSoftKeyboard() {
         return true;
+    }
+
+    /**
+     * 是否自动恢复数据 {@link Save}修饰
+     *
+     * @return
+     */
+    @Override
+    public boolean saveData() {
+        return false;
     }
 }

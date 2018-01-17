@@ -1,6 +1,7 @@
 package com.tdroid;
 
 import com.google.auto.service.AutoService;
+import com.tdroid.save.SaveProcessor;
 
 import java.util.Set;
 
@@ -28,7 +29,9 @@ import javax.lang.model.util.Elements;
 //支持的源码版本
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 //处理的注解
-@SupportedAnnotationTypes({"com.tdroid.annotation.Instance"})
+@SupportedAnnotationTypes({
+        "com.tdroid.annotation.Instance",
+        "com.tdroid.annotation.Save"})
 public class AnnotationProcessor extends AbstractProcessor {
     /**
      * 基于元素进行操作的工具方法
@@ -56,6 +59,7 @@ public class AnnotationProcessor extends AbstractProcessor {
         //转发
         //TODO 组件化时不适用
 //        new InstanceProcessor().process(roundEnvironment, this);
+        new SaveProcessor().process(roundEnvironment, this);
         return true;
     }
 

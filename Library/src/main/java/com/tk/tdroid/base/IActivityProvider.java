@@ -30,5 +30,11 @@ interface IActivityProvider {
      */
     boolean touchHideSoftKeyboard();
 
+    /**
+     * 是否自动恢复数据 {@link com.tdroid.annotation.Save}修饰
+     *
+     * @return
+     */
+    boolean saveData();
 
 }

@@ -43,7 +43,7 @@ public final class DisposableManager {
     }
 
     /**
-     * 移除
+     * 移除，并不中断
      *
      * @param tag
      */
@@ -52,7 +52,7 @@ public final class DisposableManager {
     }
 
     /**
-     * 移除全部
+     * 移除全部，并不中断
      */
     public void removeAll() {
         map.clear();
@@ -70,6 +70,12 @@ public final class DisposableManager {
         }
     }
 
+    /**
+     * 获取
+     *
+     * @param tag
+     * @return
+     */
     public Disposable get(Object tag) {
         WeakReference<Disposable> reference = map.get(tag);
         return reference == null ? null : reference.get();

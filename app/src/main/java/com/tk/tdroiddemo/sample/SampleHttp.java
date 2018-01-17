@@ -20,7 +20,7 @@ import com.tk.tdroiddemo.bean.GitHubUser;
 import com.tk.tdroiddemo.bean.IpBean;
 import com.tk.tdroiddemo.http.SampleAPI;
 
-import io.reactivex.SingleObserver;
+import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
 
 /**
@@ -40,19 +40,24 @@ public class SampleHttp {
                 .getUserByGitHub("JakeWharton")
                 .compose(new AsyncCall<GitHubUser>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<GitHubUser>() {
+                .subscribe(new Observer<GitHubUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(GitHubUser gitHubUser) {
+                    public void onNext(GitHubUser gitHubUser) {
                         Toast.makeText(Utils.getApp(), gitHubUser.getName(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });
@@ -66,19 +71,24 @@ public class SampleHttp {
                 .getUserByGitHub("https://api.github.com/", "JakeWharton")
                 .compose(new AsyncCall<GitHubUser>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<GitHubUser>() {
+                .subscribe(new Observer<GitHubUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(GitHubUser gitHubUser) {
+                    public void onNext(GitHubUser gitHubUser) {
                         Toast.makeText(Utils.getApp(), gitHubUser.getName(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });
@@ -93,14 +103,14 @@ public class SampleHttp {
                 .getUserByGitHub_baseName("JakeWharton")
                 .compose(new AsyncCall<GitHubUser>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<GitHubUser>() {
+                .subscribe(new Observer<GitHubUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(GitHubUser gitHubUser) {
+                    public void onNext(GitHubUser gitHubUser) {
                         Toast.makeText(Utils.getApp(), gitHubUser.getName(), Toast.LENGTH_SHORT).show();
                         RuntimeUrlManager.getInstance().removeBaseUrl("GitHub_API");
                     }
@@ -108,6 +118,11 @@ public class SampleHttp {
                     @Override
                     public void onError(Throwable e) {
                         RuntimeUrlManager.getInstance().removeBaseUrl("GitHub_API");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
@@ -121,14 +136,14 @@ public class SampleHttp {
                 .getUserByGitHub_baseName("GitHub", "JakeWharton")
                 .compose(new AsyncCall<GitHubUser>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<GitHubUser>() {
+                .subscribe(new Observer<GitHubUser>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(GitHubUser gitHubUser) {
+                    public void onNext(GitHubUser gitHubUser) {
                         Toast.makeText(Utils.getApp(), gitHubUser.getName(), Toast.LENGTH_SHORT).show();
                         RuntimeUrlManager.getInstance().removeBaseUrl("GitHub");
                     }
@@ -136,6 +151,11 @@ public class SampleHttp {
                     @Override
                     public void onError(Throwable e) {
                         RuntimeUrlManager.getInstance().removeBaseUrl("GitHub");
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
@@ -152,14 +172,14 @@ public class SampleHttp {
                 .formatIp("1.2.4.8")
                 .compose(new AsyncCall<IpBean>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<IpBean>() {
+                .subscribe(new Observer<IpBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(IpBean ipBean) {
+                    public void onNext(IpBean ipBean) {
                         Toast.makeText(Utils.getApp(), ipBean.getDistrict(), Toast.LENGTH_SHORT).show();
                         RuntimeUrlManager.getInstance().removeGlobalBaseUrl();
                         ProgressManager.getInstance().removeListener(url);
@@ -169,6 +189,11 @@ public class SampleHttp {
                     public void onError(Throwable e) {
                         RuntimeUrlManager.getInstance().removeGlobalBaseUrl();
                         ProgressManager.getInstance().removeListener(url);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }
@@ -185,14 +210,14 @@ public class SampleHttp {
                 .formatIpByHeader("1.2.4.8")
                 .compose(new AsyncCall<IpBean>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<IpBean>() {
+                .subscribe(new Observer<IpBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(IpBean ipBean) {
+                    public void onNext(IpBean ipBean) {
                         Toast.makeText(Utils.getApp(), ipBean.getDistrict(), Toast.LENGTH_SHORT).show();
                         ProgressManager.getInstance().removeListener(header);
                     }
@@ -200,6 +225,10 @@ public class SampleHttp {
                     @Override
                     public void onError(Throwable e) {
                         ProgressManager.getInstance().removeListener(header);
+                    }
+
+                    @Override
+                    public void onComplete() {
 
                     }
                 });
@@ -217,14 +246,14 @@ public class SampleHttp {
                 .formatIpByHeader("1.2.4.8", header)
                 .compose(new AsyncCall<IpBean>())
                 .compose(activity.bindOnDestroy())
-                .subscribe(new SingleObserver<IpBean>() {
+                .subscribe(new Observer<IpBean>() {
                     @Override
                     public void onSubscribe(Disposable d) {
 
                     }
 
                     @Override
-                    public void onSuccess(IpBean ipBean) {
+                    public void onNext(IpBean ipBean) {
                         Toast.makeText(Utils.getApp(), ipBean.getDistrict(), Toast.LENGTH_SHORT).show();
                         ProgressManager.getInstance().removeListener(header);
                     }
@@ -232,6 +261,11 @@ public class SampleHttp {
                     @Override
                     public void onError(Throwable e) {
                         ProgressManager.getInstance().removeListener(header);
+                    }
+
+                    @Override
+                    public void onComplete() {
+
                     }
                 });
     }

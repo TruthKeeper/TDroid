@@ -9,14 +9,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
-import com.tk.tdroiddemo.sample.SampleUIActivity;
 import com.tk.tdroid.recycler.adapter.FasterAdapter;
 import com.tk.tdroid.recycler.adapter.FasterHolder;
 import com.tk.tdroid.recycler.adapter.Strategy;
 import com.tk.tdroiddemo.sample.SampleHttpActivity;
-import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
+import com.tk.tdroiddemo.sample.SampleSaveActivity;
 import com.tk.tdroiddemo.sample.SampleSpannableActivity;
 import com.tk.tdroiddemo.sample.SampleToastActivity;
+import com.tk.tdroiddemo.sample.SampleUIActivity;
+import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
 
 
 public class MainActivity extends BaseActivity implements FasterAdapter.OnItemClickListener {
@@ -41,6 +42,7 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
                         new Item(SampleViewLoaderActivity.class, "View视图加载"),
                         new Item(SampleToastActivity.class, "Toast测试"),
                         new Item(SampleUIActivity.class, "UI封装"),
+                        new Item(SampleSaveActivity.class, "APT_自动恢复数据"),
                 }, new MainStrategy())
                 .itemClickListener(this)
                 .build();
