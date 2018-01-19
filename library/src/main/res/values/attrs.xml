@@ -8,6 +8,17 @@
             <flag name="newline" value="4" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="CropLayout">
+        <attr name="cl_asCircle" format="boolean" />
+        <attr name="cl_radius" format="dimension" />
+        <attr name="cl_topLeftRadius" format="dimension" />
+        <attr name="cl_topRightRadius" format="dimension" />
+        <attr name="cl_bottomRightRadius" format="dimension" />
+        <attr name="cl_bottomLeftRadius" format="dimension" />
+        <attr name="cl_strokeWidth" format="dimension" />
+        <attr name="cl_strokeColor" format="color" />
+        <attr name="cl_strokeAbove" format="boolean" />
+    </declare-styleable>
     <!--背景Shape Solid颜色-->
     <attr name="tui_bg_solid_default" format="color" />
     <attr name="tui_bg_solid_pressed" format="color" />
