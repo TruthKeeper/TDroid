@@ -9,8 +9,4 @@ package com.tk.tdroid.constants;
  */
 
 public final class TConstants {
-    /**
-     * {@link com.tk.tdroid.utils.Logger}日志目录
-     */
-    public static final String LOGGER_DIR = "logger";
 }
