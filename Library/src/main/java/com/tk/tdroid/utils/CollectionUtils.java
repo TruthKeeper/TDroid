@@ -36,8 +36,11 @@ public final class CollectionUtils {
      * @param <T>
      * @return
      */
-    public static <T> boolean removeIf(@NonNull Collection<T> collection, @NonNull Predicate<T> predicate) {
+    public static <T> boolean removeIf(@Nullable Collection<T> collection, @Nullable Predicate<T> predicate) {
         boolean removed = false;
+        if (EmptyUtils.isEmpty(collection) || predicate == null) {
+            return removed;
+        }
         final Iterator<T> iterator = collection.iterator();
         while (iterator.hasNext()) {
             if (predicate.process(iterator.next())) {
@@ -54,7 +57,10 @@ public final class CollectionUtils {
      * @param collection
      * @param <T>
      */
-    public static <T> void removeRepeat(@NonNull Collection<T> collection) {
+    public static <T> void removeRepeat(@Nullable Collection<T> collection) {
+        if (EmptyUtils.isEmpty(collection)) {
+            return;
+        }
         collection.clear();
         collection.addAll(new HashSet<T>(collection));
     }
@@ -66,8 +72,11 @@ public final class CollectionUtils {
      * @param element
      * @return
      */
-    public static <T> int searchFirstIndex(@NonNull T[] objects, @NonNull T element) {
+    public static <T> int searchFirstIndex(@Nullable T[] objects, @NonNull T element) {
         int index = -1;
+        if (EmptyUtils.isEmpty(objects)) {
+            return index;
+        }
         for (int i = 0; i < objects.length; i++) {
             if (element.equals(objects[i])) {
                 return i;
@@ -85,8 +94,11 @@ public final class CollectionUtils {
      * @param <D>
      * @return
      */
-    public static <T, D> int searchFirstIndex(@NonNull T[] objects, @NonNull Predicate<T> predicate) {
+    public static <T, D> int searchFirstIndex(@Nullable T[] objects, @NonNull Predicate<T> predicate) {
         int index = -1;
+        if (EmptyUtils.isEmpty(objects)) {
+            return index;
+        }
         for (int i = 0; i < objects.length; i++) {
             if (predicate.process(objects[i])) {
                 return i;
@@ -102,8 +114,11 @@ public final class CollectionUtils {
      * @param element
      * @return
      */
-    public static <T> int searchFirstIndex(@NonNull List<T> list, @NonNull T element) {
+    public static <T> int searchFirstIndex(@Nullable List<T> list, @NonNull T element) {
         int index = -1;
+        if (EmptyUtils.isEmpty(list)) {
+            return index;
+        }
         for (int i = 0; i < list.size(); i++) {
             if (element.equals(list.get(i))) {
                 return i;
@@ -121,14 +136,17 @@ public final class CollectionUtils {
      * @param <D>
      * @return
      */
-    public static <T, D> int searchFirstIndex(@NonNull List<T> list, @NonNull Predicate<T> predicate) {
-        int result = -1;
+    public static <T, D> int searchFirstIndex(@Nullable List<T> list, @NonNull Predicate<T> predicate) {
+        int index = -1;
+        if (EmptyUtils.isEmpty(list)) {
+            return index;
+        }
         for (int i = 0; i < list.size(); i++) {
             if (predicate.process(list.get(i))) {
                 return i;
             }
         }
-        return result;
+        return index;
     }
 
     /**
@@ -163,7 +181,7 @@ public final class CollectionUtils {
      * @return
      */
     public static <T> String getContent(@Nullable T[] ts, String divider) {
-        if (ts == null) {
+        if (EmptyUtils.isEmpty(ts)) {
             return "";
         }
         StringBuilder sb = new StringBuilder();
