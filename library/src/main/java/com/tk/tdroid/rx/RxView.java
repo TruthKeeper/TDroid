@@ -6,9 +6,14 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.MainThreadDisposable;
+import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Timed;
 
 /**
  * <pre>
@@ -52,6 +57,40 @@ public final class RxView {
      */
     public static Observable<Object> onTextChange(@NonNull final EditText editText) {
         return new TextChangeObservable(editText);
+    }
+
+    /**
+     * 连击
+     *
+     * @param view
+     * @param maxIntervalMilli 最大的连击间隔 单位:毫秒
+     * @return
+     */
+    public static Observable<Integer> comboClick(@NonNull final View view, final long maxIntervalMilli) {
+        return new ViewClickObservable(view)
+                .map(new Function<Object, Integer>() {
+                    @Override
+                    public Integer apply(Object o) throws Exception {
+                        return 1;
+                    }
+                })
+                .timestamp()
+                .scan(new BiFunction<Timed<Integer>, Timed<Integer>, Timed<Integer>>() {
+                    @Override
+                    public Timed<Integer> apply(Timed<Integer> lastT, Timed<Integer> thisT) throws Exception {
+                        if (thisT.time() - lastT.time() > maxIntervalMilli) {
+                            //连击中断
+                            return new Timed<>(1, thisT.time(), TimeUnit.MILLISECONDS);
+                        }
+                        return new Timed<>(lastT.value() + 1, thisT.time(), TimeUnit.MILLISECONDS);
+                    }
+                })
+                .map(new Function<Timed<Integer>, Integer>() {
+                    @Override
+                    public Integer apply(Timed<Integer> timed) throws Exception {
+                        return timed.value();
+                    }
+                });
     }
 
     private static final class ViewClickObservable extends Observable<Object> {
