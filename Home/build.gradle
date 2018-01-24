@@ -4,7 +4,14 @@ apply from: rootProject.ext.baseModuleFile
 apply from: rootProject.ext.processorFile
 android {
     resourcePrefix 'home_'
-
+    defaultConfig {
+        javaCompileOptions {
+            annotationProcessorOptions {
+                //组件化下的配置
+                arguments = [InstanceFactory: 'com.tk.home.apt.InstanceFactory']
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false

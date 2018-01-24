@@ -34,9 +34,22 @@ import javax.tools.Diagnostic;
 public class InstanceProcessor implements IProcessor {
     public static final String CLASS_NAME = "InstanceFactory";
     public static final String METHOD_NAME = "create";
+    public static final String DEFAULT_PATH = "com.apt";
 
     @Override
     public void process(RoundEnvironment roundEnv, AnnotationProcessor annotationProcessor) {
+        //.gradle配置的全路径
+        String createPath = annotationProcessor.getOptions().get(CLASS_NAME);
+        if (Utils.isEmpty(createPath)) {
+            createPath = DEFAULT_PATH;
+        } else {
+            int index = createPath.lastIndexOf(".");
+            if (index == -1) {
+                annotationProcessor.getMessager().printMessage(Diagnostic.Kind.NOTE, CLASS_NAME + "：全类名配置错误");
+                return;
+            }
+            createPath = createPath.substring(0, index);
+        }
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(CLASS_NAME)
                 //public final 的类
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -94,8 +107,8 @@ public class InstanceProcessor implements IProcessor {
             methodBuilder.addCode(blockBuilder.build());
             classBuilder.addMethod(methodBuilder.build());
             // 生成Java源代码
-            JavaFile javaFile = JavaFile.builder(Utils.PACKAGENAME, classBuilder.build()).build();
-            // 在 app module/build/generated/source/apt 生成
+            JavaFile javaFile = JavaFile.builder(createPath, classBuilder.build()).build();
+            // 在module/build/generated/source/apt 生成
             javaFile.writeTo(annotationProcessor.getFileCreator());
         } catch (Exception e) {
             e.printStackTrace();
