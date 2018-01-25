@@ -1,5 +1,7 @@
 package com.tdroid;
 
+import com.squareup.javapoet.ClassName;
+
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -162,5 +164,22 @@ public final class Utils {
      */
     public static boolean isEmpty(CharSequence charSequence) {
         return charSequence == null || charSequence.length() == 0;
+    }
+    /**
+     *
+     * @param clsName
+     * @return
+     */
+    public static String getFullName(ClassName clsName) {
+        StringBuilder builder = new StringBuilder();
+        boolean first = true;
+        for (String s : clsName.simpleNames()) {
+            if (!first) {
+                builder.append(".");
+            }
+            builder.append(s);
+            first = false;
+        }
+       return builder.toString();
     }
 }

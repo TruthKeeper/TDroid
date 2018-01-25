@@ -10,7 +10,7 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 //组件化下的配置
-                arguments = [InstanceFactory: 'com.tk.mine.apt.InstanceFactory']
+                arguments = [moduleName: project.getName()]
             }
         }
     }

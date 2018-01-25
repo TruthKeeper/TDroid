@@ -39,17 +39,13 @@ public class InstanceProcessor implements IProcessor {
     @Override
     public void process(RoundEnvironment roundEnv, AnnotationProcessor annotationProcessor) {
         //.gradle配置的全路径
-        String createPath = annotationProcessor.getOptions().get(CLASS_NAME);
-        if (Utils.isEmpty(createPath)) {
-            createPath = DEFAULT_PATH;
-        } else {
-            int index = createPath.lastIndexOf(".");
-            if (index == -1) {
-                annotationProcessor.getMessager().printMessage(Diagnostic.Kind.NOTE, CLASS_NAME + "：全类名配置错误");
-                return;
-            }
-            createPath = createPath.substring(0, index);
+        final String moduleName = annotationProcessor.getOptions().get(AnnotationProcessor.MODULE_NAME);
+        StringBuilder createPath = new StringBuilder(DEFAULT_PATH);
+        if (!Utils.isEmpty(moduleName)) {
+            createPath.append(".");
+            createPath.append(moduleName);
         }
+
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(CLASS_NAME)
                 //public final 的类
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
@@ -62,7 +58,7 @@ public class InstanceProcessor implements IProcessor {
                 .addParameter(TypeVariableName.get("Class<T>", TypeName.get(List.class)), "cls")
                 .returns(TypeVariableName.get("T"));
 
-        List<String> classNameList = new ArrayList<>();
+
         CodeBlock.Builder blockBuilder = CodeBlock.builder();
         blockBuilder.beginControlFlow("if(cls==null)");
         blockBuilder.addStatement("return null");
@@ -70,6 +66,7 @@ public class InstanceProcessor implements IProcessor {
         blockBuilder.beginControlFlow("try");
         blockBuilder.beginControlFlow("switch (cls.getName())");
         try {
+            List<String> classNameList = new ArrayList<>();
             //被注解修饰的集合
             Set<TypeElement> typeElements = ElementFilter.typesIn(roundEnv.getElementsAnnotatedWith(Instance.class));
             for (TypeElement typeElement : typeElements) {
@@ -79,16 +76,7 @@ public class InstanceProcessor implements IProcessor {
                     continue;
                 }
                 ClassName clsName = ClassName.get(typeElement);
-                StringBuilder builder = new StringBuilder();
-                boolean first = true;
-                for (String s : clsName.simpleNames()) {
-                    if (!first) {
-                        builder.append(".");
-                    }
-                    builder.append(s);
-                    first = false;
-                }
-                String fullName = builder.toString();
+                String fullName = Utils.getFullName(clsName);
                 if (classNameList.contains(fullName)) {
                     continue;
                 }
@@ -107,7 +95,7 @@ public class InstanceProcessor implements IProcessor {
             methodBuilder.addCode(blockBuilder.build());
             classBuilder.addMethod(methodBuilder.build());
             // 生成Java源代码
-            JavaFile javaFile = JavaFile.builder(createPath, classBuilder.build()).build();
+            JavaFile javaFile = JavaFile.builder(createPath.toString(), classBuilder.build()).build();
             // 在module/build/generated/source/apt 生成
             javaFile.writeTo(annotationProcessor.getFileCreator());
         } catch (Exception e) {

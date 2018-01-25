@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tdroid.annotation.Router;
 import com.tk.tdroid.base.BaseFragment;
 
 /**
@@ -16,6 +17,7 @@ import com.tk.tdroid.base.BaseFragment;
  *     desc   : xxxx描述
  * </pre>
  */
+@Router(path = "/mine/mineFragment")
 public class MineFragment extends BaseFragment {
     @Override
     protected int getLayoutId() {
