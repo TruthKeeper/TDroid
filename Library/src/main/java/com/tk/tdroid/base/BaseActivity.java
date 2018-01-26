@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatDelegate;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.tdroid.annotation.Save;
+import com.tdroid.annotation.AutoInject;
+import com.tdroid.annotation.SaveAndRestore;
+import com.tk.tdroid.autoinject.AutoInjectHelper;
 import com.tk.tdroid.event.Event;
 import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
@@ -17,7 +19,7 @@ import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
-import com.tk.tdroid.save.SaveHelper;
+import com.tk.tdroid.saverestore.SaveRestoreHelper;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -42,7 +44,8 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     private final boolean bindLifecycleEnabled;
     private final boolean eventBusEnabled;
     private final boolean touchHideSoftKeyboard;
-    private final boolean saveData;
+    private final boolean saveAndRestoreData;
+    private final boolean autoInjectData;
 
     static {
         //SVG <Vector>的支持
@@ -56,16 +59,20 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
             lifecycleSubject = PublishSubject.create();
         }
         touchHideSoftKeyboard = touchHideSoftKeyboard();
-        saveData = saveData();
+        saveAndRestoreData = saveAndRestoreData();
+        autoInjectData = autoInjectData();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
+        if (autoInjectData) {
+            AutoInjectHelper.inject(this);
+        }
         if (eventBusEnabled) {
             EventHelper.register(this);
         }
+        onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
     }
 
     @Override
@@ -77,16 +84,16 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (saveData) {
-            SaveHelper.onSaveInstanceState(this, outState);
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onSaveInstanceState(this, outState);
         }
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        if (saveData) {
-            SaveHelper.onRestoreInstanceState(this, savedInstanceState);
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
         }
     }
 
@@ -123,10 +130,10 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
         if (eventBusEnabled) {
             EventHelper.unregister(this);
         }
+        onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
     }
 
     @Override
@@ -235,12 +242,22 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     }
 
     /**
-     * 是否自动恢复数据 {@link Save}修饰
+     * 是否自动保存和恢复数据 {@link SaveAndRestore}修饰
      *
      * @return
      */
     @Override
-    public boolean saveData() {
+    public boolean saveAndRestoreData() {
+        return false;
+    }
+
+    /**
+     * 是否自动注入携带数据 , 用{@link AutoInject}接收
+     *
+     * @return
+     */
+    @Override
+    public boolean autoInjectData() {
         return false;
     }
 }

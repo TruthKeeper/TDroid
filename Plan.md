@@ -2,41 +2,42 @@
 
 ## 功能组件
 
-### EventBus事件总线 widget.event
+### EventBus事件总线 event
 
 
 
-### Http widget.http
+### Http http
 
 > Retrofit2 + OkHttp3 + RxJava2 + Gson 示例代码见 sample.SampleHttp
 
-- 动态BaseUrl widget.http.RuntimeUrlManager
+- 动态BaseUrl http.RuntimeUrlManager
 - Https的支持
-- Cookie的管理 widget.http.CookieManager
+- Cookie的管理 http.CookieManager
 - 日志打印
 - 离线缓存
 - 全局监听请求、响应、Glide请求的进度，支持API中动态、静态配置 , 适配重定向 widget.http.progress.ProgressManager
 
-### Image widget.image
+### Image image
 
 
 
-### 6.0+权限动态获取 By RxJava2 widget.permission
+### 6.0+权限动态获取 permission By RxJava2
 
-> PermissionManager.with().request()
+- PermissionManager.with().request()
+- PermissionManager.with().requestEach()
 
 ## APT
 
 > 编译时生成注解
 
-- 反射实例化工具`com.apt.InstanceFactory`，对支持APT的类添加注解`com.apt.annotation.Instance`
+- 反射实例化工具`com.apt.InstanceFactory`，对支持APT的类添加注解`com.tdroid.annotation.Instance`
 
 ## AOP
 
 > 切面编程
 
-- 日志打印，`@com.tk.tdroiddemo.aop.annotation.Logger`，修饰类、构造方法、方法，打印参数、方法耗时
-- 校验网络，无网络不执行，`@com.tk.tdroiddemo.aop.annotation.CheckNetwork`，修饰方法
+- 日志打印，`@com.apt.annotation.Logger`，修饰类、构造方法、方法，打印参数、方法耗时
+- 校验网络，无网络不执行，`@com.apt.annotation.CheckNetwork`，修饰方法
 
 ## Base Activity && Fragment
 

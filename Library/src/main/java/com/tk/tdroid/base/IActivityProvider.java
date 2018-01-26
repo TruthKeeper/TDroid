@@ -1,5 +1,8 @@
 package com.tk.tdroid.base;
 
+import com.tdroid.annotation.AutoInject;
+import com.tdroid.annotation.SaveAndRestore;
+
 /**
  * <pre>
  *      author : TK
@@ -31,10 +34,17 @@ interface IActivityProvider {
     boolean touchHideSoftKeyboard();
 
     /**
-     * 是否自动恢复数据 {@link com.tdroid.annotation.Save}修饰
+     * 是否自动保存和恢复数据 {@link SaveAndRestore}修饰
      *
      * @return
      */
-    boolean saveData();
+    boolean saveAndRestoreData();
+
+    /**
+     * 是否自动注入携带数据 , 用{@link AutoInject}接收
+     *
+     * @return
+     */
+    boolean autoInjectData();
 
 }

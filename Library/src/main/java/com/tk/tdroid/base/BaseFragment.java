@@ -11,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tdroid.annotation.AutoInject;
+import com.tdroid.annotation.SaveAndRestore;
+import com.tk.tdroid.autoinject.AutoInjectHelper;
 import com.tk.tdroid.event.Event;
 import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
@@ -19,7 +22,7 @@ import com.tk.tdroid.rx.lifecycle.FragmentLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
-import com.tk.tdroid.save.SaveHelper;
+import com.tk.tdroid.saverestore.SaveRestoreHelper;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -43,7 +46,8 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     private final boolean bindLifecycleEnabled;
     private final boolean eventBusEnabled;
     private final boolean visibleObserverEnabled;
-    private final boolean saveData;
+    private final boolean saveAndRestoreData;
+    private final boolean autoInjectData;
 
     private boolean hasCreated;
 
@@ -56,7 +60,8 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
         }
-        saveData = saveData();
+        saveAndRestoreData = saveAndRestoreData();
+        autoInjectData = autoInjectData();
     }
 
     @Override
@@ -95,16 +100,19 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (saveData) {
-            SaveHelper.onSaveInstanceState(this, outState);
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onSaveInstanceState(this, outState);
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (saveData) {
-            SaveHelper.onRestoreInstanceState(this, savedInstanceState);
+        if (autoInjectData) {
+            AutoInjectHelper.inject(this);
+        }
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
         }
         if (eventBusEnabled) {
             EventHelper.register(this);
@@ -165,10 +173,10 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        onLifecycleNext(FragmentLifecycleImpl.ON_DESTROY_VIEW);
         if (eventBusEnabled) {
             EventHelper.unregister(this);
         }
+        onLifecycleNext(FragmentLifecycleImpl.ON_DESTROY_VIEW);
     }
 
     @Override
@@ -274,12 +282,22 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     }
 
     /**
-     * 是否自动恢复数据 {@link com.tdroid.annotation.Save}修饰
+     * 是否自动恢复数据 {@link SaveAndRestore}修饰
      *
      * @return
      */
     @Override
-    public boolean saveData() {
+    public boolean saveAndRestoreData() {
+        return false;
+    }
+
+    /**
+     * 是否自动读取携带数据 , 用{@link AutoInject}接收
+     *
+     * @return
+     */
+    @Override
+    public boolean autoInjectData() {
         return false;
     }
 }

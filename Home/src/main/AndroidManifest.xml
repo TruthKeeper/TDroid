@@ -1,2 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tk.home" />
+    package="com.tk.home">
+
+    <application></application>
+</manifest>

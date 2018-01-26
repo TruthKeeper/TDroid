@@ -109,9 +109,6 @@ public class Toasty {
      * @param text
      */
     public static void show(@Nullable CharSequence text, @Nullable final Config config) {
-        if (mToast != null) {
-            mToast.cancel();
-        }
         final Config realConfig = config == null ? new Config.Builder().build() : config;
         if (Looper.myLooper() != Looper.getMainLooper()) {
             mHandler.post(new Runnable() {
@@ -121,17 +118,22 @@ public class Toasty {
                 }
             });
         } else {
+            if (mToast != null) {
+                mToast.cancel();
+            }
             mToast = new Toast(Utils.getApp());
-
-            TextView view = generateTextView(text, realConfig);
-            view.setPadding(realConfig.horizontalPadding, realConfig.verticalPadding,
-                    realConfig.horizontalPadding, realConfig.verticalPadding);
-            //手动测量
-            int measureSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-            view.measure(measureSize, measureSize);
-            view.setBackground(generateShape(view, realConfig));
-
-            mToast.setView(view);
+            if (realConfig.customView != null) {
+                mToast.setView(realConfig.customView);
+            } else {
+                TextView view = generateTextView(text, realConfig);
+                view.setPadding(realConfig.horizontalPadding, realConfig.verticalPadding,
+                        realConfig.horizontalPadding, realConfig.verticalPadding);
+                //手动测量
+                int measureSize = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+                view.measure(measureSize, measureSize);
+                view.setBackground(generateShape(view, realConfig));
+                mToast.setView(view);
+            }
             mToast.setDuration(realConfig.duration);
             mToast.show();
         }
@@ -172,26 +174,27 @@ public class Toasty {
     }
 
     public static class Config {
-        private int textColor;
-        private int textSizeSp;
-        private Typeface typeface;
+        private final int textColor;
+        private final int textSizeSp;
+        private final Typeface typeface;
 
-        private Drawable icon;
-        private int iconWidth;
-        private int iconHeight;
-        private int iconPadding;
-        private boolean tintByTextColor;
+        private final Drawable icon;
+        private final int iconWidth;
+        private final int iconHeight;
+        private final int iconPadding;
+        private final boolean tintByTextColor;
 
-        private int backgroundColor;
-        private int strokeColor;
-        private int strokeWidth;
-        private int cornerRadius;
-        private int alpha;
+        private final int backgroundColor;
+        private final int strokeColor;
+        private final int strokeWidth;
+        private final int cornerRadius;
+        private final int alpha;
 
-        private int horizontalPadding;
-        private int verticalPadding;
+        private final int horizontalPadding;
+        private final int verticalPadding;
 
-        private int duration;
+        private final View customView;
+        private final int duration;
 
         private Config(Builder builder) {
             textColor = builder.textColor;
@@ -213,6 +216,7 @@ public class Toasty {
             horizontalPadding = builder.horizontalPadding;
             verticalPadding = builder.verticalPadding;
 
+            customView = builder.customView;
             duration = builder.duration;
         }
 
@@ -236,6 +240,7 @@ public class Toasty {
             private int horizontalPadding = DEFAULT_HORIZONTAL_PADDING;
             private int verticalPadding = DEFAULT_VERTICAL_PADDING;
 
+            private View customView = null;
             private int duration = LENGTH_SHORT;
 
             /**
@@ -409,6 +414,15 @@ public class Toasty {
              */
             public Builder verticalPadding(@IntRange(from = 0) int verticalPadding) {
                 this.verticalPadding = verticalPadding;
+                return this;
+            }
+
+            /**
+             * @param customView 完全自定义的View
+             * @return
+             */
+            public Builder customView(View customView) {
+                this.customView = customView;
                 return this;
             }
 

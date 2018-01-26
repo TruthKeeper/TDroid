@@ -12,8 +12,9 @@ import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroid.recycler.adapter.FasterAdapter;
 import com.tk.tdroid.recycler.adapter.FasterHolder;
 import com.tk.tdroid.recycler.adapter.Strategy;
+import com.tk.tdroiddemo.sample.SampleAutoInjectActivity;
 import com.tk.tdroiddemo.sample.SampleHttpActivity;
-import com.tk.tdroiddemo.sample.SampleSaveActivity;
+import com.tk.tdroiddemo.sample.SampleSaveRestoreActivity;
 import com.tk.tdroiddemo.sample.SampleSpannableActivity;
 import com.tk.tdroiddemo.sample.SampleToastActivity;
 import com.tk.tdroiddemo.sample.SampleUIActivity;
@@ -42,7 +43,13 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
                         new Item(SampleViewLoaderActivity.class, "View视图加载"),
                         new Item(SampleToastActivity.class, "Toast测试"),
                         new Item(SampleUIActivity.class, "UI封装"),
-                        new Item(SampleSaveActivity.class, "APT_自动恢复数据"),
+                        new Item(SampleSaveRestoreActivity.class, "APT_自动保存、恢复数据"),
+                        new Item(SampleAutoInjectActivity.class, "APT_自动注入携带数据",
+                                new Intent(MainActivity.this, SampleAutoInjectActivity.class)
+                                        .putExtra("nickName", "张三")
+                                        .putExtra("userId", 233L)
+                                        .putExtra("sex", true)
+                                        .putExtra("parent", new SampleAutoInjectActivity.Extra("李四", "王五"))),
                 }, new MainStrategy())
                 .itemClickListener(this)
                 .build();
@@ -58,24 +65,25 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
      */
     @Override
     public void onItemClick(FasterAdapter adapter, View view, int listPosition) {
-        startActivity(new Intent(this, this.adapter.getListItem(listPosition).getCls()));
+        Item listItem = this.adapter.getListItem(listPosition);
+        startActivity(listItem.intent == null ? new Intent(this, listItem.cls) : listItem.intent);
     }
 
     static class Item {
-        private Class<? extends Activity> cls;
-        private CharSequence item;
+        public final Class<? extends Activity> cls;
+        public final CharSequence item;
+        public final Intent intent;
 
         public Item(Class<? extends Activity> cls, CharSequence item) {
             this.cls = cls;
             this.item = item;
+            this.intent = null;
         }
 
-        public Class<? extends Activity> getCls() {
-            return cls;
-        }
-
-        public CharSequence getItem() {
-            return item;
+        public Item(Class<? extends Activity> cls, CharSequence item, Intent intent) {
+            this.cls = cls;
+            this.item = item;
+            this.intent = intent;
         }
     }
 
@@ -87,7 +95,7 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
 
         @Override
         public void onBindViewHolder(FasterHolder holder, Item data) {
-            holder.setText(R.id.item, data.getItem());
+            holder.setText(R.id.item, data.item);
         }
     }
 }

@@ -27,7 +27,8 @@
             android:name=".sample.SampleUIActivity"
             android:windowSoftInputMode="stateHidden" />
         <activity android:name=".ComponentsActivity" />
-        <activity android:name=".sample.SampleSaveActivity" />
+        <activity android:name=".sample.SampleSaveRestoreActivity" />
+        <activity android:name=".sample.SampleAutoInjectActivity" />
 
         <meta-data
             android:name="sample_holder_1"

@@ -2,13 +2,12 @@ package com.tk.tdroiddemo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
+import android.view.View;
+import android.widget.Button;
 
-import com.tk.home.HomeFragment;
-import com.tk.mine.MineFragment;
 import com.tk.tdroid.base.BaseActivity;
-import com.tk.tdroid.utils.FragmentHelper;
+import com.tk.tdroid.constants.RouterConstants;
+import com.tk.tdroid.router.TRouter;
 
 /**
  * <pre>
@@ -17,44 +16,37 @@ import com.tk.tdroid.utils.FragmentHelper;
  *     desc   : 组件化
  * </pre>
  */
-public class ComponentsActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
+public class ComponentsActivity extends BaseActivity implements View.OnClickListener {
 
-    private RadioGroup radioGroup;
-    private RadioButton radioBtnHome;
-    private RadioButton radioBtnMine;
-    private FragmentHelper fragmentHelper;
+    private Button btnHome;
+    private Button btnMine;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_components);
-        radioGroup = findViewById(R.id.radio_group);
-        radioBtnHome = findViewById(R.id.radio_btn_home);
-        radioBtnMine = findViewById(R.id.radio_btn_mine);
-        radioGroup.setOnCheckedChangeListener(this);
 
-        fragmentHelper = FragmentHelper.create(getSupportFragmentManager(),
-                R.id.container,
-                savedInstanceState,
-                FragmentHelper.FragmentData.create(HomeFragment.class),
-                FragmentHelper.FragmentData.create(MineFragment.class));
-        fragmentHelper.switchFragment(0);
+        btnHome = findViewById(R.id.btn_home);
+        btnMine = findViewById(R.id.btn_mine);
+        btnHome.setOnClickListener(this);
+        btnMine.setOnClickListener(this);
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        fragmentHelper.onSaveInstanceState(outState);
-    }
 
     @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        switch (checkedId) {
-            case R.id.radio_btn_home:
-                fragmentHelper.switchFragment(0);
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_home:
+                TRouter.with(RouterConstants.HOME_ACTIVITY)
+                        .request(this);
                 break;
-            case R.id.radio_btn_mine:
-                fragmentHelper.switchFragment(1);
+            case R.id.btn_mine:
+                //App工程可以直接获取到MineActivity对象，但此处演示路由跳转
+                TRouter.with(RouterConstants.MINE_ACTIVITY)
+                        .putString("nickName", "张三")
+                        .putLong("userId", 233)
+                        .putBoolean("gender", true)
+                        .request(this);
                 break;
         }
     }
