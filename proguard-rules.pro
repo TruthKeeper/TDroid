@@ -196,6 +196,12 @@ rx.internal.util.atomic.LinkedQueueNode producerNode;
 rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 #-------------------------------------------第三方Library end-------------------------------------------
+#-------------------------------------------TDroid start---------------------------------------------
+-keepclasseswithmembernames class * { @com.tdroid.annotation.AutoInject <fields>;}
+-keep class **_AutoInject { *; }
+-keepclasseswithmembernames class * { @com.tdroid.annotation.SaveAndRestore <fields>;}
+-keep class **_SaveRestore { *; }
+#-------------------------------------------TDroid end-----------------------------------------------
 #-------------------------------------------项目定制区 start---------------------------------------------
 # JSON格式解析
 #-keep class .bean.** { *; }
