@@ -25,7 +25,6 @@ public class ComponentsActivity extends BaseActivity implements View.OnClickList
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_components);
-
         btnHome = findViewById(R.id.btn_home);
         btnMine = findViewById(R.id.btn_mine);
         btnHome.setOnClickListener(this);
@@ -36,16 +35,18 @@ public class ComponentsActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            //App工程可以直接获取到MineActivity对象，但此处演示路由跳转
             case R.id.btn_home:
                 TRouter.with(RouterConstants.HOME_ACTIVITY)
+                        .anim(R.anim.in_from_right, R.anim.out_to_left)
                         .request(this);
                 break;
             case R.id.btn_mine:
-                //App工程可以直接获取到MineActivity对象，但此处演示路由跳转
                 TRouter.with(RouterConstants.MINE_ACTIVITY)
                         .putString("nickName", "张三")
                         .putLong("userId", 233)
                         .putBoolean("gender", true)
+                        .anim(R.anim.in_from_right, R.anim.out_to_left)
                         .request(this);
                 break;
         }

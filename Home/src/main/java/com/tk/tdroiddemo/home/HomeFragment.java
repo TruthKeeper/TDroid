@@ -1,6 +1,5 @@
-package com.tk.home.tdroiddemo;
+package com.tk.tdroiddemo.home;
 
-import com.tk.home.R;
 import com.tk.tdroid.base.BaseFragment;
 
 /**

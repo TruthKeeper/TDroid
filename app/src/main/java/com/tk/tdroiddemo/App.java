@@ -35,6 +35,7 @@ public class App extends Application {
         super.onCreate();
         Utils.init(this);
         TRouter.register(new com.apt.Mine.RouterTable());
+        TRouter.register(new com.apt.Home.RouterTable());
         //初始化ImageLoader
         ImageLoader.init();
 

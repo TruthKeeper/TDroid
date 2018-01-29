@@ -48,6 +48,7 @@ public class MineActivity extends BaseActivity {
             public void onClick(View v) {
                 TRouter.with(RouterConstants.HOME_ACTIVITY)
                         .request(MineActivity.this);
+                finish();
             }
         });
     }

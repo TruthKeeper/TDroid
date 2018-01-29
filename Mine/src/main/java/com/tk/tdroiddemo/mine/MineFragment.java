@@ -3,12 +3,13 @@ package com.tk.tdroiddemo.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.tdroid.annotation.AutoInject;
 import com.tdroid.annotation.Router;
 import com.tk.tdroid.base.BaseFragment;
+import com.tk.tdroid.constants.RouterConstants;
 
 /**
  * <pre>
@@ -17,16 +18,26 @@ import com.tk.tdroid.base.BaseFragment;
  *     desc   : xxxx描述
  * </pre>
  */
-@Router(path = "/mine/mineFragment")
+@Router(path = RouterConstants.MINE_FRAGMENT)
 public class MineFragment extends BaseFragment {
+    @AutoInject(desc = "位置")
+    String location;
+    @AutoInject(desc = "用户Id")
+    long userId;
+
+    @Override
+    public boolean autoInjectData() {
+        return true;
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.mine_fragment;
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        view.<TextView>findViewById(R.id.data).setText("位置：" + location + " 用户Id：" + userId);
+
     }
 }

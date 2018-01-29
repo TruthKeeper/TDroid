@@ -1,5 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tk.home">
+    package="com.tk.tdroiddemo.home">
 
-    <application></application>
+    <application>
+        <activity android:name=".HomeActivity" />
+    </application>
 </manifest>
