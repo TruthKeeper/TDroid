@@ -3,6 +3,8 @@ apply plugin: 'com.android.application'
 apply from: rootProject.ext.baseModuleFile
 apply from: rootProject.ext.processorFile
 apply from: rootProject.ext.versionFile
+//方法数统计
+//apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'auto-register'
 //autoregister {
 //    registerInfo = [
