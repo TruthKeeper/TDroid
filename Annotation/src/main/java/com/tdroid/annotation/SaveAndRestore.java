@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * <pre>
  *      author : TK
  *      time : 2018/1/16
- *      desc : 用于在Activity onSaveInstanceState onRestoreInstanceState自动注入
+ *      desc : 用于在Activity 和 Fragment onSaveInstanceState时自动保存数据，并在合适时机还原数据
  * </pre>
  */
 @Retention(RetentionPolicy.SOURCE)
