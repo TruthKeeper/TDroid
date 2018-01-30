@@ -1,18 +1,25 @@
 package com.tk.tdroid.utils;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.telephony.TelephonyManager;
 
 import com.tk.tdroid.BuildConfig;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * <pre>
@@ -23,6 +30,8 @@ import java.util.List;
  */
 public final class AppUtils {
     private static boolean isDebug = BuildConfig.DEBUG;
+    private static final String DEVICE_SP = "DEVICE_SP";
+    private static final String DEVICE_ID = "device_id";
 
     private AppUtils() {
         throw new IllegalStateException();
@@ -224,5 +233,38 @@ public final class AppUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 获取设备Id，需要权限android.permission.READ_PHONE_STATE
+     *
+     * @return
+     */
+    public static String getDeviceId() {
+        final SharedPreferences preferences = Utils.getApp().getSharedPreferences(DEVICE_SP, Context.MODE_PRIVATE);
+        final String id = preferences.getString(DEVICE_ID, null);
+        if (id != null) {
+            return id;
+        } else {
+            final String androidId = Settings.Secure.getString(Utils.getApp().getContentResolver(), Settings.Secure.ANDROID_ID);
+            UUID uuid;
+            try {
+                if (EmptyUtils.isEmpty(androidId) || androidId.equals("9774d56d682e549c")) {
+                    String deviceId = null;
+                    if (ActivityCompat.checkSelfPermission(Utils.getApp(), Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED) {
+                        deviceId = ((TelephonyManager) Utils.getApp().getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
+                    }
+                    uuid = EmptyUtils.isEmpty(deviceId) ? UUID.randomUUID()
+                            : UUID.nameUUIDFromBytes(deviceId.getBytes("utf8"));
+                } else {
+                    uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8"));
+                }
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+            String uuidStr = uuid.toString();
+            preferences.edit().putString(DEVICE_ID, uuidStr).apply();
+            return uuidStr;
+        }
     }
 }
