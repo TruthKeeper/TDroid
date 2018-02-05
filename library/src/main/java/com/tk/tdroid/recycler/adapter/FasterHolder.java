@@ -9,6 +9,7 @@ import android.support.annotation.FloatRange;
 import android.support.annotation.IdRes;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.View;
@@ -299,7 +300,7 @@ public class FasterHolder extends RecyclerView.ViewHolder {
      * @return
      */
     public FasterHolder setBackground(@IdRes int viewId, Drawable background) {
-        this.<TextView>findViewById(viewId).setBackground(background);
+        ViewCompat.setBackground(this.findViewById(viewId), background);
         return this;
     }
 
