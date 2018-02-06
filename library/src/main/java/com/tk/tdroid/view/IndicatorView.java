@@ -30,16 +30,17 @@ public class IndicatorView extends View {
     private static final String TAG = "IndicatorView";
 
     private Paint mPaint = new Paint();
-    //from Build
+    //Build
+    private int size;
     private int backgroundColor;
     private int radius;
-    private float textSize;
+    private int padding;
     private int textColor;
     private int num;
     private boolean upper;
     private boolean point;
-    private float textHeight;
 
+    private float textHeight;
     private RectF content;
 
     public static Builder with() {
@@ -57,15 +58,16 @@ public class IndicatorView extends View {
     }
 
     private void initBuilder(Builder builder) {
+        size = builder.size;
         backgroundColor = builder.backgroundColor;
+        radius = builder.radius;
+        padding = builder.padding;
         textColor = builder.textColor;
-        textSize = builder.textSize;
         num = builder.num;
         upper = builder.upper;
         point = builder.point;
-        radius = builder.radius;
 
-        mPaint.setTextSize(DensityUtil.sp2px(textSize));
+        mPaint.setTextSize(DensityUtil.sp2px(builder.textSize));
 
         Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
         textHeight = fontMetrics.bottom + fontMetrics.top;
@@ -77,6 +79,18 @@ public class IndicatorView extends View {
         mPaint.setAntiAlias(true);
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setTextAlign(Paint.Align.CENTER);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width;
+        if (point) {
+            width = size;
+        } else {
+            int textWidth = Math.round(mPaint.measureText(convertText(num, upper)));
+            width = Math.max(textWidth + 2 * padding, size);
+        }
+        setMeasuredDimension(width, size);
     }
 
     @Override
@@ -121,22 +135,18 @@ public class IndicatorView extends View {
             Log.e(TAG, "target need parent!");
             return null;
         }
-        Paint paint = new Paint();
-        paint.setTextSize(DensityUtil.sp2px(builder.textSize));
-        int width = Math.round(paint.measureText(convertText(builder.num, builder.upper)));
         IndicatorView indicatorView;
+        FrameLayout.LayoutParams indicatorP = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        indicatorP.leftMargin = builder.leftMargin;
+        indicatorP.topMargin = builder.topMargin;
+        indicatorP.rightMargin = builder.rightMargin;
+        indicatorP.bottomMargin = builder.bottomMargin;
+        indicatorP.gravity = builder.gravity;
+
         if (target.getParent() instanceof IndicatorFrameLayout) {
             //已经偷梁换柱
             indicatorView = (IndicatorView) ((IndicatorFrameLayout) target.getParent()).getChildAt(((IndicatorFrameLayout) target.getParent()).getChildCount() - 1);
-            FrameLayout.LayoutParams indicatorP = new FrameLayout.LayoutParams(
-                    builder.point ? builder.size : Math.max(width + 2 * builder.padding, builder.size),
-                    builder.size);
 
-            indicatorP.leftMargin = builder.leftMargin;
-            indicatorP.topMargin = builder.topMargin;
-            indicatorP.rightMargin = builder.rightMargin;
-            indicatorP.bottomMargin = builder.bottomMargin;
-            indicatorP.gravity = builder.gravity;
             indicatorView.initBuilder(builder);
             indicatorView.setLayoutParams(indicatorP);
             indicatorView.invalidate();
@@ -144,15 +154,7 @@ public class IndicatorView extends View {
             indicatorView = new IndicatorView(target.getContext());
             ViewGroup viewGroup = (ViewGroup) target.getParent();
             ViewGroup.LayoutParams targetP = target.getLayoutParams();
-            FrameLayout.LayoutParams indicatorP = new FrameLayout.LayoutParams(
-                    builder.point ? builder.size : Math.max(width + 2 * builder.padding, builder.size),
-                    builder.size);
 
-            indicatorP.leftMargin = builder.leftMargin;
-            indicatorP.topMargin = builder.topMargin;
-            indicatorP.rightMargin = builder.rightMargin;
-            indicatorP.bottomMargin = builder.bottomMargin;
-            indicatorP.gravity = builder.gravity;
             indicatorView.initBuilder(builder);
 
             IndicatorFrameLayout parent = new IndicatorFrameLayout(target.getContext());
@@ -208,7 +210,6 @@ public class IndicatorView extends View {
          * true：小圆点 false：圆角矩形(显示数字)
          */
         private boolean point = false;
-
 
         /**
          * 设置大小，设置成高度，宽度自动调节
