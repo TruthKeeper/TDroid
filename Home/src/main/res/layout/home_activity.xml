@@ -14,6 +14,12 @@
         app:title="Home组件的Activity"
         app:titleTextColor="@android:color/white" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="openByUrl"
+        android:text="点击用url的方式前往组件化个人中心" />
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

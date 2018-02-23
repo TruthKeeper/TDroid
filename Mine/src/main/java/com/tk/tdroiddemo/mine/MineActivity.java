@@ -18,7 +18,7 @@ import com.tk.tdroid.router.TRouter;
  *     desc   : xxxx描述
  * </pre>
  */
-@Router(path = RouterConstants.MINE_ACTIVITY)
+@Router(path = {RouterConstants.MINE_ACTIVITY, RouterConstants.MINE_ACTIVITY_NET})
 public class MineActivity extends BaseActivity {
     @AutoInject(desc = "昵称")
     String nickName;

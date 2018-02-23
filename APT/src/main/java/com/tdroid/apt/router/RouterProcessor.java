@@ -52,17 +52,17 @@ public class RouterProcessor implements IProcessor {
             createPath.append(moduleName);
         }
 
-        final  TypeSpec.Builder classBuilder = TypeSpec.classBuilder(CLASS_NAME)
+        final TypeSpec.Builder classBuilder = TypeSpec.classBuilder(CLASS_NAME)
                 .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ClassName.get("com.tk.tdroid.router", "IRouterTable"))
                 .addJavadoc("路由表 , from APT auto");
 
-        final  MethodSpec.Builder activityBuilder = MethodSpec.methodBuilder(METHOD_ACTIVITY)
+        final MethodSpec.Builder activityBuilder = MethodSpec.methodBuilder(METHOD_ACTIVITY)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addJavadoc("获取Activity映射表 , from APT auto")
                 .returns(TypeVariableName.get("java.util.Map<String, Class<?>>"));
-        final   MethodSpec.Builder serviceBuilder = MethodSpec.methodBuilder(METHOD_SERVICE)
+        final MethodSpec.Builder serviceBuilder = MethodSpec.methodBuilder(METHOD_SERVICE)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addJavadoc("获取Service映射表 , from APT auto")
@@ -72,19 +72,19 @@ public class RouterProcessor implements IProcessor {
                 .addAnnotation(Override.class)
                 .addJavadoc("获取Fragment映射表 , from APT auto")
                 .returns(TypeVariableName.get("java.util.Map<String, Class<?>>"));
-        final   MethodSpec.Builder fragmentV4Builder = MethodSpec.methodBuilder(METHOD_FRAGMENT_V4)
+        final MethodSpec.Builder fragmentV4Builder = MethodSpec.methodBuilder(METHOD_FRAGMENT_V4)
                 .addModifiers(Modifier.PUBLIC)
                 .addAnnotation(Override.class)
                 .addJavadoc("获取FragmentV4映射表 , from APT auto")
                 .returns(TypeVariableName.get("java.util.Map<String, Class<?>>"));
 
-        final  CodeBlock.Builder activityCodeBuilder = CodeBlock.builder();
+        final CodeBlock.Builder activityCodeBuilder = CodeBlock.builder();
         activityCodeBuilder.addStatement("java.util.Map<String, Class<?>> map = new java.util.HashMap<>()");
-        final   CodeBlock.Builder serviceCodeBuilder = CodeBlock.builder();
+        final CodeBlock.Builder serviceCodeBuilder = CodeBlock.builder();
         serviceCodeBuilder.addStatement("java.util.Map<String, Class<?>> map = new java.util.HashMap<>()");
-        final  CodeBlock.Builder fragmentCodeBuilder = CodeBlock.builder();
+        final CodeBlock.Builder fragmentCodeBuilder = CodeBlock.builder();
         fragmentCodeBuilder.addStatement("java.util.Map<String, Class<?>> map = new java.util.HashMap<>()");
-        final  CodeBlock.Builder fragmentV4CodeBuilder = CodeBlock.builder();
+        final CodeBlock.Builder fragmentV4CodeBuilder = CodeBlock.builder();
         fragmentV4CodeBuilder.addStatement("java.util.Map<String, Class<?>> map = new java.util.HashMap<>()");
 
         final TypeMirror typeActivity = annotationProcessor.getElementUtils()
@@ -105,22 +105,24 @@ public class RouterProcessor implements IProcessor {
                     //过滤非有效类
                     continue;
                 }
-                //路由路径
-                String routerPath = typeElement.getAnnotation(Router.class).path();
                 ClassName clsName = ClassName.get(typeElement);
                 String fullName = Utils.getFullName(clsName);
                 if (classNameList.contains(fullName)) {
                     continue;
                 }
                 classNameList.add(fullName);
-                if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeActivity)) {
-                    activityCodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
-                }else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeService)) {
-                    serviceCodeBuilder .addStatement("map.put($S , $T.class)", routerPath, clsName);
-                }else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeFragment)) {
-                    fragmentCodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
-                }else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeFragmentV4)) {
-                    fragmentV4CodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
+                //路由路径
+                String[] routerPathArray = typeElement.getAnnotation(Router.class).path();
+                for (String routerPath : routerPathArray) {
+                    if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeActivity)) {
+                        activityCodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
+                    } else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeService)) {
+                        serviceCodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
+                    } else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeFragment)) {
+                        fragmentCodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
+                    } else if (annotationProcessor.getTypeUtils().isSubtype(typeElement.asType(), typeFragmentV4)) {
+                        fragmentV4CodeBuilder.addStatement("map.put($S , $T.class)", routerPath, clsName);
+                    }
                 }
             }
 

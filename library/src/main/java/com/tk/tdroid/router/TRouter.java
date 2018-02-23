@@ -6,6 +6,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -13,20 +14,27 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
+import com.tk.tdroid.utils.EmptyUtils;
+import com.tk.tdroid.utils.UrlUtils;
 import com.tk.tdroid.utils.Utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * <pre>
  *     author : TK
  *     time   : 2018/01/24
- *     desc   : xxxx描述
+ *     desc   : 路由
  * </pre>
  */
 public final class TRouter {
     private static final String TAG = "TRouter";
+    /**
+     * 路由的源Path，可通过{@link Intent#getStringExtra(String)}获取
+     */
+    public static final String RAW_PATH = "TRouter_Raw_Path";
     private static boolean LOG = true;
     private static final Map<String, Class<?>> activityMap = new HashMap<>();
     private static final Map<String, Class<?>> serviceMap = new HashMap<>();
@@ -49,31 +57,66 @@ public final class TRouter {
         fragmentV4Map.putAll(table.getFragmentV4Map());
     }
 
+    /**
+     * 获取一个路由
+     *
+     * @param path
+     * @return
+     */
     public static RouterCell with(String path) {
         return new RouterCell(path);
     }
 
-
+    /**
+     * 获取Activity的路由Class
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static Class<?> findActivity(String path) {
         return activityMap.get(path);
     }
 
+    /**
+     * 获取Service的路由Class
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static Class<?> findService(String path) {
         return serviceMap.get(path);
     }
 
+    /**
+     * 获取Fragment的路由Class
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static Class<?> findFragment(String path) {
         return fragmentMap.get(path);
     }
 
+    /**
+     * 获取Fragment的路由Class
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static Class<?> findFragmentV4(String path) {
         return fragmentV4Map.get(path);
     }
 
+    /**
+     * 实例化Fragment
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static Fragment instanceFragment(String path) {
         try {
@@ -91,6 +134,12 @@ public final class TRouter {
         return null;
     }
 
+    /**
+     * 实例化Fragment
+     *
+     * @param path
+     * @return
+     */
     @Nullable
     public static android.support.v4.app.Fragment instanceFragmentV4(String path) {
         try {
@@ -109,14 +158,29 @@ public final class TRouter {
     }
 
     static void request(@Nullable final Context context, final int requestCode, @NonNull final RouterCell routerCell) {
-        Class<?> actCls = findActivity(routerCell.routerPath);
+        final Intent intent = new Intent();
+
+        final Class<?> actCls;
+        final Uri uri = Uri.parse(routerCell.routerPath);
+        Set<String> queryParameterNames = uri.getQueryParameterNames();
+        if (EmptyUtils.isEmpty(queryParameterNames)) {
+            actCls = findActivity(routerCell.routerPath);
+        } else {
+            //当做Url处理，并且将Query注入到Intent中,String类型
+            for (String queryParameterName : queryParameterNames) {
+                intent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
+            }
+            actCls = findActivity(UrlUtils.excludeQuery(routerCell.routerPath));
+        }
+
         if (actCls == null) {
             if (LOG) {
                 Log.e(TAG, "activityMap find null");
             }
             return;
         }
-        Intent intent = new Intent();
+        //存放路由的源Path
+        intent.putExtra(RAW_PATH, routerCell.routerPath);
         intent.putExtras(routerCell.getExtra())
                 .setFlags(routerCell.getFlags());
         final Context callContext;

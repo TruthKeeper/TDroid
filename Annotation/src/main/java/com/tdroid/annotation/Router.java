@@ -17,6 +17,7 @@ import java.lang.annotation.Target;
 public @interface Router {
     /**
      * 路由的链接，唯一标识
+     * @return
      */
-    String path();
+    String[] path();
 }

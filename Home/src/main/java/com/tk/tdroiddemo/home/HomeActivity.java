@@ -3,6 +3,7 @@ package com.tk.tdroiddemo.home;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.View;
 
 import com.tdroid.annotation.Router;
 import com.tk.tdroid.base.BaseActivity;
@@ -49,5 +50,11 @@ public class HomeActivity extends BaseActivity {
     @Override
     public boolean autoInjectData() {
         return true;
+    }
+
+    public void openByUrl(View view) {
+        TRouter.with(RouterConstants.MINE_ACTIVITY_NET + "?nickName=李四")
+                .request(this);
+        finish();
     }
 }
