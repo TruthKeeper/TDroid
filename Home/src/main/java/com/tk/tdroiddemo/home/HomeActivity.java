@@ -47,11 +47,6 @@ public class HomeActivity extends BaseActivity {
         fragmentHelper.onSaveInstanceState(outState);
     }
 
-    @Override
-    public boolean autoInjectData() {
-        return true;
-    }
-
     public void openByUrl(View view) {
         TRouter.with(RouterConstants.MINE_ACTIVITY_NET + "?nickName=李四")
                 .request(this);

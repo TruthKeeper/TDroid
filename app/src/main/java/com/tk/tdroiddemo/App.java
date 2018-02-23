@@ -1,6 +1,8 @@
 package com.tk.tdroiddemo;
 
 import android.app.Application;
+import android.content.Context;
+import android.util.Log;
 
 import com.tk.tdroid.EventBusIndex;
 import com.tk.tdroid.event.EventHelper;
@@ -8,6 +10,8 @@ import com.tk.tdroid.http.HttpConfig;
 import com.tk.tdroid.http.HttpUtils;
 import com.tk.tdroid.http.interceptor.CookieInterceptor;
 import com.tk.tdroid.image.ImageLoader;
+import com.tk.tdroid.router.Interceptor;
+import com.tk.tdroid.router.RouterCell;
 import com.tk.tdroid.router.TRouter;
 import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
@@ -34,8 +38,21 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
+        //初始化路由
         TRouter.register(new com.apt.Mine.RouterTable());
         TRouter.register(new com.apt.Home.RouterTable());
+        TRouter.addGlobalInterceptor(new Interceptor() {
+            @Override
+            public boolean intercept(RouterCell cell, Context context) {
+                Log.d("TRouter", "路由：" + cell.routerPath);
+                return false;
+            }
+
+            @Override
+            public void onIntercepted(RouterCell cell, Context context) {
+
+            }
+        });
         //初始化ImageLoader
         ImageLoader.init();
 

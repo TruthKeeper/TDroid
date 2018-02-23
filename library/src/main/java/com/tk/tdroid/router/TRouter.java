@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -19,6 +20,8 @@ import com.tk.tdroid.utils.UrlUtils;
 import com.tk.tdroid.utils.Utils;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,9 +43,35 @@ public final class TRouter {
     private static final Map<String, Class<?>> serviceMap = new HashMap<>();
     private static final Map<String, Class<?>> fragmentMap = new HashMap<>();
     private static final Map<String, Class<?>> fragmentV4Map = new HashMap<>();
+    private static final List<Interceptor> globalInterceptors = new LinkedList<>();
 
     public static void enabledLog(boolean log) {
         TRouter.LOG = log;
+    }
+
+    /**
+     * 添加全局拦截器
+     *
+     * @param interceptor
+     */
+    public static void addGlobalInterceptor(@NonNull Interceptor interceptor) {
+        globalInterceptors.add(interceptor);
+    }
+
+    /**
+     * 移除全局拦截器
+     *
+     * @param interceptor
+     */
+    public static void removeGlobalInterceptor(@NonNull Interceptor interceptor) {
+        globalInterceptors.remove(interceptor);
+    }
+
+    /**
+     * 清空全部全局拦截器
+     */
+    public static void clearAllGlobalInterceptor() {
+        globalInterceptors.clear();
     }
 
     /**
@@ -65,6 +94,31 @@ public final class TRouter {
      */
     public static RouterCell with(String path) {
         return new RouterCell(path);
+    }
+
+    /**
+     * 在拦截器中打包传递数据
+     *
+     * @param cell
+     * @return
+     */
+    public static Bundle packageInInterceptor(RouterCell cell) {
+        Bundle bundle = new Bundle();
+        bundle.putString(RAW_PATH, cell.routerPath);
+        bundle.putAll(cell.getExtra());
+        return bundle;
+    }
+
+    /**
+     * 继续路由
+     *
+     * @param bundle  from {@link TRouter#packageInInterceptor(RouterCell)}
+     * @param context
+     */
+    public static void resume(Bundle bundle, Context context) {
+        with(bundle.getString(RAW_PATH))
+                .extra(bundle)
+                .request(context);
     }
 
     /**
@@ -158,6 +212,28 @@ public final class TRouter {
     }
 
     static void request(@Nullable final Context context, final int requestCode, @NonNull final RouterCell routerCell) {
+        if (!EmptyUtils.isEmpty(globalInterceptors)) {
+            for (Interceptor interceptor : globalInterceptors) {
+                if (interceptor.intercept(routerCell, context)) {
+                    if (LOG) {
+                        Log.d(TAG, "global interceptor ! Path：" + routerCell.routerPath + " Interceptor：" + interceptor.getClass().getSimpleName());
+                    }
+                    interceptor.onIntercepted(routerCell, context);
+                    return;
+                }
+            }
+        }
+        if (!EmptyUtils.isEmpty(routerCell.getInterceptors())) {
+            for (Interceptor interceptor : routerCell.getInterceptors()) {
+                if (interceptor.intercept(routerCell, context)) {
+                    if (LOG) {
+                        Log.d(TAG, "interceptor ! Path：" + routerCell.routerPath + " Interceptor：" + interceptor.getClass().getSimpleName());
+                    }
+                    interceptor.onIntercepted(routerCell, context);
+                    return;
+                }
+            }
+        }
         final Intent intent = new Intent();
 
         final Class<?> actCls;

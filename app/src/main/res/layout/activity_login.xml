@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:title="组件化"
+        app:title="登录"
         app:titleTextColor="@android:color/white" />
 
     <LinearLayout
@@ -19,22 +19,11 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <CheckBox
-            android:id="@+id/cbx_login"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="用户已登录？" />
-
         <Button
-            android:id="@+id/btn_home"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点击前往组件化_主页" />
+            android:onClick="login"
+            android:text="点击登录(继续路由)" />
 
-        <Button
-            android:id="@+id/btn_mine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="点击前往组件化_个人中心" />
     </LinearLayout>
 </LinearLayout>

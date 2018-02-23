@@ -3,7 +3,11 @@ package com.tk.tdroid.router;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import java.util.LinkedList;
+import java.util.List;
 
 
 /**
@@ -26,6 +30,7 @@ public class RouterCell {
      * 过场动画
      */
     private Bundle options;
+    private List<Interceptor> interceptors;
 
     RouterCell(String routerPath) {
         this.routerPath = routerPath;
@@ -100,6 +105,25 @@ public class RouterCell {
 
     Bundle getOptions() {
         return options;
+    }
+
+    public RouterCell addInterceptor(@NonNull Interceptor interceptor) {
+        if (interceptors == null) {
+            interceptors = new LinkedList<>();
+        }
+        interceptors.add(interceptor);
+        return this;
+    }
+
+    public RouterCell removeInterceptor(@NonNull Interceptor interceptor) {
+        if (interceptors != null) {
+            interceptors.remove(interceptor);
+        }
+        return this;
+    }
+
+    public List<Interceptor> getInterceptors() {
+        return interceptors;
     }
 
     public void request() {

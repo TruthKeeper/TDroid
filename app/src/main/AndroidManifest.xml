@@ -29,6 +29,7 @@
         <activity android:name=".ComponentsActivity" />
         <activity android:name=".sample.SampleSaveRestoreActivity" />
         <activity android:name=".sample.SampleAutoInjectActivity" />
+        <activity android:name=".LoginActivity" />
 
         <meta-data
             android:name="sample_holder_1"
