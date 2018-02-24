@@ -47,14 +47,16 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
     private int bottomDividerPaddingLeft;
     private int bottomDividerPaddingRight;
 
-    private boolean ignoreLast;
+    private boolean ignoreStart;
+    private boolean ignoreEnd;
     private int[] ignoreViewTypes;
 
     private LinearDecoration(Vertical vertical) {
         drawable = vertical.drawable;
         dividerBgColor = vertical.dividerBgColor;
         dividerColor = vertical.dividerColor;
-        ignoreLast = vertical.ignoreLast;
+        ignoreStart = vertical.ignoreStart;
+        ignoreEnd = vertical.ignoreEnd;
         ignoreViewTypes = vertical.ignoreViewTypes;
         topDivider = vertical.topDivider;
         topDividerPaddingLeft = vertical.topDividerPaddingLeft;
@@ -68,7 +70,8 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         drawable = horizontal.drawable;
         dividerBgColor = horizontal.dividerBgColor;
         dividerColor = horizontal.dividerColor;
-        ignoreLast = horizontal.ignoreLast;
+        ignoreStart = horizontal.ignoreStart;
+        ignoreEnd = horizontal.ignoreEnd;
         ignoreViewTypes = horizontal.ignoreViewTypes;
         leftDivider = horizontal.leftDivider;
         leftDividerPaddingTop = horizontal.leftDividerPaddingTop;
@@ -244,7 +247,11 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
             //需要忽视
             return false;
         }
-        if (ignoreLast) {
+        if (ignoreStart && null != holder && holder.getAdapterPosition() == 0) {
+            //是第一条
+            return false;
+        }
+        if (ignoreEnd) {
             if (null != holder && holder.getAdapterPosition() == parent.getAdapter().getItemCount() - 1) {
                 //是最后一条
                 return false;
@@ -274,7 +281,8 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         private Drawable drawable = null;
         private int dividerBgColor = Color.TRANSPARENT;
         private int dividerColor = Color.TRANSPARENT;
-        private boolean ignoreLast = true;
+        private boolean ignoreStart = false;
+        private boolean ignoreEnd = true;
         //默认过滤FasterAdapter
         private int[] ignoreViewTypes = FasterAdapter.INNER_TYPE;
 
@@ -324,13 +332,24 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         }
 
         /**
-         * 是否过滤Adapter最后一项
+         * 是否过滤Adapter第一项
          *
-         * @param ignoreLast
+         * @param ignoreStart
          * @return
          */
-        public Vertical ignoreLast(boolean ignoreLast) {
-            this.ignoreLast = ignoreLast;
+        public Vertical ignoreStart(boolean ignoreStart) {
+            this.ignoreStart = ignoreStart;
+            return this;
+        }
+
+        /**
+         * 是否过滤Adapter最后一项
+         *
+         * @param ignoreEnd
+         * @return
+         */
+        public Vertical ignoreEnd(boolean ignoreEnd) {
+            this.ignoreEnd = ignoreEnd;
             return this;
         }
 
@@ -420,7 +439,8 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         private Drawable drawable = null;
         private int dividerBgColor = Color.TRANSPARENT;
         private int dividerColor = Color.TRANSPARENT;
-        private boolean ignoreLast = true;
+        private boolean ignoreStart = false;
+        private boolean ignoreEnd = true;
         private int[] ignoreViewTypes = new int[]{};
 
         private int leftDivider = 0;
@@ -469,13 +489,24 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
         }
 
         /**
-         * 是否过滤Adapter最后一项
+         * 是否过滤Adapter第一项
          *
-         * @param ignoreLast
+         * @param ignoreStart
          * @return
          */
-        public Horizontal ignoreLast(boolean ignoreLast) {
-            this.ignoreLast = ignoreLast;
+        public Horizontal ignoreStart(boolean ignoreStart) {
+            this.ignoreStart = ignoreStart;
+            return this;
+        }
+
+        /**
+         * 是否过滤Adapter最后一项
+         *
+         * @param ignoreEnd
+         * @return
+         */
+        public Horizontal ignoreEnd(boolean ignoreEnd) {
+            this.ignoreEnd = ignoreEnd;
             return this;
         }
 
