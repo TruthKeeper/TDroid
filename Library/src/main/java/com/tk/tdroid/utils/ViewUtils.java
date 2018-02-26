@@ -1,9 +1,13 @@
 package com.tk.tdroid.utils;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Selection;
 import android.text.TextUtils;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.EditText;
@@ -93,5 +97,24 @@ public final class ViewUtils {
                 return result;
             }
         }
+    }
+
+    /**
+     * 通过View的上下文获取到Activity
+     *
+     * @param view
+     * @return
+     */
+    @Nullable
+    public static Activity getActivity(@NonNull View view) {
+        Context context = view.getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            //5.0以下会被修饰为TintContextWrapper
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
     }
 }

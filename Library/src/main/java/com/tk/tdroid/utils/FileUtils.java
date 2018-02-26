@@ -1,12 +1,12 @@
 package com.tk.tdroid.utils;
 
 import android.annotation.TargetApi;
+import android.content.ContextWrapper;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 
 import com.tk.tdroid.R;
 
@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 /**
  * <pre>
@@ -424,6 +425,27 @@ public final class FileUtils {
             return dir.isDirectory();
         }
         return dir.mkdirs();
+    }
+
+    /**
+     * 改变系统默认的{@link android.content.SharedPreferences} 存储位置 , 卸载后数据的保留
+     *
+     * @param file {@code new File(Environment.getExternalStorageDirectory(), "TestDir" )}
+     */
+    public static void changeSPPath(File file) {
+        Field field = null;
+        try {
+            field = ContextWrapper.class.getDeclaredField("mBase");
+            field.setAccessible(true);
+            Object obj = field.get(Utils.getApp());
+            field = obj.getClass().getDeclaredField("mPreferencesDir");
+            field.setAccessible(true);
+            createOrExistsDir(file);
+            //改变ContextImpl的引用
+            field.set(obj, file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public interface FileFilter {

@@ -1,0 +1,6 @@
+//APT Processor的基类配置
+
+dependencies {
+    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
+    annotationProcessor project(':APT')
+}

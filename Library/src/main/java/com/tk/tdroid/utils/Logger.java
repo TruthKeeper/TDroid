@@ -4,10 +4,8 @@ import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.util.ArrayMap;
+import android.support.v4.util.SparseArrayCompat;
 import android.util.Log;
-
-import com.tk.tdroid.constants.TConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -19,6 +17,7 @@ import java.io.StringWriter;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.Locale;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -114,7 +113,7 @@ public final class Logger {
 
     private static final int JSON = 0x10;
     private static final int XML = 0x20;
-    private static ArrayMap<Integer, String> map = null;
+    private static SparseArrayCompat<String> logTypeArray = null;
     /**
      * 全局配置
      */
@@ -146,24 +145,24 @@ public final class Logger {
      * 初始化日志写入
      */
     private static void initLogWriter() {
-        if (map == null) {
-            map = new ArrayMap<>(8);
-            map.put(V, "VERBOSE");
-            map.put(D, "DEBUG");
-            map.put(I, "INFO");
-            map.put(W, "WARN");
-            map.put(E, "ERROR");
-            map.put(A, "ASSERT");
-            map.put(JSON, "JSON");
-            map.put(XML, "XML");
+        if (logTypeArray == null) {
+            logTypeArray = new SparseArrayCompat<>(8);
+            logTypeArray.put(V, "VERBOSE");
+            logTypeArray.put(D, "DEBUG");
+            logTypeArray.put(I, "INFO");
+            logTypeArray.put(W, "WARN");
+            logTypeArray.put(E, "ERROR");
+            logTypeArray.put(A, "ASSERT");
+            logTypeArray.put(JSON, "JSON");
+            logTypeArray.put(XML, "XML");
         }
         if (executorService == null) {
             executorService = Executors.newSingleThreadExecutor();
         }
     }
 
-    public static void v(@Nullable Object msg) {
-        printLog(V, null, msg);
+    public static void v(@Nullable Object obj) {
+        printLog(V, null, obj);
     }
 
     public static void v(@NonNull String tag, @Nullable Object... objects) {
@@ -174,8 +173,8 @@ public final class Logger {
         printLog(V, config, objects);
     }
 
-    public static void d(@Nullable Object msg) {
-        printLog(D, null, msg);
+    public static void d(@Nullable Object obj) {
+        printLog(D, null, obj);
     }
 
     public static void d(@NonNull String tag, @Nullable Object... objects) {
@@ -186,8 +185,8 @@ public final class Logger {
         printLog(D, config, objects);
     }
 
-    public static void i(@Nullable Object msg) {
-        printLog(I, null, msg);
+    public static void i(@Nullable Object obj) {
+        printLog(I, null, obj);
     }
 
     public static void i(@NonNull String tag, @Nullable Object... objects) {
@@ -198,8 +197,8 @@ public final class Logger {
         printLog(I, config, objects);
     }
 
-    public static void w(@Nullable Object msg) {
-        printLog(W, null, msg);
+    public static void w(@Nullable Object obj) {
+        printLog(W, null, obj);
     }
 
     public static void w(@NonNull String tag, @Nullable Object... objects) {
@@ -210,8 +209,8 @@ public final class Logger {
         printLog(W, config, objects);
     }
 
-    public static void e(@Nullable Object msg) {
-        printLog(E, null, msg);
+    public static void e(@Nullable Object obj) {
+        printLog(E, null, obj);
     }
 
     public static void e(@NonNull String tag, @Nullable Object... objects) {
@@ -222,8 +221,8 @@ public final class Logger {
         printLog(E, config, objects);
     }
 
-    public static void a(@Nullable Object msg) {
-        printLog(A, null, msg);
+    public static void a(@Nullable Object obj) {
+        printLog(A, null, obj);
     }
 
     public static void a(@NonNull String tag, @Nullable Object... objects) {
@@ -278,7 +277,7 @@ public final class Logger {
         boolean header = realConfig == null ? HEADER : realConfig.header;
         String logPath = realConfig == null ? null : realConfig.logPath;
         if (EmptyUtils.isEmpty(logPath)) {
-            logPath = Utils.getApp().getFilesDir().getAbsolutePath() + File.separator + TConstants.LOGGER_DIR;
+            logPath = Utils.getApp().getFilesDir().getAbsolutePath() + File.separator + TAG;
         }
         if (print) {
             print2console(type & LOW, tagStr, headers, bodyStr, border, header);
@@ -321,37 +320,40 @@ public final class Logger {
      * @return
      */
     private static String generateBody(final int type, @Nullable final Object... objects) {
-        String body = NULL;
-        if (!EmptyUtils.isEmpty(objects)) {
-            if (objects.length == 1) {
-                if (type == JSON) {
-                    body = objects[0] == null ? NULL : fromJson(objects[0].toString());
-                    body += LINE_SEP;
-                    return body;
-                } else if (type == XML) {
-                    body = objects[0] == null ? NULL : fromXml(objects[0].toString());
-                    body += LINE_SEP;
-                    return body;
-                }
-            }
-            StringBuilder sb = new StringBuilder();
-            Object obj;
-            for (int i = 0, len = objects.length; i < len; ++i) {
-                obj = objects[i];
-                sb.append(PARAM).append("[").append(i).append("]")
-                        .append(" = ");
-                if (obj == null) {
-                    sb.append(NULL);
-                } else if (obj instanceof File) {
-                    sb.append(fromFile((File) obj));
-                } else {
-                    sb.append(obj.toString());
-                }
-                sb.append(LINE_SEP);
-            }
-            body = sb.toString();
+        if (EmptyUtils.isEmpty(objects)) {
+            return NULL;
         }
-        return body;
+        StringBuilder builder = new StringBuilder();
+        if (objects.length == 1) {
+            if (type == JSON) {
+                builder.append(objects[0] == null ? NULL : fromJson(objects[0].toString()));
+                builder.append(LINE_SEP);
+                return builder.toString();
+            } else if (type == XML) {
+                builder.append(objects[0] == null ? NULL : fromXml(objects[0].toString()));
+                builder.append(LINE_SEP);
+                return builder.toString();
+            }
+        }
+        Object obj;
+        for (int i = 0, len = objects.length; i < len; ++i) {
+            obj = objects[i];
+            builder.append(PARAM).append("[").append(i).append("]")
+                    .append(" = ");
+            if (obj == null) {
+                builder.append(NULL);
+            } else if (obj instanceof File) {
+                builder.append(fromFile((File) obj));
+            } else if (obj instanceof Iterable) {
+                builder.append(CollectionUtils.getContent((Iterable) obj, ","));
+            } else if (obj instanceof Map) {
+                builder.append(CollectionUtils.getContent(((Map) obj).entrySet(), ","));
+            } else {
+                builder.append(obj.toString());
+            }
+            builder.append(LINE_SEP);
+        }
+        return builder.toString();
     }
 
     /**
@@ -500,11 +502,11 @@ public final class Logger {
         builder.append(date)
                 .append(" ");
         if (type < LOW) {
-            builder.append(map.get(type));
+            builder.append(logTypeArray.get(type));
         } else {
-            builder.append(map.get(type & HIGH))
+            builder.append(logTypeArray.get(type & HIGH))
                     .append("+")
-                    .append(map.get(type & LOW));
+                    .append(logTypeArray.get(type & LOW));
         }
         builder.append(" ")
                 .append(tagStr)

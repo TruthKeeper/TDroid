@@ -181,10 +181,8 @@ public final class TimeUtils {
     public static String toTimeSpan(long millisecond) {
         long now = new Date().getTime();
         long span = now - millisecond;
-        if (span < 0) {
-            return "";
-        }
-        if (span <= DEFAULT_JUST_NOW) {
+
+        if (Math.abs(span) <= DEFAULT_JUST_NOW) {
             return "刚刚";
         }
         if (span < HOUR) {

@@ -1036,30 +1036,24 @@ public final class SpannableFactory {
 
             @Override
             public int getSize(@NonNull final Paint paint, final CharSequence text,
-                               final int start, final int end,
-                               final Paint.FontMetricsInt fm) {
+                               final int start, final int end, final Paint.FontMetricsInt fm) {
                 Drawable d = getCachedDrawable();
                 Rect rect = d.getBounds();
                 if (fm != null) {
-                    final int descent = (int) paint.getFontMetrics().descent;
-                    final int ascent = (int) paint.getFontMetrics().ascent;
-                    final int fontHeight = descent - ascent;
-                    if (rect.height() > fontHeight) {
-                        //图片大于字体大小时需要调整字体绘制位置
-                        //获取到的fm为同一实例对象，故重新赋值
+                    int lineHeight = fm.bottom - fm.top;
+                    if (lineHeight < rect.height()) {
                         if (mVerticalAlignment == Align.ALIGN_TOP) {
-                            fm.ascent = ascent;
-                            fm.descent = descent + (rect.height() - fontHeight);
+                            fm.top = fm.top;
+                            fm.bottom = rect.height() + fm.top;
                         } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
-                            fm.ascent = ascent - (rect.height() - fontHeight) / 2;
-                            fm.descent = descent + (rect.height() - fontHeight) / 2;
-                        } else if (mVerticalAlignment == Align.ALIGN_BOTTOM) {
-                            fm.ascent = ascent - (rect.height() - fontHeight);
-                            fm.descent = descent;
+                            fm.top = -rect.height() / 2 - lineHeight / 4;
+                            fm.bottom = rect.height() / 2 - lineHeight / 4;
                         } else {
-                            fm.ascent = ascent - (rect.height() - fontHeight) - descent;
-                            fm.descent = 0;
+                            fm.top = -rect.height() + fm.bottom;
+                            fm.bottom = fm.bottom;
                         }
+                        fm.ascent = fm.top;
+                        fm.descent = fm.bottom;
                     }
                 }
                 return rect.right;
@@ -1072,17 +1066,22 @@ public final class SpannableFactory {
                 Drawable d = getCachedDrawable();
                 Rect rect = d.getBounds();
                 canvas.save();
-                final float fontHeight = paint.getFontMetrics().descent - paint.getFontMetrics().ascent;
-                //不用bottom以兼容lineSpace场景
-                int transY = (int) (paint.getFontMetrics().descent + y - rect.bottom);
-                if (mVerticalAlignment == Align.ALIGN_BASELINE) {
-                    transY -= paint.getFontMetricsInt().descent;
-                } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
-                    transY -= (fontHeight - rect.height()) / 2;
-                } else if (mVerticalAlignment == Align.ALIGN_TOP) {
-                    transY -= fontHeight - rect.height();
+                float transY;
+                int lineHeight = bottom - top;
+                if (rect.height() < lineHeight) {
+                    if (mVerticalAlignment == Align.ALIGN_TOP) {
+                        transY = top;
+                    } else if (mVerticalAlignment == Align.ALIGN_CENTER) {
+                        transY = (bottom + top - rect.height()) / 2;
+                    } else if (mVerticalAlignment == Align.ALIGN_BASELINE) {
+                        transY = y - rect.height();
+                    } else {
+                        transY = bottom - rect.height();
+                    }
+                    canvas.translate(x, transY);
+                } else {
+                    canvas.translate(x, top);
                 }
-                canvas.translate(x, transY);
                 d.draw(canvas);
                 canvas.restore();
             }

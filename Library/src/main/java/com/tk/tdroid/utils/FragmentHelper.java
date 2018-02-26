@@ -74,6 +74,19 @@ public class FragmentHelper {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    @Nullable
+    public <T extends Fragment> T getFragmentByIndex(int index) {
+        if (index < 0 || index >= fragmentData.length) {
+            return null;
+        }
+        return (T) fragmentData[index].fragment;
+    }
+    /**
+     * 切换
+     *
+     * @param index
+     */
     public void switchFragment(int index) {
         if (index < 0 || index >= fragmentData.length) {
             throw new IllegalArgumentException();
@@ -96,6 +109,12 @@ public class FragmentHelper {
         }
     }
 
+    /**
+     * 隐藏
+     *
+     * @param ft
+     * @param index
+     */
     private void hideOther(FragmentTransaction ft, int index) {
         for (int i = 0; i < fragmentData.length; i++) {
             if (i != index
@@ -135,6 +154,9 @@ public class FragmentHelper {
         private Fragment fragment;
         private Class<? extends Fragment> cls;
         private String tag;
+
+        private FragmentData() {
+        }
 
         public static FragmentData create(@NonNull Class<? extends Fragment> cls) {
             return create(cls, null);

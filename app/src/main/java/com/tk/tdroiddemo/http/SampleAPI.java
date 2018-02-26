@@ -5,7 +5,7 @@ import com.tk.tdroid.http.progress.ProgressManager;
 import com.tk.tdroiddemo.bean.GitHubUser;
 import com.tk.tdroiddemo.bean.IpBean;
 
-import io.reactivex.Single;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
@@ -29,7 +29,7 @@ public interface SampleAPI {
      */
     @Headers({RuntimeUrlManager.BASE_URL + ":" + "https://api.github.com/"})
     @GET("users/{username}")
-    Single<GitHubUser> getUserByGitHub(@Path("username") String username);
+    Observable<GitHubUser> getUserByGitHub(@Path("username") String username);
 
     /**
      * 动态改变BaseUrl
@@ -39,7 +39,7 @@ public interface SampleAPI {
      */
     @Headers({RuntimeUrlManager.BASE_NAME + ":" + "GitHub_API"})
     @GET("users/{username}")
-    Single<GitHubUser> getUserByGitHub_baseName(@Path("username") String username);
+    Observable<GitHubUser> getUserByGitHub_baseName(@Path("username") String username);
 
     /**
      * 动态改变BaseUrl
@@ -49,7 +49,7 @@ public interface SampleAPI {
      * @return
      */
     @GET("users/{username}")
-    Single<GitHubUser> getUserByGitHub(@Header(RuntimeUrlManager.BASE_URL) String baseUrl, @Path("username") String username);
+    Observable<GitHubUser> getUserByGitHub(@Header(RuntimeUrlManager.BASE_URL) String baseUrl, @Path("username") String username);
 
     /**
      * 动态改变BaseUrl
@@ -59,7 +59,7 @@ public interface SampleAPI {
      * @return
      */
     @GET("users/{username}")
-    Single<GitHubUser> getUserByGitHub_baseName(@Header(RuntimeUrlManager.BASE_NAME) String baseName, @Path("username") String username);
+    Observable<GitHubUser> getUserByGitHub_baseName(@Header(RuntimeUrlManager.BASE_NAME) String baseName, @Path("username") String username);
 
     /**
      * 通过url监听进度
@@ -68,7 +68,7 @@ public interface SampleAPI {
      * @return
      */
     @GET("iplookup/iplookup.php?format=json")
-    Single<IpBean> formatIp(@Query("ip") String ip);
+    Observable<IpBean> formatIp(@Query("ip") String ip);
 
     /**
      * 静态API监听进度
@@ -78,7 +78,7 @@ public interface SampleAPI {
      */
     @Headers({ProgressManager.PROGRESS_HEADER + ":" + "FormatIp_API"})
     @GET("iplookup/iplookup.php?format=json")
-    Single<IpBean> formatIpByHeader(@Query("ip") String ip);
+    Observable<IpBean> formatIpByHeader(@Query("ip") String ip);
 
 
     /**
@@ -88,7 +88,7 @@ public interface SampleAPI {
      * @return
      */
     @GET("iplookup/iplookup.php?format=json")
-    Single<IpBean> formatIpByHeader(@Query("ip") String ip, @Header(ProgressManager.PROGRESS_HEADER) String progressHeader);
+    Observable<IpBean> formatIpByHeader(@Query("ip") String ip, @Header(ProgressManager.PROGRESS_HEADER) String progressHeader);
 
 
 }

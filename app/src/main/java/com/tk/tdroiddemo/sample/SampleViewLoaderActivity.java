@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.NetworkUtils;
-import com.tk.widget.viewloader.ViewLoader;
+import com.tk.tdroid.viewloader.ViewLoader;
 import com.tk.tdroiddemo.R;
 
 import java.util.Random;

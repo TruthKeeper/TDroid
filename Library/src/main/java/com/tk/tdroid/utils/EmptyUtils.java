@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.util.SimpleArrayMap;
 import android.support.v4.util.SparseArrayCompat;
-import android.util.LongSparseArray;
 import android.util.SparseArray;
 import android.util.SparseBooleanArray;
 import android.util.SparseIntArray;
@@ -105,14 +104,6 @@ public final class EmptyUtils {
      */
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     public static boolean isEmpty(@Nullable SparseLongArray array) {
-        return array == null || array.size() == 0;
-    }
-
-    /**
-     * @param array
-     * @return
-     */
-    public static boolean isEmpty(@Nullable LongSparseArray array) {
         return array == null || array.size() == 0;
     }
 

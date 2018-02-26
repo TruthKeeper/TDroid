@@ -1,6 +1,5 @@
 package com.tk.tdroiddemo.mvp;
 
-import com.apt.annotation.Instance;
 
 /**
  * <pre>
@@ -9,6 +8,5 @@ import com.apt.annotation.Instance;
  *      desc :
  * </pre>
  */
-@Instance
 public class PresenterImpl {
 }

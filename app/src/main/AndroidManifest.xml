@@ -22,7 +22,14 @@
         <activity android:name=".sample.SampleHttpActivity" />
         <activity android:name=".sample.SampleViewLoaderActivity" />
         <activity android:name=".sample.SampleToastActivity" />
-        <activity android:name=".sample.SampleUIActivity" />
+
+        <activity
+            android:name=".sample.SampleUIActivity"
+            android:windowSoftInputMode="stateHidden" />
+        <activity android:name=".ComponentsActivity" />
+        <activity android:name=".sample.SampleSaveRestoreActivity" />
+        <activity android:name=".sample.SampleAutoInjectActivity" />
+        <activity android:name=".LoginActivity" />
 
         <meta-data
             android:name="sample_holder_1"

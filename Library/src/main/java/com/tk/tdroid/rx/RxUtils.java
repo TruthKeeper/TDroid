@@ -1,6 +1,8 @@
 package com.tk.tdroid.rx;
 
+import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
@@ -18,6 +20,9 @@ import io.reactivex.functions.Predicate;
  */
 
 public final class RxUtils {
+    private RxUtils() {
+        throw new IllegalStateException();
+    }
 
     /**
      * 绑定生命周期
@@ -51,5 +56,13 @@ public final class RxUtils {
                 return iLifecycle.equals(lifecycle);
             }
         }));
+    }
+
+    public static boolean checkMainThread() {
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            Log.e("checkMainThread", "should be called on the main thread !");
+            return false;
+        }
+        return true;
     }
 }

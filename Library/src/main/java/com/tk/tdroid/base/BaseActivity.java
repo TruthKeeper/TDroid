@@ -7,17 +7,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
+import com.tdroid.annotation.AutoInject;
+import com.tdroid.annotation.SaveAndRestore;
+import com.tk.tdroid.autoinject.AutoInjectHelper;
+import com.tk.tdroid.event.Event;
+import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
+import com.tk.tdroid.saverestore.SaveRestoreHelper;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
-import com.tk.tdroid.event.Event;
-import com.tk.tdroid.event.EventHelper;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -38,9 +41,11 @@ import io.reactivex.subjects.Subject;
 public class BaseActivity extends AppCompatActivity implements ILifecycleProvider, IActivityProvider {
     private Subject<ActivityLifecycleImpl> lifecycleSubject = null;
 
-    private boolean bindLifecycleEnabled;
-    private boolean eventBusEnabled;
-    private boolean touchHideSoftKeyboard;
+    private final boolean bindLifecycleEnabled;
+    private final boolean eventBusEnabled;
+    private final boolean touchHideSoftKeyboard;
+    private final boolean saveAndRestoreData;
+    private final boolean autoInjectData;
 
     static {
         //SVG <Vector>的支持
@@ -54,21 +59,42 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
             lifecycleSubject = PublishSubject.create();
         }
         touchHideSoftKeyboard = touchHideSoftKeyboard();
+        saveAndRestoreData = saveAndRestoreData();
+        autoInjectData = autoInjectData();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
+        if (autoInjectData) {
+            AutoInjectHelper.inject(this);
+        }
         if (eventBusEnabled) {
             EventHelper.register(this);
         }
+        onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
     }
 
     @Override
     public void setContentView(int layoutResID) {
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
         super.setContentView(layoutResID);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onSaveInstanceState(this, outState);
+        }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (saveAndRestoreData) {
+            SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
+        }
     }
 
     @Override
@@ -104,45 +130,20 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
         if (eventBusEnabled) {
             EventHelper.unregister(this);
         }
+        onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (touchHideSoftKeyboard && ev.getAction() == MotionEvent.ACTION_DOWN) {
-            View v = getCurrentFocus();
-            if (v != null && (v instanceof EditText)) {
-                if (!isInSpace(v, ev)) {
-                    //当前触摸位置不处于焦点控件中，需要隐藏软键盘
-                    SoftKeyboardUtils.hideSoftKeyboard(v);
-                }
-            }
+        if (touchHideSoftKeyboard) {
+            SoftKeyboardUtils.delegateDispatchTouchEvent(this, ev, touchHideSoftKeyboardFilterViews());
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    /**
-     * 触摸位置是否处于控件区域中
-     *
-     * @param v
-     * @param event
-     * @return
-     */
-    private static boolean isInSpace(View v, MotionEvent event) {
-        int[] location = new int[2];
-        v.getLocationInWindow(location);
-        int left = location[0];
-        int top = location[1];
-        int bottom = top + v.getHeight();
-        int right = left + v.getWidth();
-        return event.getX() > left
-                && event.getX() < right
-                && event.getY() > top
-                && event.getY() < bottom;
-    }
 
     private void onLifecycleNext(ActivityLifecycleImpl lifecycle) {
         if (bindLifecycleEnabled) {
@@ -229,5 +230,34 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public boolean touchHideSoftKeyboard() {
         return true;
+    }
+
+    /**
+     * 触摸隐藏软键盘过滤View
+     *
+     * @return
+     */
+    protected View[] touchHideSoftKeyboardFilterViews() {
+        return null;
+    }
+
+    /**
+     * 是否自动保存和恢复数据 {@link SaveAndRestore}修饰
+     *
+     * @return
+     */
+    @Override
+    public boolean saveAndRestoreData() {
+        return false;
+    }
+
+    /**
+     * 是否自动注入携带数据 , 用{@link AutoInject}接收
+     *
+     * @return
+     */
+    @Override
+    public boolean autoInjectData() {
+        return false;
     }
 }

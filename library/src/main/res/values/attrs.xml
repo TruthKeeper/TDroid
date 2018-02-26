@@ -1,0 +1,712 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--过滤指定格式的EditText-->
+    <declare-styleable name="FilterEditText">
+        <attr name="fet_filter">
+            <flag name="emoji" value="1" />
+            <flag name="space" value="2" />
+            <flag name="newline" value="4" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="CropLayout">
+        <attr name="cl_asCircle" format="boolean" />
+        <attr name="cl_radius" format="dimension" />
+        <attr name="cl_topLeftRadius" format="dimension" />
+        <attr name="cl_topRightRadius" format="dimension" />
+        <attr name="cl_bottomRightRadius" format="dimension" />
+        <attr name="cl_bottomLeftRadius" format="dimension" />
+        <attr name="cl_strokeWidth" format="dimension" />
+        <attr name="cl_strokeColor" format="color" />
+        <attr name="cl_strokeAbove" format="boolean" />
+    </declare-styleable>
+    <!--背景Shape Solid颜色-->
+    <attr name="tui_bg_solid_default" format="color" />
+    <attr name="tui_bg_solid_pressed" format="color" />
+    <attr name="tui_bg_solid_selected" format="color" />
+    <attr name="tui_bg_solid_focused" format="color" />
+    <attr name="tui_bg_solid_disabled" format="color" />
+    <!--背景Shape Stroke宽度-->
+    <attr name="tui_bg_stroke_default" format="dimension" />
+    <attr name="tui_bg_stroke_pressed" format="dimension" />
+    <attr name="tui_bg_stroke_selected" format="dimension" />
+    <attr name="tui_bg_stroke_focused" format="dimension" />
+    <attr name="tui_bg_stroke_disabled" format="dimension" />
+    <!--背景Shape Stroke颜色-->
+    <attr name="tui_bg_strokeColor_default" format="color" />
+    <attr name="tui_bg_strokeColor_pressed" format="color" />
+    <attr name="tui_bg_strokeColor_selected" format="color" />
+    <attr name="tui_bg_strokeColor_focused" format="color" />
+    <attr name="tui_bg_strokeColor_disabled" format="color" />
+    <!--背景Shape 圆角-->
+    <attr name="tui_bg_corner" format="dimension" />
+    <attr name="tui_bg_corner_topLeft" format="dimension" />
+    <attr name="tui_bg_corner_topRight" format="dimension" />
+    <attr name="tui_bg_corner_bottomRight" format="dimension" />
+    <attr name="tui_bg_corner_bottomLeft" format="dimension" />
+    <!--背景Shape 5.0以上按下的Ripple色,与_pressed不同时作用-->
+    <attr name="tui_bg_ripplePressed" format="color" />
+    <!--渐变颜色 , 起始位置-->
+    <attr name="tui_bg_gradientStartColor_default" format="color" />
+    <attr name="tui_bg_gradientStartColor_pressed" format="color" />
+    <attr name="tui_bg_gradientStartColor_selected" format="color" />
+    <attr name="tui_bg_gradientStartColor_focused" format="color" />
+    <attr name="tui_bg_gradientStartColor_disabled" format="color" />
+    <!--渐变颜色 , 中间位置-->
+    <attr name="tui_bg_gradientCenterColor_default" format="color" />
+    <attr name="tui_bg_gradientCenterColor_pressed" format="color" />
+    <attr name="tui_bg_gradientCenterColor_selected" format="color" />
+    <attr name="tui_bg_gradientCenterColor_focused" format="color" />
+    <attr name="tui_bg_gradientCenterColor_disabled" format="color" />
+    <!--渐变颜色 , 结束位置-->
+    <attr name="tui_bg_gradientEndColor_default" format="color" />
+    <attr name="tui_bg_gradientEndColor_pressed" format="color" />
+    <attr name="tui_bg_gradientEndColor_selected" format="color" />
+    <attr name="tui_bg_gradientEndColor_focused" format="color" />
+    <attr name="tui_bg_gradientEndColor_disabled" format="color" />
+    <!--渐变方向 , 逆时针 , 默认从左到右-->
+    <attr name="tui_bg_gradientDirection_default" format="enum">
+        <enum name="top_to_Bottom" value="0" />
+        <enum name="left_to_Right" value="1" />
+        <enum name="topLeft_to_BottomRight" value="2" />
+        <enum name="bottomLeft_to_TopRight" value="3" />
+    </attr>
+    <attr name="tui_bg_gradientDirection_pressed" format="enum">
+        <enum name="top_to_Bottom" value="0" />
+        <enum name="left_to_Right" value="1" />
+        <enum name="topLeft_to_BottomRight" value="2" />
+        <enum name="bottomLeft_to_TopRight" value="3" />
+    </attr>
+    <attr name="tui_bg_gradientDirection_selected" format="enum">
+        <enum name="top_to_Bottom" value="0" />
+        <enum name="left_to_Right" value="1" />
+        <enum name="topLeft_to_BottomRight" value="2" />
+        <enum name="bottomLeft_to_TopRight" value="3" />
+    </attr>
+    <attr name="tui_bg_gradientDirection_focused" format="enum">
+        <enum name="top_to_Bottom" value="0" />
+        <enum name="left_to_Right" value="1" />
+        <enum name="topLeft_to_BottomRight" value="2" />
+        <enum name="bottomLeft_to_TopRight" value="3" />
+    </attr>
+    <attr name="tui_bg_gradientDirection_disabled" format="enum">
+        <enum name="top_to_Bottom" value="0" />
+        <enum name="left_to_Right" value="1" />
+        <enum name="topLeft_to_BottomRight" value="2" />
+        <enum name="bottomLeft_to_TopRight" value="3" />
+    </attr>
+    <!--字体颜色-->
+    <attr name="tui_textColor_default" format="color" />
+    <attr name="tui_textColor_pressed" format="color" />
+    <attr name="tui_textColor_selected" format="color" />
+    <attr name="tui_textColor_focused" format="color" />
+    <attr name="tui_textColor_disabled" format="color" />
+    <!--TextView的子类时Drawable配置：支持SVG资源、着色、宽高、对齐方式(基于相对View自身)-->
+    <attr name="tui_drawableLeftWidth" format="dimension" />
+    <attr name="tui_drawableLeftHeight" format="dimension" />
+    <attr name="tui_drawableLeftAlign" format="enum">
+        <enum name="top" value="0" />
+        <enum name="center" value="1" />
+        <enum name="bottom" value="2" />
+    </attr>
+    <attr name="tui_drawableLeft_default" format="reference" />
+    <attr name="tui_drawableLeftTint_default" format="color" />
+    <attr name="tui_drawableLeft_pressed" format="reference" />
+    <attr name="tui_drawableLeftTint_pressed" format="color" />
+    <attr name="tui_drawableLeft_selected" format="reference" />
+    <attr name="tui_drawableLeftTint_selected" format="color" />
+    <attr name="tui_drawableLeft_focused" format="reference" />
+    <attr name="tui_drawableLeftTint_focused" format="color" />
+    <attr name="tui_drawableLeft_disabled" format="reference" />
+    <attr name="tui_drawableLeftTint_disabled" format="color" />
+
+    <attr name="tui_drawableTopWidth" format="dimension" />
+    <attr name="tui_drawableTopHeight" format="dimension" />
+    <attr name="tui_drawableTopAlign" format="enum">
+        <enum name="left" value="0" />
+        <enum name="center" value="1" />
+        <enum name="right" value="2" />
+    </attr>
+    <attr name="tui_drawableTop_default" format="reference" />
+    <attr name="tui_drawableTopTint_default" format="color" />
+    <attr name="tui_drawableTop_pressed" format="reference" />
+    <attr name="tui_drawableTopTint_pressed" format="color" />
+    <attr name="tui_drawableTop_selected" format="reference" />
+    <attr name="tui_drawableTopTint_selected" format="color" />
+    <attr name="tui_drawableTop_focused" format="reference" />
+    <attr name="tui_drawableTopTint_focused" format="color" />
+    <attr name="tui_drawableTop_disabled" format="reference" />
+    <attr name="tui_drawableTopTint_disabled" format="color" />
+
+    <attr name="tui_drawableRightWidth" format="dimension" />
+    <attr name="tui_drawableRightHeight" format="dimension" />
+    <attr name="tui_drawableRightAlign" format="enum">
+        <enum name="top" value="0" />
+        <enum name="center" value="1" />
+        <enum name="bottom" value="2" />
+    </attr>
+    <attr name="tui_drawableRight_default" format="reference" />
+    <attr name="tui_drawableRightTint_default" format="color" />
+    <attr name="tui_drawableRight_pressed" format="reference" />
+    <attr name="tui_drawableRightTint_pressed" format="color" />
+    <attr name="tui_drawableRight_selected" format="reference" />
+    <attr name="tui_drawableRightTint_selected" format="color" />
+    <attr name="tui_drawableRight_focused" format="reference" />
+    <attr name="tui_drawableRightTint_focused" format="color" />
+    <attr name="tui_drawableRight_disabled" format="reference" />
+    <attr name="tui_drawableRightTint_disabled" format="color" />
+
+    <attr name="tui_drawableBottomWidth" format="dimension" />
+    <attr name="tui_drawableBottomHeight" format="dimension" />
+    <attr name="tui_drawableBottomAlign" format="enum">
+        <enum name="left" value="0" />
+        <enum name="center" value="1" />
+        <enum name="right" value="2" />
+    </attr>
+    <attr name="tui_drawableBottom_default" format="reference" />
+    <attr name="tui_drawableBottomTint_default" format="color" />
+    <attr name="tui_drawableBottom_pressed" format="reference" />
+    <attr name="tui_drawableBottomTint_pressed" format="color" />
+    <attr name="tui_drawableBottom_selected" format="reference" />
+    <attr name="tui_drawableBottomTint_selected" format="color" />
+    <attr name="tui_drawableBottom_focused" format="reference" />
+    <attr name="tui_drawableBottomTint_focused" format="color" />
+    <attr name="tui_drawableBottom_disabled" format="reference" />
+    <attr name="tui_drawableBottomTint_disabled" format="color" />
+    <!--ImageView的src配置-->
+    <attr name="tui_src_default" format="reference" />
+    <attr name="tui_srcTint_default" format="color" />
+    <attr name="tui_src_pressed" format="reference" />
+    <attr name="tui_srcTint_pressed" format="color" />
+    <attr name="tui_src_selected" format="reference" />
+    <attr name="tui_srcTint_selected" format="color" />
+    <attr name="tui_src_focused" format="reference" />
+    <attr name="tui_srcTint_focused" format="color" />
+    <attr name="tui_src_disabled" format="reference" />
+    <attr name="tui_srcTint_disabled" format="color" />
+
+    <declare-styleable name="TUIView">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUILinearLayout">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUIRelativeLayout">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUIFrameLayout">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUITextView">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+        <attr name="tui_textColor_default" />
+        <attr name="tui_textColor_pressed" />
+        <attr name="tui_textColor_selected" />
+        <attr name="tui_textColor_focused" />
+        <attr name="tui_textColor_disabled" />
+        <attr name="tui_drawableLeftWidth" />
+        <attr name="tui_drawableLeftHeight" />
+        <attr name="tui_drawableLeftAlign" />
+        <attr name="tui_drawableLeft_default" />
+        <attr name="tui_drawableLeftTint_default" />
+        <attr name="tui_drawableLeft_pressed" />
+        <attr name="tui_drawableLeftTint_pressed" />
+        <attr name="tui_drawableLeft_selected" />
+        <attr name="tui_drawableLeftTint_selected" />
+        <attr name="tui_drawableLeft_focused" />
+        <attr name="tui_drawableLeftTint_focused" />
+        <attr name="tui_drawableLeft_disabled" />
+        <attr name="tui_drawableLeftTint_disabled" />
+        <attr name="tui_drawableTopWidth" />
+        <attr name="tui_drawableTopHeight" />
+        <attr name="tui_drawableTopAlign" />
+        <attr name="tui_drawableTop_default" />
+        <attr name="tui_drawableTopTint_default" />
+        <attr name="tui_drawableTop_pressed" />
+        <attr name="tui_drawableTopTint_pressed" />
+        <attr name="tui_drawableTop_selected" />
+        <attr name="tui_drawableTopTint_selected" />
+        <attr name="tui_drawableTop_focused" />
+        <attr name="tui_drawableTopTint_focused" />
+        <attr name="tui_drawableTop_disabled" />
+        <attr name="tui_drawableTopTint_disabled" />
+        <attr name="tui_drawableRightWidth" />
+        <attr name="tui_drawableRightHeight" />
+        <attr name="tui_drawableRightAlign" />
+        <attr name="tui_drawableRight_default" />
+        <attr name="tui_drawableRightTint_default" />
+        <attr name="tui_drawableRight_pressed" />
+        <attr name="tui_drawableRightTint_pressed" />
+        <attr name="tui_drawableRight_selected" />
+        <attr name="tui_drawableRightTint_selected" />
+        <attr name="tui_drawableRight_focused" />
+        <attr name="tui_drawableRightTint_focused" />
+        <attr name="tui_drawableRight_disabled" />
+        <attr name="tui_drawableRightTint_disabled" />
+        <attr name="tui_drawableBottomWidth" />
+        <attr name="tui_drawableBottomHeight" />
+        <attr name="tui_drawableBottomAlign" />
+        <attr name="tui_drawableBottom_default" />
+        <attr name="tui_drawableBottomTint_default" />
+        <attr name="tui_drawableBottom_pressed" />
+        <attr name="tui_drawableBottomTint_pressed" />
+        <attr name="tui_drawableBottom_selected" />
+        <attr name="tui_drawableBottomTint_selected" />
+        <attr name="tui_drawableBottom_focused" />
+        <attr name="tui_drawableBottomTint_focused" />
+        <attr name="tui_drawableBottom_disabled" />
+        <attr name="tui_drawableBottomTint_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUIButton">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+        <attr name="tui_textColor_default" />
+        <attr name="tui_textColor_pressed" />
+        <attr name="tui_textColor_selected" />
+        <attr name="tui_textColor_focused" />
+        <attr name="tui_textColor_disabled" />
+        <attr name="tui_drawableLeftWidth" />
+        <attr name="tui_drawableLeftHeight" />
+        <attr name="tui_drawableLeftAlign" />
+        <attr name="tui_drawableLeft_default" />
+        <attr name="tui_drawableLeftTint_default" />
+        <attr name="tui_drawableLeft_pressed" />
+        <attr name="tui_drawableLeftTint_pressed" />
+        <attr name="tui_drawableLeft_selected" />
+        <attr name="tui_drawableLeftTint_selected" />
+        <attr name="tui_drawableLeft_focused" />
+        <attr name="tui_drawableLeftTint_focused" />
+        <attr name="tui_drawableLeft_disabled" />
+        <attr name="tui_drawableLeftTint_disabled" />
+        <attr name="tui_drawableTopWidth" />
+        <attr name="tui_drawableTopHeight" />
+        <attr name="tui_drawableTopAlign" />
+        <attr name="tui_drawableTop_default" />
+        <attr name="tui_drawableTopTint_default" />
+        <attr name="tui_drawableTop_pressed" />
+        <attr name="tui_drawableTopTint_pressed" />
+        <attr name="tui_drawableTop_selected" />
+        <attr name="tui_drawableTopTint_selected" />
+        <attr name="tui_drawableTop_focused" />
+        <attr name="tui_drawableTopTint_focused" />
+        <attr name="tui_drawableTop_disabled" />
+        <attr name="tui_drawableTopTint_disabled" />
+        <attr name="tui_drawableRightWidth" />
+        <attr name="tui_drawableRightHeight" />
+        <attr name="tui_drawableRightAlign" />
+        <attr name="tui_drawableRight_default" />
+        <attr name="tui_drawableRightTint_default" />
+        <attr name="tui_drawableRight_pressed" />
+        <attr name="tui_drawableRightTint_pressed" />
+        <attr name="tui_drawableRight_selected" />
+        <attr name="tui_drawableRightTint_selected" />
+        <attr name="tui_drawableRight_focused" />
+        <attr name="tui_drawableRightTint_focused" />
+        <attr name="tui_drawableRight_disabled" />
+        <attr name="tui_drawableRightTint_disabled" />
+        <attr name="tui_drawableBottomWidth" />
+        <attr name="tui_drawableBottomHeight" />
+        <attr name="tui_drawableBottomAlign" />
+        <attr name="tui_drawableBottom_default" />
+        <attr name="tui_drawableBottomTint_default" />
+        <attr name="tui_drawableBottom_pressed" />
+        <attr name="tui_drawableBottomTint_pressed" />
+        <attr name="tui_drawableBottom_selected" />
+        <attr name="tui_drawableBottomTint_selected" />
+        <attr name="tui_drawableBottom_focused" />
+        <attr name="tui_drawableBottomTint_focused" />
+        <attr name="tui_drawableBottom_disabled" />
+        <attr name="tui_drawableBottomTint_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUIEditText">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+        <attr name="tui_textColor_default" />
+        <attr name="tui_textColor_pressed" />
+        <attr name="tui_textColor_selected" />
+        <attr name="tui_textColor_focused" />
+        <attr name="tui_textColor_disabled" />
+        <attr name="tui_drawableLeftWidth" />
+        <attr name="tui_drawableLeftHeight" />
+        <attr name="tui_drawableLeftAlign" />
+        <attr name="tui_drawableLeft_default" />
+        <attr name="tui_drawableLeftTint_default" />
+        <attr name="tui_drawableLeft_pressed" />
+        <attr name="tui_drawableLeftTint_pressed" />
+        <attr name="tui_drawableLeft_selected" />
+        <attr name="tui_drawableLeftTint_selected" />
+        <attr name="tui_drawableLeft_focused" />
+        <attr name="tui_drawableLeftTint_focused" />
+        <attr name="tui_drawableLeft_disabled" />
+        <attr name="tui_drawableLeftTint_disabled" />
+        <attr name="tui_drawableTopWidth" />
+        <attr name="tui_drawableTopHeight" />
+        <attr name="tui_drawableTopAlign" />
+        <attr name="tui_drawableTop_default" />
+        <attr name="tui_drawableTopTint_default" />
+        <attr name="tui_drawableTop_pressed" />
+        <attr name="tui_drawableTopTint_pressed" />
+        <attr name="tui_drawableTop_selected" />
+        <attr name="tui_drawableTopTint_selected" />
+        <attr name="tui_drawableTop_focused" />
+        <attr name="tui_drawableTopTint_focused" />
+        <attr name="tui_drawableTop_disabled" />
+        <attr name="tui_drawableTopTint_disabled" />
+        <attr name="tui_drawableRightWidth" />
+        <attr name="tui_drawableRightHeight" />
+        <attr name="tui_drawableRightAlign" />
+        <attr name="tui_drawableRight_default" />
+        <attr name="tui_drawableRightTint_default" />
+        <attr name="tui_drawableRight_pressed" />
+        <attr name="tui_drawableRightTint_pressed" />
+        <attr name="tui_drawableRight_selected" />
+        <attr name="tui_drawableRightTint_selected" />
+        <attr name="tui_drawableRight_focused" />
+        <attr name="tui_drawableRightTint_focused" />
+        <attr name="tui_drawableRight_disabled" />
+        <attr name="tui_drawableRightTint_disabled" />
+        <attr name="tui_drawableBottomWidth" />
+        <attr name="tui_drawableBottomHeight" />
+        <attr name="tui_drawableBottomAlign" />
+        <attr name="tui_drawableBottom_default" />
+        <attr name="tui_drawableBottomTint_default" />
+        <attr name="tui_drawableBottom_pressed" />
+        <attr name="tui_drawableBottomTint_pressed" />
+        <attr name="tui_drawableBottom_selected" />
+        <attr name="tui_drawableBottomTint_selected" />
+        <attr name="tui_drawableBottom_focused" />
+        <attr name="tui_drawableBottomTint_focused" />
+        <attr name="tui_drawableBottom_disabled" />
+        <attr name="tui_drawableBottomTint_disabled" />
+    </declare-styleable>
+    <declare-styleable name="TUIImageView">
+        <attr name="tui_bg_solid_default" />
+        <attr name="tui_bg_solid_pressed" />
+        <attr name="tui_bg_solid_selected" />
+        <attr name="tui_bg_solid_focused" />
+        <attr name="tui_bg_solid_disabled" />
+        <attr name="tui_bg_stroke_default" />
+        <attr name="tui_bg_stroke_pressed" />
+        <attr name="tui_bg_stroke_selected" />
+        <attr name="tui_bg_stroke_focused" />
+        <attr name="tui_bg_stroke_disabled" />
+        <attr name="tui_bg_strokeColor_default" />
+        <attr name="tui_bg_strokeColor_pressed" />
+        <attr name="tui_bg_strokeColor_selected" />
+        <attr name="tui_bg_strokeColor_focused" />
+        <attr name="tui_bg_strokeColor_disabled" />
+        <attr name="tui_bg_corner" />
+        <attr name="tui_bg_corner_topLeft" />
+        <attr name="tui_bg_corner_topRight" />
+        <attr name="tui_bg_corner_bottomRight" />
+        <attr name="tui_bg_corner_bottomLeft" />
+        <attr name="tui_bg_ripplePressed" />
+        <attr name="tui_bg_gradientStartColor_default" />
+        <attr name="tui_bg_gradientStartColor_pressed" />
+        <attr name="tui_bg_gradientStartColor_selected" />
+        <attr name="tui_bg_gradientStartColor_focused" />
+        <attr name="tui_bg_gradientStartColor_disabled" />
+        <attr name="tui_bg_gradientCenterColor_default" />
+        <attr name="tui_bg_gradientCenterColor_pressed" />
+        <attr name="tui_bg_gradientCenterColor_selected" />
+        <attr name="tui_bg_gradientCenterColor_focused" />
+        <attr name="tui_bg_gradientCenterColor_disabled" />
+        <attr name="tui_bg_gradientEndColor_default" />
+        <attr name="tui_bg_gradientEndColor_pressed" />
+        <attr name="tui_bg_gradientEndColor_selected" />
+        <attr name="tui_bg_gradientEndColor_focused" />
+        <attr name="tui_bg_gradientEndColor_disabled" />
+        <attr name="tui_bg_gradientDirection_default" />
+        <attr name="tui_bg_gradientDirection_pressed" />
+        <attr name="tui_bg_gradientDirection_selected" />
+        <attr name="tui_bg_gradientDirection_focused" />
+        <attr name="tui_bg_gradientDirection_disabled" />
+        <attr name="tui_src_default" />
+        <attr name="tui_srcTint_default" />
+        <attr name="tui_src_pressed" />
+        <attr name="tui_srcTint_pressed" />
+        <attr name="tui_src_selected" />
+        <attr name="tui_srcTint_selected" />
+        <attr name="tui_src_focused" />
+        <attr name="tui_srcTint_focused" />
+        <attr name="tui_src_disabled" />
+        <attr name="tui_srcTint_disabled" />
+    </declare-styleable>
+</resources>

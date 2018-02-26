@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.tk.widget.ui.TUITextView
+            <com.tk.tdroid.ui.TUITextView
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:layout_margin="12dp"
@@ -39,7 +39,7 @@
                 app:tui_textColor_pressed="@android:color/black" />
 
 
-            <com.tk.widget.ui.TUITextView
+            <com.tk.tdroid.ui.TUITextView
                 android:id="@+id/tv_selected"
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
@@ -64,10 +64,46 @@
                 app:tui_textColor_default="@android:color/black"
                 app:tui_textColor_selected="@android:color/holo_green_light" />
 
-            <com.tk.widget.ui.TUITextView
+            <com.tk.tdroid.ui.TUIEditText
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_margin="12dp"
+                android:drawablePadding="6dp"
+                android:gravity="center_vertical"
+                android:hint="一个TUIEditText就可以办到"
+                android:paddingLeft="12dp"
+                android:paddingRight="12dp"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                app:tui_bg_corner="26dp"
+                app:tui_bg_solid_default="#f0f0f0"
+                app:tui_bg_strokeColor_default="#cecece"
+                app:tui_bg_stroke_default="1dp"
+                app:tui_drawableLeftHeight="24dp"
+                app:tui_drawableLeftWidth="24dp"
+                app:tui_drawableLeft_default="@mipmap/ic_launcher" />
+
+            <com.tk.tdroid.ui.TUIImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:clickable="true"
+                android:padding="12dp"
+                app:tui_bg_corner="12dp"
+                app:tui_bg_ripplePressed="#cecece"
+                app:tui_bg_solid_default="#f0f0f0"
+                app:tui_src_default="@drawable/emoji0"
+                app:tui_src_pressed="@drawable/emoji2" />
+
+            <com.tk.tdroid.ui.TUITextView
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_margin="12dp"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:background="#f0f0f0"
                 android:gravity="center"
                 android:text="TUITextView支持Drawable多种对齐方式"
@@ -82,7 +118,7 @@
                 app:tui_drawableRightWidth="32dp"
                 app:tui_drawableRight_default="@mipmap/ic_launcher" />
 
-            <com.tk.widget.ui.TUIRelativeLayout
+            <com.tk.tdroid.ui.TUIRelativeLayout
                 android:id="@+id/rl_container"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
@@ -99,7 +135,7 @@
                 app:tui_bg_gradientStartColor_default="@color/colorPrimary"
                 app:tui_bg_gradientStartColor_selected="@color/colorAccent">
 
-                <com.tk.widget.ui.TUITextView
+                <com.tk.tdroid.ui.TUITextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
@@ -109,7 +145,7 @@
                     app:tui_textColor_default="@android:color/white"
                     app:tui_textColor_pressed="@android:color/black" />
 
-                <com.tk.widget.ui.TUITextView
+                <com.tk.tdroid.ui.TUITextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -124,7 +160,7 @@
                     app:tui_bg_stroke_selected="2dp"
                     app:tui_textColor_default="@android:color/white"
                     app:tui_textColor_selected="@color/colorAccent" />
-            </com.tk.widget.ui.TUIRelativeLayout>
+            </com.tk.tdroid.ui.TUIRelativeLayout>
         </LinearLayout>
     </ScrollView>
 

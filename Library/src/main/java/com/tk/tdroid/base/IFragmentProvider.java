@@ -4,6 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
+import com.tdroid.annotation.AutoInject;
+import com.tdroid.annotation.SaveAndRestore;
+
 /**
  * <pre>
  *      author : TK
@@ -37,4 +40,18 @@ interface IFragmentProvider {
      * @return
      */
     boolean visibleObserverEnabled();
+
+    /**
+     * 是否自动保存和恢复数据 {@link SaveAndRestore}修饰
+     *
+     * @return
+     */
+    boolean saveAndRestoreData();
+
+    /**
+     * 是否自动注入携带数据 , 用{@link AutoInject}接收
+     *
+     * @return
+     */
+    boolean autoInjectData();
 }

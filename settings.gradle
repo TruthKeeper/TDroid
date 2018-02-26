@@ -1,1 +1,1 @@
-include ':app', ':Library', ':APT', ':Annotation', ':Plugin', ':Widget'
+include ':app', ':Library', ':APT', ':Annotation', ':Home', ':Mine'
