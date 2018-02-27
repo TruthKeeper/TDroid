@@ -24,13 +24,6 @@ interface IFragmentProvider {
     boolean bindLifecycleEnabled();
 
     /**
-     * 是否支持EventBus事件监听
-     *
-     * @return
-     */
-    boolean eventBusEnabled();
-
-    /**
      * 是否支持观察页面可见性变化 , 回调{@link BaseFragment#onVisibleChange(boolean)}
      * <ul>
      * <li>{@link ViewPager}场景下的懒加载</li>

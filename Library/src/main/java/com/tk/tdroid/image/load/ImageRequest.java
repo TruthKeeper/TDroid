@@ -1,4 +1,4 @@
-package com.tk.tdroid.image;
+package com.tk.tdroid.image.load;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -17,7 +17,7 @@ import java.lang.annotation.RetentionPolicy;
 
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
-import static com.tk.tdroid.image.ImageRequest.Priority.*;
+import static com.tk.tdroid.image.load.ImageRequest.Priority.*;
 
 /**
  * <pre>

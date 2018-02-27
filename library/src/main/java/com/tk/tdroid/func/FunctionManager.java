@@ -2,12 +2,12 @@ package com.tk.tdroid.func;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.util.ArrayMap;
 import android.util.Log;
 
 import com.tk.tdroid.utils.EmptyUtils;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <pre>
@@ -20,10 +20,9 @@ public final class FunctionManager {
     private static final String TAG = "FunctionManager";
 
     private static volatile FunctionManager mFunctionManager = null;
-    private final Map<String, Function> mFunctionMap;
+    private final Map<String, Function> mFunctionMap = new ArrayMap<>();
 
     private FunctionManager() {
-        mFunctionMap = new ConcurrentHashMap<>();
     }
 
     public static FunctionManager getInstance() {
@@ -39,29 +38,30 @@ public final class FunctionManager {
 
 
     /**
-     * 放入一个方法
+     * 注册一个方法
      *
      * @param functionName
      * @param function
      * @return
      */
-    public FunctionManager putFunction(@NonNull String functionName, @NonNull Function function) {
+    public FunctionManager register(@NonNull String functionName, @NonNull Function function) {
         mFunctionMap.put(functionName, function);
         return this;
     }
 
     /**
-     * 移除一个方法
+     * 反注册一个方法
      *
      * @param functionName
      * @return
      */
-    public void removeFunction(@NonNull String functionName) {
+    @Deprecated
+    public void unregister(@NonNull String functionName) {
         mFunctionMap.remove(functionName);
     }
 
     /**
-     * 调用方法
+     * 执行方法
      *
      * @param functionName
      * @param param
@@ -71,7 +71,7 @@ public final class FunctionManager {
      */
     @SuppressWarnings("unchecked")
     @Nullable
-    public <Param, Result> Result callFunction(@NonNull String functionName, @Nullable Param param) {
+    public <Param, Result> Result call(@NonNull String functionName, @Nullable Param param) {
         if (EmptyUtils.isEmpty(functionName)) {
             return null;
         }
@@ -80,10 +80,10 @@ public final class FunctionManager {
             try {
                 return function.call(param);
             } catch (ClassCastException e) {
-                Log.e(TAG, "Param in Function cannot be casted , please check putFunction() , FunctionName : " + functionName);
+                Log.e(TAG, "Param in Function cannot be casted , please check register() , FunctionName : " + functionName);
                 e.printStackTrace();
             } catch (Exception e) {
-                Log.e(TAG, "callFunction exception , FunctionName : " + functionName);
+                Log.e(TAG, "call exception , FunctionName : " + functionName);
                 e.printStackTrace();
             }
         }

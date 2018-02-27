@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.tk.tdroid.base.BaseActivity;
-import com.tk.tdroid.utils.NetworkRxObservable;
+import com.tk.tdroid.utils.NetworkObservable;
 import com.tk.tdroid.utils.NetworkUtils;
 import com.tk.tdroid.viewloader.ViewLoader;
 import com.tk.tdroiddemo.R;
@@ -51,7 +51,7 @@ public class SampleViewLoaderActivity extends BaseActivity {
                 .networkInvalidView(R.layout.viewloader_no_network_layout)
                 .create();
         load();
-        NetworkRxObservable.getInstance().asObservable()
+        NetworkObservable.getInstance().asObservable()
                 .subscribe(new Consumer<NetworkUtils.NetworkEntry>() {
                     @Override
                     public void accept(NetworkUtils.NetworkEntry entry) throws Exception {

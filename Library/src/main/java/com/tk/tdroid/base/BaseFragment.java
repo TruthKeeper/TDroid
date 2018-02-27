@@ -14,8 +14,6 @@ import android.view.ViewGroup;
 import com.tdroid.annotation.AutoInject;
 import com.tdroid.annotation.SaveAndRestore;
 import com.tk.tdroid.autoinject.AutoInjectHelper;
-import com.tk.tdroid.event.Event;
-import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
 import com.tk.tdroid.rx.lifecycle.FragmentLifecycleImpl;
@@ -23,8 +21,6 @@ import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -35,7 +31,9 @@ import io.reactivex.subjects.Subject;
  *      time : 2017/11/16
  *      desc : <ol>Fragment基类
  *          <li>绑定Rx生命周期{@link BaseFragment#bindLifecycle(ILifecycle)} , {@link BaseFragment#bindOnDestroy()} , {@link BaseFragment#executeWhen(ILifecycle)}</li>
- *          <li>EventBus事件接收{@link BaseFragment#onEventReceived(Event)}</li>
+ *          <li>支持观察页面可见性变化{@link BaseFragment#visibleObserverEnabled()}</li>
+ *          <li>自动保存和恢复数据{@link BaseFragment#saveAndRestoreData()}</li>
+ *          <li>自动注入携带数据{@link BaseFragment#autoInjectData()}</li>
  *      </ol>
  * </pre>
  */
@@ -44,7 +42,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     private Subject<FragmentLifecycleImpl> lifecycleSubject = null;
 
     private final boolean bindLifecycleEnabled;
-    private final boolean eventBusEnabled;
     private final boolean visibleObserverEnabled;
     private final boolean saveAndRestoreData;
     private final boolean autoInjectData;
@@ -55,7 +52,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
 
     {
         bindLifecycleEnabled = bindLifecycleEnabled();
-        eventBusEnabled = eventBusEnabled();
         visibleObserverEnabled = visibleObserverEnabled();
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
@@ -114,9 +110,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         if (saveAndRestoreData) {
             SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
         }
-        if (eventBusEnabled) {
-            EventHelper.register(this);
-        }
         onLifecycleNext(FragmentLifecycleImpl.PRE_INFLATE);
         if (rootView == null) {
             rootView = inflater.inflate(getLayoutId(), container, false);
@@ -173,9 +166,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (eventBusEnabled) {
-            EventHelper.unregister(this);
-        }
         onLifecycleNext(FragmentLifecycleImpl.ON_DESTROY_VIEW);
     }
 
@@ -229,17 +219,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     }
 
     /**
-     * EventBus事件接收
-     * <br>
-     * {@code Observable.just(event)}来转换成RxJava事件
-     *
-     * @param event
-     */
-    @Subscribe(sticky = true)
-    public void onEventReceived(Event<?> event) {
-    }
-
-    /**
      * 用于{@link ViewPager}场景下的懒加载 , 重写
      * <ul>
      * <li>{@link ViewPager}场景下的懒加载</li>
@@ -258,16 +237,6 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
      */
     @Override
     public boolean bindLifecycleEnabled() {
-        return true;
-    }
-
-    /**
-     * 是否支持EventBus事件监听
-     *
-     * @return
-     */
-    @Override
-    public boolean eventBusEnabled() {
         return true;
     }
 

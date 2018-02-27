@@ -11,8 +11,6 @@ import android.view.View;
 import com.tdroid.annotation.AutoInject;
 import com.tdroid.annotation.SaveAndRestore;
 import com.tk.tdroid.autoinject.AutoInjectHelper;
-import com.tk.tdroid.event.Event;
-import com.tk.tdroid.event.EventHelper;
 import com.tk.tdroid.rx.RxUtils;
 import com.tk.tdroid.rx.lifecycle.ActivityLifecycleImpl;
 import com.tk.tdroid.rx.lifecycle.ExecuteTransformer;
@@ -21,8 +19,6 @@ import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
-
-import org.greenrobot.eventbus.Subscribe;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -33,7 +29,9 @@ import io.reactivex.subjects.Subject;
  *      time : 2017/11/16
  *      desc : <ol>Activity基类
  *          <li>绑定Rx生命周期{@link BaseActivity#bindLifecycle(ILifecycle)} , {@link BaseActivity#bindOnDestroy()} , {@link BaseActivity#executeWhen(ILifecycle)}</li>
- *          <li>EventBus事件接收{@link BaseActivity#onEventReceived(Event)}</li>
+ *          <li>触摸隐藏软键盘{@link BaseActivity#touchHideSoftKeyboard()}</li>
+ *          <li>自动保存和恢复数据{@link BaseActivity#saveAndRestoreData()}</li>
+ *          <li>自动注入携带数据{@link BaseActivity#autoInjectData()}</li>
  *      </ol>
  * </pre>
  */
@@ -42,7 +40,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     private Subject<ActivityLifecycleImpl> lifecycleSubject = null;
 
     private final boolean bindLifecycleEnabled;
-    private final boolean eventBusEnabled;
     private final boolean touchHideSoftKeyboard;
     private final boolean saveAndRestoreData;
     private final boolean autoInjectData;
@@ -54,7 +51,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
 
     {
         bindLifecycleEnabled = bindLifecycleEnabled();
-        eventBusEnabled = eventBusEnabled();
         if (bindLifecycleEnabled) {
             lifecycleSubject = PublishSubject.create();
         }
@@ -68,9 +64,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         super.onCreate(savedInstanceState);
         if (autoInjectData) {
             AutoInjectHelper.inject(this);
-        }
-        if (eventBusEnabled) {
-            EventHelper.register(this);
         }
         onLifecycleNext(ActivityLifecycleImpl.ON_CREATE);
     }
@@ -130,9 +123,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (eventBusEnabled) {
-            EventHelper.unregister(this);
-        }
         onLifecycleNext(ActivityLifecycleImpl.ON_DESTROY);
     }
 
@@ -192,33 +182,12 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     }
 
     /**
-     * EventBus事件接收
-     * <br>
-     * {@code Observable.just(event)}来转换成RxJava事件
-     *
-     * @param event
-     */
-    @Subscribe(sticky = true)
-    public void onEventReceived(Event<?> event) {
-    }
-
-    /**
      * 是否支持Rx生命周期
      *
      * @return
      */
     @Override
     public boolean bindLifecycleEnabled() {
-        return true;
-    }
-
-    /**
-     * 是否支持EventBus事件监听
-     *
-     * @return
-     */
-    @Override
-    public boolean eventBusEnabled() {
         return true;
     }
 

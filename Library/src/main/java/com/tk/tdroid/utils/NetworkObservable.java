@@ -1,35 +1,32 @@
 package com.tk.tdroid.utils;
 
 import android.content.IntentFilter;
-import android.support.annotation.Nullable;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.List;
+import io.reactivex.Observable;
+import io.reactivex.subjects.PublishSubject;
+import io.reactivex.subjects.Subject;
 
 /**
  * <pre>
  *      author : TK
- *      time : 2017/10/25
- *      desc : 网络环境观察者
+ *      time : 2017/11/20
+ *      desc : 网络环境观察者 By RxJava
  * </pre>
  */
 
 public class NetworkObservable {
     private static volatile NetworkObservable mNetworkObservable = null;
-    private List<WeakReference<Observer>> observerList = null;
+
+    private Subject<NetworkUtils.NetworkEntry> mNetworkEntrySubject = PublishSubject.create();
     private NetworkUtils.NetworkBroadcast mNetworkBroadcast = new NetworkUtils.NetworkBroadcast() {
         @Override
         public void onChange(NetworkUtils.NetworkEntry entry) {
-            notifyObservers(entry);
+            mNetworkEntrySubject.onNext(entry);
         }
     };
 
-    /**
-     * 观察者
-     */
-    public interface Observer {
-        void onNetworkChange(NetworkUtils.NetworkEntry entry);
+    public Observable<NetworkUtils.NetworkEntry> asObservable() {
+        return mNetworkEntrySubject;
     }
 
     private NetworkObservable() {
@@ -68,65 +65,9 @@ public class NetworkObservable {
      * 回收资源
      */
     public void recycle() {
-        removeAllObservers();
         if (mNetworkBroadcast != null) {
             Utils.getApp().unregisterReceiver(mNetworkBroadcast);
             mNetworkBroadcast = null;
-        }
-    }
-
-    /**
-     * 添加观察者
-     *
-     * @param observer
-     */
-    public void addObserver(@Nullable Observer observer) {
-        if (observer == null) {
-            return;
-        }
-        if (observerList == null) {
-            observerList = new ArrayList<>(4);
-        }
-        observerList.add(new WeakReference<Observer>(observer));
-    }
-
-    /**
-     * 移除观察者
-     *
-     * @param observer
-     */
-    public void removeObserver(@Nullable final Observer observer) {
-        if (observerList != null && observer != null) {
-            CollectionUtils.removeIf(observerList, new CollectionUtils.Predicate<WeakReference<Observer>>() {
-                @Override
-                public boolean process(WeakReference<Observer> reference) {
-                    return reference != null && reference.get() == observer;
-                }
-            });
-        }
-    }
-
-    /**
-     * 移除所有观察者
-     */
-    public void removeAllObservers() {
-        if (observerList != null) {
-            observerList.clear();
-        }
-    }
-
-    /**
-     * 通知所有观察者
-     *
-     * @param entry
-     */
-    private synchronized void notifyObservers(final NetworkUtils.NetworkEntry entry) {
-        if (observerList != null) {
-            for (WeakReference<Observer> reference : observerList) {
-                if (reference != null && reference.get() != null) {
-                    reference.get().onNetworkChange(entry);
-                }
-            }
         }
     }
 }

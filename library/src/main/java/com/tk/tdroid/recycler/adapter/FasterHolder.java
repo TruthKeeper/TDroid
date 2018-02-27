@@ -18,8 +18,8 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.tk.tdroid.image.ImageLoader;
-import com.tk.tdroid.image.QiNiuCropImpl;
+import com.tk.tdroid.image.load.ImageLoader;
+import com.tk.tdroid.image.load.QiNiuCropImpl;
 import com.tk.tdroid.utils.EmptyUtils;
 
 import java.io.File;

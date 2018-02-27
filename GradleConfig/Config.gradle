@@ -1,7 +1,7 @@
 ext {
     compileSdkVersion = 26
     buildToolsVersion = "26.0.2"
-    minSdkVersion = 16
+    minSdkVersion = 17
     //用于测试环境时加速编译
     minSdkVersionLollipop = 21
     targetSdkVersion = 26
@@ -38,8 +38,5 @@ ext {
             "rxjava2"           : "io.reactivex.rxjava2:rxjava:2.1.6",
             //AOP切面编程
             "aspect"            : "org.aspectj:aspectjrt:1.8.12",
-            //EventBus事件总线
-            "eventbus"          : "org.greenrobot:eventbus:3.1.1",
-            "eventbus-processor": "org.greenrobot:eventbus-annotation-processor:3.1.1",
     ]
 }

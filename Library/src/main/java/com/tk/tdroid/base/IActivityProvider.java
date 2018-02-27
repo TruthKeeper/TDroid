@@ -20,13 +20,6 @@ interface IActivityProvider {
     boolean bindLifecycleEnabled();
 
     /**
-     * 是否支持EventBus事件监听
-     *
-     * @return
-     */
-    boolean eventBusEnabled();
-
-    /**
      * 是否触摸隐藏软键盘
      *
      * @return

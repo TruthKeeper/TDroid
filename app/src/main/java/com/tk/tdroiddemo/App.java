@@ -1,21 +1,16 @@
 package com.tk.tdroiddemo;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import com.tk.tdroid.EventBusIndex;
-import com.tk.tdroid.event.EventHelper;
+import com.tk.tdroid.BaseApp;
 import com.tk.tdroid.http.HttpConfig;
 import com.tk.tdroid.http.HttpUtils;
 import com.tk.tdroid.http.interceptor.CookieInterceptor;
-import com.tk.tdroid.image.ImageLoader;
 import com.tk.tdroid.router.Interceptor;
 import com.tk.tdroid.router.RouterCell;
 import com.tk.tdroid.router.TRouter;
-import com.tk.tdroid.utils.NetworkRxObservable;
 import com.tk.tdroid.utils.StorageUtils;
-import com.tk.tdroid.utils.Utils;
 
 import java.io.File;
 
@@ -31,13 +26,11 @@ import okhttp3.HttpUrl;
  * </pre>
  */
 
-public class App extends Application {
-
+public class App extends BaseApp {
 
     @Override
     public void onCreate() {
         super.onCreate();
-        Utils.init(this);
         //初始化路由
         TRouter.register(new com.apt.Mine.RouterTable());
         TRouter.register(new com.apt.Home.RouterTable());
@@ -53,8 +46,6 @@ public class App extends Application {
 
             }
         });
-        //初始化ImageLoader
-        ImageLoader.init();
 
         HttpConfig httpConfig = new HttpConfig.Builder()
                 .baseUrl("https://www.baidu.com/")
@@ -85,8 +76,6 @@ public class App extends Application {
                 .build();
 
         HttpUtils.init(httpConfig);
-        NetworkRxObservable.getInstance().init();
-        EventHelper.init(new EventBusIndex());
 
 //        Logger.init(new Logger.Builder()
 //                .logPath(Environment.getExternalStorageDirectory() + File.separator + "test")
@@ -94,9 +83,4 @@ public class App extends Application {
 
     }
 
-    @Override
-    public void onTerminate() {
-        super.onTerminate();
-        NetworkRxObservable.getInstance().recycle();
-    }
 }

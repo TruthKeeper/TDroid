@@ -212,6 +212,7 @@ public final class TRouter {
     }
 
     static void request(@Nullable final Context context, final int requestCode, @NonNull final RouterCell routerCell) {
+        //全局拦截器
         if (!EmptyUtils.isEmpty(globalInterceptors)) {
             for (Interceptor interceptor : globalInterceptors) {
                 if (interceptor.intercept(routerCell, context)) {
@@ -223,6 +224,7 @@ public final class TRouter {
                 }
             }
         }
+        //路由拦截器
         if (!EmptyUtils.isEmpty(routerCell.getInterceptors())) {
             for (Interceptor interceptor : routerCell.getInterceptors()) {
                 if (interceptor.intercept(routerCell, context)) {

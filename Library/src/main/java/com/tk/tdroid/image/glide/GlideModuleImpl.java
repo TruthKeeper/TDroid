@@ -15,7 +15,7 @@ import com.bumptech.glide.module.AppGlideModule;
 import com.bumptech.glide.request.RequestOptions;
 import com.tk.tdroid.http.interceptor.OfflineInterceptor;
 import com.tk.tdroid.http.progress.ProgressManager;
-import com.tk.tdroid.image.Config;
+import com.tk.tdroid.image.load.Config;
 import com.tk.tdroid.utils.AppUtils;
 
 import java.io.File;

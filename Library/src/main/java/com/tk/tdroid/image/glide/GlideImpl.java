@@ -11,10 +11,10 @@ import com.bumptech.glide.load.model.Headers;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.tk.tdroid.image.Config;
-import com.tk.tdroid.image.ILoader;
-import com.tk.tdroid.image.ImageRequest;
-import com.tk.tdroid.image.LoaderCallback;
+import com.tk.tdroid.image.load.Config;
+import com.tk.tdroid.image.load.ILoader;
+import com.tk.tdroid.image.load.ImageRequest;
+import com.tk.tdroid.image.load.LoaderCallback;
 import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.utils.Utils;
 

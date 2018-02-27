@@ -9,13 +9,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), rootProject.file("proguard-rules.pro")
         }
     }
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [eventBusIndex: 'com.tk.tdroid.EventBusIndex']
-            }
-        }
-    }
 }
 
 dependencies {
@@ -68,6 +61,4 @@ dependencies {
     api(rootProject.ext.dependencies["rxandroid2"]) {
         exclude module: 'rxjava'
     }
-    api rootProject.ext.dependencies["eventbus"]
-    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
 }

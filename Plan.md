@@ -2,11 +2,11 @@
 
 ## 功能组件
 
-### EventBus事件总线 event
+### 事件传递
 
 
 
-### Http http
+### Http
 
 > Retrofit2 + OkHttp3 + RxJava2 + Gson 示例代码见 sample.SampleHttp
 
@@ -17,26 +17,24 @@
 - 离线缓存
 - 全局监听请求、响应、Glide请求的进度，支持API中动态、静态配置 , 适配重定向 widget.http.progress.ProgressManager
 
-### Image image
+### Image
 
-- 图像加载器
-- 图片(拍照、相册、裁剪)选择器
+- 图像加载器 .image.load.ImageLoader
+- 图片(拍照、相册、裁剪)选择器 .image.selector.ImageSelector
 
 ### 6.0+权限动态获取 permission By RxJava2
 
 - PermissionManager.with().request()
 - PermissionManager.with().requestEach()
 
-## APT
+## APT 编译时生成注解
 
-> 编译时生成注解
-
-- 反射实例化工具`com.apt.<组件名>.InstanceFactory`，对支持APT的类添加注解`com.tdroid.annotation.Instance`
-- 用于自动读取数据注入到 **Activity**(By getIntent) , **Fragment**(By getArguments)中 , 已集成在**BaseActivity**和**BaseFragment**中，
+- **反射实例化工具**  `com.apt.<组件名>.InstanceFactory`，对支持APT的类添加注解`com.tdroid.annotation.Instance`
+- **自动读取数据**  自动注入到 **Activity**(By getIntent) , **Fragment**(By getArguments)中 , 已集成在**BaseActivity**和**BaseFragment**中，
 对Field修饰注解`com.tdroid.annotation.AutoInject` , 重写`autoInjectData()`返回true即可开启
-- 用于在Activity 和 Fragment onSaveInstanceState时自动保存数据，并在合适时机还原数据 , 已集成在**BaseActivity**和**BaseFragment**中，
+- **自动保存数据**  用于在Activity 和 Fragment onSaveInstanceState时自动保存数据，并在合适时机还原数据 , 已集成在**BaseActivity**和**BaseFragment**中，
   对Field修饰注解`com.tdroid.annotation.SaveAndRestore` , 重写`saveAndRestoreData()`返回true即可开启
-- 组件化跨模块跳转**Activity**和获取**Service、Fragment**，需要在App工程中注册路由表` TRouter.register(new com.apt.<组件名>.RouterTable());`
+- **路由**  组件化跨模块跳转**Activity**和获取**Service、Fragment**，需要在App工程中注册路由表` TRouter.register(new com.apt.<组件名>.RouterTable());`
 
 ## Base Activity && Fragment
 
@@ -55,8 +53,8 @@
 - Bar工具类 utils.BarUtils
 - 位操作工具类 utils.BitUtils
 - 粘贴板工具类 utils.ClipboardUtils
-- 转换工具类 utils.ConvertUtils
 - 集合处理工具类 utils.CollectionUtils
+- 转换工具类 utils.ConvertUtils
 - 像素转换工具类 utils.DensityUtil
 - Drawable工具类 utils.DrawableUtils
 - 判空工具类 utils.EmptyUtils
@@ -68,11 +66,10 @@
 - 常见意图工具类 utils.IntentUtils
 - IO工具类 utils.IOUtils
 - 日志工具类 utils.Logger
-- 网络环境观察者 utils.NetworkObservable
-- 网络环境观察者 **By RxJava** utils.NetworkRxObservable
-- 反射工具类 utils.ReflectUtils
+- 网络环境观察者 **By RxJava** utils.NetworkObservable
 - 网络工具 utils.NetworkUtils
 - 数值转换工具 utils.NumberUtils
+- 反射工具类 utils.ReflectUtils
 - 截屏工具类 utils.ScreenShotUtils
 - 屏幕工具类 utils.ScreenUtils
 - SelectorDrawable生成工具 utils.SelectorFactory
