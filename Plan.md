@@ -2,9 +2,10 @@
 
 ## 功能组件
 
-### 事件传递
+### 事件传递 .bridge
 
-
+- **EventManager**：事件通信管理器，用于发送一个事件（支持粘性）以供多个接收端接收，支持组件化跨模块场景下调用
+- **ServiceManager**：服务注册工具，用于注册服务以供组件化场景下的跨模块调用
 
 ### Http
 
@@ -103,10 +104,6 @@ View视图加载器，支持空视图、错误视图、加载中视图、无网�
 ## .recycler
 
 RecyclerView的扩展
-
-## .func
-
-通信工具，用于注册Key=String , Value=Function , 支持组件化调用
 
 ## .view
 

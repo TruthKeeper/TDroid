@@ -149,13 +149,13 @@
 -keep class com.tencent.mid.** {* ;}
 -keep public class * extends com.qq.taf.jce.JceStruct{*;}
 #EventBus
--keep enum org.greenrobot.eventbus.ThreadMode { *; }
--keepclassmembers class ** {
-    @org.greenrobot.eventbus.Subscribe <methods>;
-}
--keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
-    <init>(Java.lang.Throwable);
-}
+#-keep enum org.greenrobot.eventbus.ThreadMode { *; }
+#-keepclassmembers class ** {
+#    @org.greenrobot.eventbus.Subscribe <methods>;
+#}
+#-keepclassmembers class * extends org.greenrobot.eventbus.util.ThrowableFailureEvent {
+#    <init>(Java.lang.Throwable);
+#}
 #Glide v4
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
@@ -169,6 +169,7 @@
 -keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
 public static java.lang.String TABLENAME;
 }
+-keep class **$Properties
 -keep class **$Properties
 # Gson
 -keep class sun.misc.Unsafe { *; }
