@@ -45,6 +45,10 @@
 - 自动读取数据注入
 - 自动保存、还原数据
 
+### Dex
+
+支持多进程加载Dex
+
 ## 工具类
 
 - 音频焦点帮助类 utils.extra.AudioFocusHelper

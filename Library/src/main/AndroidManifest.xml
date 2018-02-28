@@ -31,6 +31,11 @@
                 android:resource="@xml/file_provider" />
         </provider>
 
+        <provider
+            android:name=".dex.DexProvider"
+            android:authorities="@string/TDroid_dex_provider"
+            android:exported="false"
+            android:multiprocess="true" />
     </application>
 
 </manifest>
