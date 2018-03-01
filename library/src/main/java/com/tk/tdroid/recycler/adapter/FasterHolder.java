@@ -84,7 +84,7 @@ public class FasterHolder extends RecyclerView.ViewHolder {
      * @return
      */
     public final int getListPosition() {
-        return Math.max(getAdapterPosition() - mAdapter.getHeaderViewSpace(), 0);
+        return Math.max(getAdapterPosition() - mAdapter.getHeaderSpace(), 0);
     }
 
     /**

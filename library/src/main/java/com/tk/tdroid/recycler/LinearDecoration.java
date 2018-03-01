@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -112,8 +111,8 @@ public final class LinearDecoration extends RecyclerView.ItemDecoration {
             child = manager.getChildAt(i);
             manager.calculateItemDecorationsForChild(child, decorationRect);
 
-            translationX = Math.round(ViewCompat.getTranslationX(child));
-            translationY = Math.round(ViewCompat.getTranslationY(child));
+            translationX = Math.round(child.getTranslationX());
+            translationY = Math.round(child.getTranslationY());
 
             left = child.getLeft() - leftDivider + translationX;
             top = child.getTop() - topDivider + translationY;

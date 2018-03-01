@@ -4,21 +4,27 @@ package com.tk.tdroid.recycler.adapter;
  * <pre>
  *      author : TK
  *      time : 2017/11/6
- *      desc : {@link FasterAdapter#mList}数据封装
+ *      desc : FasterAdapter中存放的数据包装
  * </pre>
  */
 
 public class Entry<T> {
-    /**
-     * 数据实体
-     */
-    private T data;
-    /**
-     * 视图策略
-     */
-    private Strategy<T> strategy;
+    private T data = null;
+    private Strategy<T> strategy = null;
 
-    public Entry(T data, Strategy<T> strategy) {
+    public static <T> Entry<T> create(T data) {
+        return new Entry<T>(data);
+    }
+
+    public static <T> Entry<T> create(T data, Strategy<T> strategy) {
+        return new Entry<T>(data, strategy);
+    }
+
+    private Entry(T data) {
+        this.data = data;
+    }
+
+    private Entry(T data, Strategy<T> strategy) {
         this.data = data;
         this.strategy = strategy;
     }
