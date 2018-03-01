@@ -33,7 +33,7 @@
 
         <provider
             android:name=".dex.DexProvider"
-            android:authorities="@string/TDroid_dex_provider"
+            android:authorities="com.tk.tdroid.DexProvider"
             android:exported="false"
             android:multiprocess="true" />
     </application>

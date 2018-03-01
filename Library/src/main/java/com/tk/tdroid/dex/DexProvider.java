@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.tk.tdroid.R;
 import com.tk.tdroid.utils.AppUtils;
 import com.tk.tdroid.utils.IOUtils;
 import com.tk.tdroid.utils.Utils;
@@ -23,16 +22,12 @@ import com.tk.tdroid.utils.Utils;
  */
 
 public class DexProvider extends ContentProvider {
-    public static final Uri URI;
+    public static final Uri URI = Uri.parse("content://com.tk.tdroid.DexProvider/DexOpt");
     public static final String TABLE_NAME = "opt";
     public static final String VERSION_CODE = "versionCode";
     public static final String IS_DEX_OPT = "isDexOpt";
 
     private DexDBHelper dexDBHelper;
-
-    static {
-        URI = Uri.parse("content://" + Utils.getApp().getString(R.string.TDroid_dex_provider) + "/DexOpt");
-    }
 
     /**
      * 查询是否加载Dex成功

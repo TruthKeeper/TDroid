@@ -1,5 +1,6 @@
 package com.tk.tdroid.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -19,7 +20,7 @@ import com.tk.tdroid.R;
  *      desc :
  * </pre>
  */
-
+@SuppressLint("AppCompatCustomView")
 public class TUITextView extends TextView implements ITextView {
     private TUIHelper<ITextView> uiHelper;
 
