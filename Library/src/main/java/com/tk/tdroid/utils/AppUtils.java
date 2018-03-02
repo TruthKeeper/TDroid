@@ -70,17 +70,43 @@ public final class AppUtils {
     }
 
     /**
-     * 当前主进程是否存在
+     * 当前是否是主进程
      *
      * @return
      */
-    public static boolean isProcessRunning() {
+    public static boolean isMainProcess() {
         ActivityManager activityManager = ((ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE));
         List<ActivityManager.RunningAppProcessInfo> infoList = activityManager.getRunningAppProcesses();
-        final String mainProcessName = Utils.getApp().getPackageName();
-        final int myPid = android.os.Process.myPid();
+        String processName = Utils.getApp().getPackageName();
+        int myPid = android.os.Process.myPid();
         for (ActivityManager.RunningAppProcessInfo info : infoList) {
-            if (info.pid == myPid && mainProcessName.equals(info.processName)) {
+            if (myPid == info.pid && processName.equals(info.processName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 主进程是否存活
+     *
+     * @return
+     */
+    public static boolean isMainProcessLive() {
+        return isProcessRunning(Utils.getApp().getPackageName());
+    }
+
+    /**
+     * 进程是否存活
+     *
+     * @param processName
+     * @return
+     */
+    public static boolean isProcessRunning(String processName) {
+        ActivityManager activityManager = ((ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE));
+        List<ActivityManager.RunningAppProcessInfo> infoList = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo info : infoList) {
+            if (processName.equals(info.processName)) {
                 return true;
             }
         }

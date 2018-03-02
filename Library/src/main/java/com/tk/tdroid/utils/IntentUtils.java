@@ -1,5 +1,6 @@
 package com.tk.tdroid.utils;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -9,6 +10,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 
 import java.io.File;
 import java.util.List;
@@ -85,10 +87,12 @@ public final class IntentUtils {
      * @param immediately 立即拨出
      */
     public static void toCallPhone(@NonNull String phone, boolean immediately) {
-        Uri uri = Uri.parse("tel:" + phone);
-        Intent intent = new Intent(immediately ? Intent.ACTION_CALL : Intent.ACTION_DIAL, uri);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Utils.getApp().startActivity(intent);
+        if (ActivityCompat.checkSelfPermission(Utils.getApp(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            Uri uri = Uri.parse("tel:" + phone);
+            Intent intent = new Intent(immediately ? Intent.ACTION_CALL : Intent.ACTION_DIAL, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            Utils.getApp().startActivity(intent);
+        }
     }
 
     /**
