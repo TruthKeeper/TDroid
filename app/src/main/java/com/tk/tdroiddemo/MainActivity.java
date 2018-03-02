@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
+import com.tk.tdroid.recycler.adapter.Entry;
 import com.tk.tdroid.recycler.adapter.FasterAdapter;
 import com.tk.tdroid.recycler.adapter.FasterHolder;
 import com.tk.tdroid.recycler.adapter.Strategy;
@@ -19,6 +20,9 @@ import com.tk.tdroiddemo.sample.SampleSpannableActivity;
 import com.tk.tdroiddemo.sample.SampleToastActivity;
 import com.tk.tdroiddemo.sample.SampleUIActivity;
 import com.tk.tdroiddemo.sample.SampleViewLoaderActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends BaseActivity implements FasterAdapter.OnItemClickListener {
@@ -35,22 +39,23 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
         recyclerview = findViewById(R.id.recyclerview);
         recyclerview.setHasFixedSize(true);
         recyclerview.setLayoutManager(new GridLayoutManager(this, 2));
-        adapter = new FasterAdapter.Builder<Item>()
-                .fillBySingleStrategy(new Item[]{
-                        new Item(ComponentsActivity.class, "组件化"),
-                        new Item(SampleSpannableActivity.class, "Spannable"),
-                        new Item(SampleHttpActivity.class, "Http测试"),
-                        new Item(SampleViewLoaderActivity.class, "View视图加载"),
-                        new Item(SampleToastActivity.class, "Toast测试"),
-                        new Item(SampleUIActivity.class, "UI封装"),
-                        new Item(SampleSaveRestoreActivity.class, "APT_自动保存、恢复数据"),
-                        new Item(SampleAutoInjectActivity.class, "APT_自动注入携带数据",
-                                new Intent(MainActivity.this, SampleAutoInjectActivity.class)
-                                        .putExtra("nickName", "张三")
-                                        .putExtra("userId", 233L)
-                                        .putExtra("sex", true)
-                                        .putExtra("parent", new SampleAutoInjectActivity.Extra("李四", "王五"))),
-                }, new MainStrategy())
+        List<Entry<Item>> list = new ArrayList<>();
+        list.add(Entry.create(new Item(ComponentsActivity.class, "组件化")));
+        list.add(Entry.create(new Item(SampleSpannableActivity.class, "Spannable")));
+        list.add(Entry.create(new Item(SampleHttpActivity.class, "Http测试")));
+        list.add(Entry.create(new Item(SampleViewLoaderActivity.class, "View视图加载")));
+        list.add(Entry.create(new Item(SampleToastActivity.class, "Toast测试")));
+        list.add(Entry.create(new Item(SampleUIActivity.class, "UI封装")));
+        list.add(Entry.create(new Item(SampleSaveRestoreActivity.class, "APT_自动保存、恢复数据")));
+        list.add(Entry.create(new Item(SampleAutoInjectActivity.class, "APT_自动注入携带数据", new Intent(MainActivity.this, SampleAutoInjectActivity.class)
+                .putExtra("nickName", "张三")
+                .putExtra("userId", 233L)
+                .putExtra("sex", true)
+                .putExtra("parent", new SampleAutoInjectActivity.Extra("李四", "王五")))));
+
+        adapter = FasterAdapter.<Item>create()
+                .bind(Item.class, new MainStrategy())
+                .data(list)
                 .itemClickListener(this)
                 .build();
         recyclerview.setAdapter(adapter);

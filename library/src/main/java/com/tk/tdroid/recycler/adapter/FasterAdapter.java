@@ -268,7 +268,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
         array = new LongSparseArray<>(2);
     }
 
-    public static <D> FasterAdapter.Builder<D> build() {
+    public static <D> FasterAdapter.Builder<D> create() {
         return new FasterAdapter.Builder<D>();
     }
 

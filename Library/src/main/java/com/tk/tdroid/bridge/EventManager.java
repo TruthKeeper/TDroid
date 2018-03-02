@@ -15,7 +15,7 @@ import java.util.Map;
  * <pre>
  *     author : TK
  *     time   : 2018/02/28
- *     desc   :  <ul>事件通信管理器，{@link String}标志对应多数个接收器
+ *     desc   :  <ul>事件通信管理器，{@link String}标志对应多数个接收器，Event 传递空值或者JSON
  *         <li>支持组件化跨模块场景下调用</li>
  *         <li>支持粘性事件</li>
  *     </ul>
@@ -29,7 +29,7 @@ public final class EventManager {
     private final Map<String, List<IReceiver>> mReceiverMap = new ArrayMap<>();
     private final Map<String, List<IReceiver>> mStickyReceiverMap = new ArrayMap<>();
 
-    private final Map<String, Object> mStickyEventMap = new ArrayMap<>();
+    private final Map<String, String> mStickyEventMap = new ArrayMap<>();
 
     private EventManager() {
     }
@@ -52,7 +52,7 @@ public final class EventManager {
      * @param receiver
      * @return
      */
-    public <Event> void addReceiver(@NonNull String eventTag, @NonNull IReceiver<Event> receiver) {
+    public void addReceiver(@NonNull String eventTag, @NonNull IReceiver receiver) {
         putInMap(eventTag, receiver, mReceiverMap);
     }
 
@@ -63,15 +63,12 @@ public final class EventManager {
      * @param receiver
      * @return
      */
-    public <Event> void addStickyReceiver(@NonNull String eventTag, @NonNull IReceiver<Event> receiver) {
+    public void addStickyReceiver(@NonNull String eventTag, @NonNull IReceiver receiver) {
         putInMap(eventTag, receiver, mStickyReceiverMap);
         //是否有粘性事件立即通知到广播
         if (mStickyEventMap.containsKey(eventTag)) {
             try {
-                receiver.call((Event) mStickyEventMap.get(eventTag));
-            } catch (ClassCastException e) {
-                Log.e(TAG, "Event in Receiver cannot be casted , please check , EventTag : " + eventTag);
-                e.printStackTrace();
+                receiver.onEventReceive(eventTag, mStickyEventMap.get(eventTag));
             } catch (Exception e) {
                 Log.e(TAG, "Call Exception , EventTag : " + eventTag);
                 e.printStackTrace();
@@ -86,7 +83,7 @@ public final class EventManager {
      * @param receiver
      * @return
      */
-    public <Event> void removeReceiver(@NonNull String eventTag, @NonNull IReceiver<Event> receiver) {
+    public void removeReceiver(@NonNull String eventTag, @NonNull IReceiver receiver) {
         List<IReceiver> receiverList = mReceiverMap.get(eventTag);
         if (receiverList != null) {
             receiverList.remove(receiver);
@@ -110,7 +107,7 @@ public final class EventManager {
      * @param receiver
      * @return
      */
-    public <Event> void removeStickyReceiver(@NonNull String eventTag, @NonNull IReceiver<Event> receiver) {
+    public void removeStickyReceiver(@NonNull String eventTag, @NonNull IReceiver receiver) {
         List<IReceiver> receiverList = mStickyReceiverMap.get(eventTag);
         if (receiverList != null) {
             receiverList.remove(receiver);
@@ -133,9 +130,9 @@ public final class EventManager {
      * @return
      */
     @Nullable
-    public void getStickyEvent(@NonNull String eventTag) {
+    public String getStickyEvent(@NonNull String eventTag) {
         synchronized (mStickyEventMap) {
-            mStickyEventMap.get(eventTag);
+            return mStickyEventMap.get(eventTag);
         }
     }
 
@@ -171,22 +168,18 @@ public final class EventManager {
      * @param <Param>
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public <Event> void post(@NonNull String eventTag, @Nullable Event event) {
+    public void post(@NonNull String eventTag, @Nullable String event) {
         if (EmptyUtils.isEmpty(eventTag)) {
             return;
         }
         List<IReceiver> receiverList = mReceiverMap.get(eventTag);
         if (receiverList != null) {
             try {
-                for (IReceiver<Event> receiver : receiverList) {
+                for (IReceiver receiver : receiverList) {
                     if (receiver != null) {
-                        receiver.call(event);
+                        receiver.onEventReceive(eventTag, event);
                     }
                 }
-            } catch (ClassCastException e) {
-                Log.e(TAG, "Event in Receiver cannot be casted , please check , EventTag : " + eventTag);
-                e.printStackTrace();
             } catch (Exception e) {
                 Log.e(TAG, "Call Exception , EventTag : " + eventTag);
                 e.printStackTrace();
@@ -201,7 +194,7 @@ public final class EventManager {
      * @param event
      * @param <Event>
      */
-    public <Event> void postSticky(@NonNull String eventTag, @Nullable Event event) {
+    public void postSticky(@NonNull String eventTag, @Nullable String event) {
         synchronized (mStickyEventMap) {
             mStickyEventMap.put(eventTag, event);
         }
@@ -216,5 +209,4 @@ public final class EventManager {
         }
         receiverList.add(receiver);
     }
-
 }

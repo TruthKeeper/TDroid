@@ -1,5 +1,8 @@
 package com.tk.tdroid.bridge;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 /**
  * <pre>
  *     author : TK
@@ -7,11 +10,12 @@ package com.tk.tdroid.bridge;
  *     desc   : 事件接收器
  * </pre>
  */
-public interface IReceiver<Event> {
+public interface IReceiver {
     /**
-     * 执行
+     * 接收到事件
      *
-     * @param event
+     * @param eventTag 事件唯一标识
+     * @param event    传递空值或者JSON
      */
-    void call(Event event);
+    void onEventReceive(@NonNull String eventTag, @Nullable String event);
 }
