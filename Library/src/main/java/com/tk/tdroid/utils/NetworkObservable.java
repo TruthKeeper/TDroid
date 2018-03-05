@@ -14,10 +14,10 @@ import io.reactivex.subjects.Subject;
  * </pre>
  */
 
-public class NetworkObservable {
+public final class NetworkObservable {
     private static volatile NetworkObservable mNetworkObservable = null;
 
-    private Subject<NetworkUtils.NetworkEntry> mNetworkEntrySubject = PublishSubject.create();
+    private final Subject<NetworkUtils.NetworkEntry> mNetworkEntrySubject = PublishSubject.create();
     private NetworkUtils.NetworkBroadcast mNetworkBroadcast = new NetworkUtils.NetworkBroadcast() {
         @Override
         public void onChange(NetworkUtils.NetworkEntry entry) {
@@ -25,9 +25,6 @@ public class NetworkObservable {
         }
     };
 
-    public Observable<NetworkUtils.NetworkEntry> asObservable() {
-        return mNetworkEntrySubject;
-    }
 
     private NetworkObservable() {
     }
@@ -69,5 +66,9 @@ public class NetworkObservable {
             Utils.getApp().unregisterReceiver(mNetworkBroadcast);
             mNetworkBroadcast = null;
         }
+    }
+
+    public Observable<NetworkUtils.NetworkEntry> asObservable() {
+        return mNetworkEntrySubject;
     }
 }

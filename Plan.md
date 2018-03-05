@@ -65,6 +65,7 @@
 - 判空工具类 utils.EmptyUtils
 - 文件IO流操作工具类 utils.FileIOUtils
 - 文件工具类 utils.FileUtils
+- App前后台切换观察者 By RxJava utils.ForegroundObservable
 - Fragment切换帮助类,解决重叠问题 utils.FragmentHelper
 - 图像压缩工具类 utils.ImageCompressUtils
 - 图像工具类 utils.ImageUtils
