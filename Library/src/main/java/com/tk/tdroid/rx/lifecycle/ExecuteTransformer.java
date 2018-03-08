@@ -2,10 +2,17 @@ package com.tk.tdroid.rx.lifecycle;
 
 import android.support.annotation.NonNull;
 
+import org.reactivestreams.Publisher;
+
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
+import io.reactivex.FlowableTransformer;
 import io.reactivex.Maybe;
 import io.reactivex.MaybeSource;
 import io.reactivex.MaybeTransformer;
 import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.SingleTransformer;
@@ -19,7 +26,8 @@ import io.reactivex.functions.BiFunction;
  * </pre>
  */
 
-public class ExecuteTransformer<T> implements SingleTransformer<T, T>, MaybeTransformer<T, T> {
+public class ExecuteTransformer<T> implements ObservableTransformer<T, T>, FlowableTransformer<T, T>,
+        SingleTransformer<T, T>, MaybeTransformer<T, T> {
     private final Observable<?> observable;
 
     public ExecuteTransformer(@NonNull Observable<?> observable) {
@@ -27,8 +35,18 @@ public class ExecuteTransformer<T> implements SingleTransformer<T, T>, MaybeTran
     }
 
     @Override
-    public MaybeSource<T> apply(Maybe<T> upstream) {
-        return upstream.zipWith(observable.firstElement(), new BiFunction<T, Object, T>() {
+    public ObservableSource<T> apply(Observable<T> upstream) {
+        return upstream.zipWith(observable, new BiFunction<T, Object, T>() {
+            @Override
+            public T apply(T t, Object o) throws Exception {
+                return t;
+            }
+        });
+    }
+
+    @Override
+    public Publisher<T> apply(Flowable<T> upstream) {
+        return upstream.zipWith(observable.toFlowable(BackpressureStrategy.LATEST), new BiFunction<T, Object, T>() {
             @Override
             public T apply(T t, Object o) throws Exception {
                 return t;
@@ -39,6 +57,16 @@ public class ExecuteTransformer<T> implements SingleTransformer<T, T>, MaybeTran
     @Override
     public SingleSource<T> apply(Single<T> upstream) {
         return upstream.zipWith(observable.firstOrError(), new BiFunction<T, Object, T>() {
+            @Override
+            public T apply(T t, Object o) throws Exception {
+                return t;
+            }
+        });
+    }
+
+    @Override
+    public MaybeSource<T> apply(Maybe<T> upstream) {
+        return upstream.zipWith(observable.firstElement(), new BiFunction<T, Object, T>() {
             @Override
             public T apply(T t, Object o) throws Exception {
                 return t;

@@ -29,16 +29,17 @@ public final class DrawableUtils {
     }
 
     /**
-     * 获取Drawable , SVG的兼容处理 , 代替{@link android.support.v7.widget.TintTypedArray}
+     * 获取Drawable , SVG的4.+兼容处理 , 代替{@link android.support.v7.widget.TintTypedArray}
      *
+     * @param context 必须来自{@link android.view.ContextThemeWrapper}即Activity的上下文
      * @param array
      * @param index
      * @return
      */
     @Nullable
-    public static Drawable getTintDrawable(@NonNull TypedArray array, @StyleableRes int index) {
+    public static Drawable getTintDrawable(@NonNull Context context, @NonNull TypedArray array, @StyleableRes int index) {
         int resourceId = array.getResourceId(index, -1);
-        return resourceId == -1 ? null : ContextCompat.getDrawable(Utils.getApp(), resourceId);
+        return resourceId == -1 ? null : ContextCompat.getDrawable(context, resourceId);
     }
 
     /**

@@ -4,8 +4,14 @@ import org.reactivestreams.Publisher;
 
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Completable;
+import io.reactivex.CompletableSource;
+import io.reactivex.CompletableTransformer;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableTransformer;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeSource;
+import io.reactivex.MaybeTransformer;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.ObservableTransformer;
@@ -22,7 +28,8 @@ import io.reactivex.schedulers.Schedulers;
  *     desc   : 延迟订阅
  * </pre>
  */
-public class DelayCall<T> implements ObservableTransformer<T, T>, SingleTransformer<T, T>, FlowableTransformer<T, T> {
+public class DelayCall<T> implements ObservableTransformer<T, T>, SingleTransformer<T, T>, FlowableTransformer<T, T>
+        , MaybeTransformer<T, T>, CompletableTransformer {
     public static final int DELAY = 1_000;
     private int milliSecond;
 
@@ -50,6 +57,20 @@ public class DelayCall<T> implements ObservableTransformer<T, T>, SingleTransfor
 
     @Override
     public Publisher<T> apply(Flowable<T> upstream) {
+        return upstream.delay(milliSecond, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public CompletableSource apply(Completable upstream) {
+        return upstream.delay(milliSecond, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public MaybeSource<T> apply(Maybe<T> upstream) {
         return upstream.delay(milliSecond, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io());
