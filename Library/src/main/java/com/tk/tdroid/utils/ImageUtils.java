@@ -9,9 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -50,34 +48,6 @@ public final class ImageUtils {
             e.printStackTrace();
         }
         return 0;
-    }
-
-    /**
-     * 通过Drawable来获取Bitmap
-     *
-     * @param resId
-     * @return
-     */
-    public static Bitmap drawable2Bitmap(@DrawableRes int resId) {
-        return drawable2Bitmap(ContextCompat.getDrawable(Utils.getApp(), resId));
-    }
-
-    /**
-     * 通过Drawable来获取Bitmap
-     *
-     * @param resId
-     * @param outputWidth
-     * @param outputHeight
-     * @return
-     */
-    public static Bitmap drawable2Bitmap(@DrawableRes int resId, int outputWidth, int outputHeight) {
-        Drawable drawable = ContextCompat.getDrawable(Utils.getApp(), resId);
-        Bitmap bitmap = Bitmap.createBitmap(outputWidth, outputHeight, drawable.getOpacity() != PixelFormat.OPAQUE
-                ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, outputWidth, outputHeight);
-        drawable.draw(canvas);
-        return bitmap;
     }
 
     /**

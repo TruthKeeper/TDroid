@@ -102,7 +102,7 @@ public final class AppUtils {
      * @param processName
      * @return
      */
-    public static boolean isProcessRunning(String processName) {
+    public static boolean isProcessRunning(@NonNull String processName) {
         ActivityManager activityManager = ((ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE));
         List<ActivityManager.RunningAppProcessInfo> infoList = activityManager.getRunningAppProcesses();
         for (ActivityManager.RunningAppProcessInfo info : infoList) {
@@ -111,6 +111,36 @@ public final class AppUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 当前进程是否处于前台
+     *
+     * @return
+     */
+    public static int isForeground() {
+        return isForeground(Utils.getApp().getPackageName());
+    }
+
+    /**
+     * 进程是否处于前台
+     *
+     * @param packageName
+     * @return
+     */
+    public static int isForeground(@NonNull String packageName) {
+        ActivityManager activityManager = (ActivityManager) Utils.getApp().getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> infoList = activityManager.getRunningAppProcesses();
+        for (ActivityManager.RunningAppProcessInfo info : infoList) {
+            if (info.processName.equals(packageName)) {
+                if (info.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            }
+        }
+        return -1;
     }
 
     /**

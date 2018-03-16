@@ -12,7 +12,11 @@ import android.support.annotation.NonNull;
  * </pre>
  */
 public final class SharedPreferenceUtils {
-    private static final String DEFAULT = "TDroid_Default_SP";
+    private static final String DEFAULT = "SP_Default";
+
+    private SharedPreferenceUtils() {
+        throw new IllegalStateException();
+    }
 
     /**
      * @param key

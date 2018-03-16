@@ -15,7 +15,6 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
@@ -786,31 +785,6 @@ public final class SpannableFactory {
             this.imageAlign = align;
             return this;
         }
-
-        /**
-         * 追加图片
-         *
-         * @param resourceId 图片资源id
-         * @return
-         */
-        public Builder appendImage(@DrawableRes final int resourceId) {
-            return appendImage(resourceId, Align.ALIGN_BOTTOM);
-        }
-
-        /**
-         * 追加图片
-         *
-         * @param resourceId 图片资源id
-         * @param align      对齐
-         * @return
-         */
-        public Builder appendImage(@DrawableRes final int resourceId, @Align final int align) {
-            update(TYPE_IMAGE);
-            this.imageDrawable = ContextCompat.getDrawable(Utils.getApp(), resourceId);
-            this.imageAlign = align;
-            return this;
-        }
-
 
         /**
          * 追加空格

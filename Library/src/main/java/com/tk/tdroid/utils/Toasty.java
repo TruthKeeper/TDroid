@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
@@ -294,15 +293,6 @@ public class Toasty {
              */
             public Builder icon(@Nullable Bitmap bitmap) {
                 this.icon = bitmap == null ? null : new BitmapDrawable(Utils.getApp().getResources(), bitmap);
-                return this;
-            }
-
-            /**
-             * @param iconRes {@code @drawable}资源
-             * @return
-             */
-            public Builder icon(@DrawableRes int iconRes) {
-                this.icon = ContextCompat.getDrawable(Utils.getApp(), iconRes);
                 return this;
             }
 

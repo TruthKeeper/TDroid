@@ -2,6 +2,7 @@ package com.tk.tdroiddemo.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
@@ -18,31 +19,35 @@ import com.tk.tdroiddemo.R;
  */
 
 public class SampleToastActivity extends BaseActivity implements View.OnClickListener {
-    public static final Toasty.Config right = new Toasty.Config.Builder()
-            .cornerRadius(Integer.MAX_VALUE)
-            .backgroundColor(Color.GREEN)
-            .textColor(Color.WHITE)
-            .icon(R.drawable.vector_right)
-            .build();
-    public static final Toasty.Config error = new Toasty.Config.Builder()
-            .cornerRadius(Integer.MAX_VALUE)
-            .backgroundColor(Color.RED)
-            .textColor(Color.WHITE)
-            .icon(R.drawable.vector_error)
-            .build();
-    public static final Toasty.Config custom = new Toasty.Config.Builder()
-            .cornerRadius(DensityUtil.dp2px(4))
-            .backgroundColorRes(R.color.colorPrimary)
-            .textColor(Color.WHITE)
-            .icon(R.mipmap.ic_launcher)
-            .alpha(200)
-            .tintByTextColor(false)
-            .build();
+    public Toasty.Config right;
+    public Toasty.Config error;
+    public Toasty.Config custom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sample_toast);
+        right = new Toasty.Config.Builder()
+                .cornerRadius(Integer.MAX_VALUE)
+                .backgroundColor(Color.GREEN)
+                .textColor(Color.WHITE)
+                .icon(ContextCompat.getDrawable(this, R.drawable.vector_right))
+                .build();
+        error = new Toasty.Config.Builder()
+                .cornerRadius(Integer.MAX_VALUE)
+                .backgroundColor(Color.RED)
+                .textColor(Color.WHITE)
+                .icon(ContextCompat.getDrawable(this, R.drawable.vector_error))
+                .build();
+        custom = new Toasty.Config.Builder()
+                .cornerRadius(DensityUtil.dp2px(4))
+                .backgroundColorRes(R.color.colorPrimary)
+                .textColor(Color.WHITE)
+                .icon(ContextCompat.getDrawable(this, R.mipmap.ic_launcher))
+                .alpha(200)
+                .tintByTextColor(false)
+                .build();
+
         findViewById(R.id.btn_1).setOnClickListener(this);
         findViewById(R.id.btn_2).setOnClickListener(this);
         findViewById(R.id.btn_3).setOnClickListener(this);
