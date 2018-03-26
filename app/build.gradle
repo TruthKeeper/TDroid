@@ -6,16 +6,27 @@ apply from: rootProject.ext.versionFile
 //方法数统计
 //apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'auto-register'
-//autoregister {
-//    registerInfo = [
-//            [
-//                    'scanInterface'          : 'com.tk.tdroid.instance.IInstance'
-//                    , 'codeInsertToClassName': 'com.tk.tdroid.instance.InstanceFactory'
-//                    //未指定codeInsertToMethodName，默认插入到static块中，故此处register必须为static方法
-//                    , 'registerMethodName'   : 'register'
-//            ]
-//    ]
-//}
+autoregister {
+    registerInfo = [
+            [
+                    'scanInterface'           : 'com.tk.tdroid.bridge.IService'
+                    , 'codeInsertToClassName' : 'com.tk.tdroid.bridge.ServiceManager'
+                    , 'registerMethodName'    : 'register'
+                    , 'codeInsertToMethodName': 'init'
+                    , 'exclude'               : ['com/tk/tdroid/bridge/domain/.*']
+            ],
+            [
+                    'scanInterface'           : 'com.tk.tdroid.router.IRouterTable'
+                    , 'codeInsertToClassName' : 'com.tk.tdroid.router.TRouter'
+                    , 'registerMethodName'    : 'register'
+                    , 'codeInsertToMethodName': 'init'
+                    , 'include'               : [
+                    'com.apt.home/.*'
+                    , 'com.apt.mine/.*'
+            ]
+            ]
+    ]
+}
 //读取打包签名
 def keystorePropertiesFile = rootProject.file("local.properties");
 def keystoreProperties = new Properties()

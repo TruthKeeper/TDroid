@@ -41,10 +41,11 @@ public class InstanceProcessor implements IProcessor {
         //.gradle配置的全路径
         final String moduleName = annotationProcessor.getOptions().get(AnnotationProcessor.MODULE_NAME);
         StringBuilder createPath = new StringBuilder(DEFAULT_PATH);
-        if (!Utils.isEmpty(moduleName)) {
-            createPath.append(".");
-            createPath.append(moduleName);
+        if (Utils.isEmpty(moduleName)) {
+            return;
         }
+        createPath.append(".");
+        createPath.append(moduleName.toLowerCase());
 
         TypeSpec.Builder classBuilder = TypeSpec.classBuilder(CLASS_NAME)
                 //public final 的类
@@ -99,7 +100,6 @@ public class InstanceProcessor implements IProcessor {
             // 在module/build/generated/source/apt 生成
             javaFile.writeTo(annotationProcessor.getFileCreator());
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

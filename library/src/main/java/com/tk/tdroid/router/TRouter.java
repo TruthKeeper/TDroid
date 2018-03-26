@@ -75,6 +75,13 @@ public final class TRouter {
     }
 
     /**
+     * AutoRegister自动会在字节码中插入注册代码
+     */
+    public static void init() {
+
+    }
+
+    /**
      * 初始化映射关系表
      *
      * @param table

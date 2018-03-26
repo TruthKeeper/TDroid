@@ -1,4 +1,4 @@
-package com.tk.tdroid.utils.extra;
+package com.tk.tdroid.utils.audio;
 
 import android.content.Context;
 import android.media.AudioManager;
@@ -16,10 +16,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.tk.tdroid.utils.extra.SoundPlayHelper.Status.IDLE;
-import static com.tk.tdroid.utils.extra.SoundPlayHelper.Status.PAUSE;
-import static com.tk.tdroid.utils.extra.SoundPlayHelper.Status.PLAYING;
-import static com.tk.tdroid.utils.extra.SoundPlayHelper.Status.PREPARE;
+import static com.tk.tdroid.utils.audio.SoundPlayHelper.Status.IDLE;
+import static com.tk.tdroid.utils.audio.SoundPlayHelper.Status.PAUSE;
+import static com.tk.tdroid.utils.audio.SoundPlayHelper.Status.PLAYING;
+import static com.tk.tdroid.utils.audio.SoundPlayHelper.Status.PREPARE;
 
 /**
  * <pre>

@@ -9,55 +9,43 @@ import java.util.Map;
  * <pre>
  *     author : TK
  *     time   : 2018/02/28
- *     desc   : 容器单例，用于注册服务以供组件化场景下的跨模块调用
+ *     desc   : 容器管理器，用于注册服务以供组件化场景下的跨模块调用
  * </pre>
  */
 public final class ServiceManager {
-    private static volatile ServiceManager mServiceManager = null;
-    private final Map<Class<?>, IService> mServiceMap = new ArrayMap<>();
+    private final static Map<String, IService> mServiceMap = new ArrayMap<>();
 
     private ServiceManager() {
+        throw new IllegalStateException();
     }
 
     /**
-     * 获取单例
-     *
-     * @return
+     * AutoRegister自动会在字节码中插入注册代码
      */
-    public static ServiceManager getInstance() {
-        if (mServiceManager == null) {
-            synchronized (ServiceManager.class) {
-                if (mServiceManager == null) {
-                    mServiceManager = new ServiceManager();
-                }
-            }
-        }
-        return mServiceManager;
+    public static void init() {
     }
 
     /**
      * 注册一个服务
      *
-     * @param cls
      * @param service
-     * @return
+     * @param <Service>
      */
-    public <Service extends IService> ServiceManager register(@NonNull Class<Service> cls, @NonNull Service service) {
-        mServiceMap.put(cls, service);
-        return this;
+    public static <Service extends IService> void register(@NonNull Service service) {
+        mServiceMap.put(service.getName(), service);
     }
 
     /**
      * 获取注册的服务
      *
-     * @param cls
+     * @param serviceName
      * @param <Service>
      * @return
      */
     @SuppressWarnings("unchecked")
     @NonNull
-    public <Service> Service get(@NonNull Class<Service> cls) {
-        final IService service = mServiceMap.get(cls);
+    public static <Service extends IService> Service get(@NonNull String serviceName) {
+        final IService service = mServiceMap.get(serviceName);
         if (service == null) {
             throw new NullPointerException("Service is not registered !");
         }

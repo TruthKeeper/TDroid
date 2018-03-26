@@ -1,4 +1,4 @@
-package com.tk.tdroid.utils.extra;
+package com.tk.tdroid.utils.audio;
 
 import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
@@ -30,10 +30,18 @@ import io.reactivex.functions.Consumer;
  */
 
 public final class SoundRecordHelper {
+    /**
+     * 声音输出文件格式
+     */
     private static final String EXTENSION = ".aac";
-    private static final int VOLUME_DELAY = 200;
+    /**
+     * 音量监听回调时间间隔，单位：毫秒
+     */
+    private static final int VOLUME_DELAY = 150;
+    /**
+     * 音量监听回调时间间隔，单位：毫秒
+     */
     private static final int TIMER_DELAY = 100;
-
     /**
      * 录音器
      */
@@ -47,7 +55,7 @@ public final class SoundRecordHelper {
      */
     private long startTime;
     /**
-     * 录音存放目录
+     * 录音存放路径
      */
     private File dir = null;
     /**
@@ -64,6 +72,9 @@ public final class SoundRecordHelper {
         dir = builder.dir;
         onVolumeListener = builder.onVolumeListener;
         onTimerListener = builder.onTimerListener;
+
+        //打开扬声器
+        SpeakerHelper.setSpeakerOn(true);
 
         recorder = new MediaRecorder();
         CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
@@ -92,7 +103,10 @@ public final class SoundRecordHelper {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (isRecording && onVolumeListener != null) {
-                            onVolumeListener.onVolumeChange(recorder.getMaxAmplitude() * 100 / 0x7FFF);
+//                            int maxDb = (int) (20 * Math.log(0x7FFF / 400));
+                            int maxDb = (int) (Math.log(0x6FFF / 400));
+                            int db = (int) (Math.log(recorder.getMaxAmplitude() / 400));
+                            onVolumeListener.onVolumeChange(Math.min(db * 100 / maxDb, 100));
                         }
                     }
                 });
@@ -105,6 +119,7 @@ public final class SoundRecordHelper {
         if (timerDisposable != null && !timerDisposable.isDisposed()) {
             timerDisposable.dispose();
         }
+        startTime = System.currentTimeMillis();
         Observable.interval(0, TIMER_DELAY, TimeUnit.MILLISECONDS)
                 .compose(new AsyncCall<Long>())
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -127,7 +142,6 @@ public final class SoundRecordHelper {
      * 生成录音输出文件
      */
     private void generateOutput() {
-        //输出的文件名
         final String voiceFileName = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault()).format(System.currentTimeMillis()) + EXTENSION;
         //校验目录
         if (dir == null) {
@@ -149,7 +163,7 @@ public final class SoundRecordHelper {
         }
         //兼容iOS的编码
         recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        recorder.setOutputFormat(MediaRecorder.OutputFormat.AAC_ADTS);
+        recorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
         recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
         recorder.setOutputFile(soundFile.getAbsolutePath());
     }
@@ -163,14 +177,13 @@ public final class SoundRecordHelper {
         //释放上次资源
         recorder.reset();
         generateOutput();
-        startVolumeSubscribe();
         try {
             recorder.prepare();
             recorder.start();
-            isRecording = true;
 
-            startTime = System.currentTimeMillis();
+            isRecording = true;
             startTimerSubscribe();
+            startVolumeSubscribe();
         } catch (IOException e) {
             e.printStackTrace();
             return false;

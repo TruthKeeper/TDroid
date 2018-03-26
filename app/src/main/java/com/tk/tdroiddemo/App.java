@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.tk.tdroid.BaseApp;
+import com.tk.tdroid.bridge.ServiceManager;
 import com.tk.tdroid.http.HttpConfig;
 import com.tk.tdroid.http.HttpUtils;
 import com.tk.tdroid.http.interceptor.CookieInterceptor;
@@ -32,8 +33,9 @@ public class App extends BaseApp {
     public void onCreate() {
         super.onCreate();
         //初始化路由
-        TRouter.register(new com.apt.Mine.RouterTable());
-        TRouter.register(new com.apt.Home.RouterTable());
+        TRouter.init();
+        ServiceManager.init();
+
         TRouter.addGlobalInterceptor(new Interceptor() {
             @Override
             public boolean intercept(RouterCell cell, Context context) {

@@ -106,10 +106,9 @@ public class SaveRestoreClassCell extends AbsClassCell {
 
             JavaFile javaFile = JavaFile.builder(elementUtils.getPackageOf(clsElement).getQualifiedName().toString(),
                     typeSpec).build();
-            //写入
+            // 在module/build/generated/source/apt 生成
             javaFile.writeTo(fileCreator);
         } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }
