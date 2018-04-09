@@ -9,11 +9,11 @@ apply plugin: 'auto-register'
 autoregister {
     registerInfo = [
             [
-                    'scanInterface'           : 'com.tk.tdroid.bridge.IService'
+                    'scanInterface'           : 'com.tk.common.IService'
                     , 'codeInsertToClassName' : 'com.tk.tdroid.bridge.ServiceManager'
                     , 'registerMethodName'    : 'register'
                     , 'codeInsertToMethodName': 'init'
-                    , 'exclude'               : ['com/tk/tdroid/bridge/domain/.*']
+                    , 'exclude'               : ['com/tk/common/domain/.*']
             ],
             [
                     'scanInterface'           : 'com.tk.tdroid.router.IRouterTable'
@@ -123,6 +123,6 @@ dependencies {
     //开启EventBus的APT索引(2)
 //    annotationProcessor rootProject.ext.dependencies["eventbus-processor"]
     //组件化
-    implementation project(':Home')
-    implementation project(':Mine')
+    implementation project(':Module_Home')
+    implementation project(':Module_Mine')
 }

@@ -1,13 +1,14 @@
-package com.tk.tdroid.bridge.domain;
+package com.tk.common.domain;
 
-import com.tk.tdroid.bridge.IService;
+
+import com.tk.common.IService;
 
 import io.reactivex.Observable;
 
 /**
  * <pre>
  *      author : TK
- *      time : 2018/3/23
+ *      time : 2018/4/9
  *      desc :
  * </pre>
  */

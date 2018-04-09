@@ -3,6 +3,8 @@ package com.tk.tdroid.bridge;
 import android.support.annotation.NonNull;
 import android.support.v4.util.ArrayMap;
 
+import com.tk.common.IService;
+
 import java.util.Map;
 
 /**

@@ -1,4 +1,4 @@
-package com.tk.tdroid.bridge;
+package com.tk.common;
 
 /**
  * <pre>
@@ -9,9 +9,10 @@ package com.tk.tdroid.bridge;
  */
 public interface IService {
     /**
-     * 获取服务的名称，作为{@link ServiceManager#get(String)}
+     * 获取服务的名称
      *
      * @return
      */
     String getName();
 }
+

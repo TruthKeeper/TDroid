@@ -1,7 +1,7 @@
 package com.tk.tdroiddemo;
 
-import com.tk.tdroid.bridge.IService;
-import com.tk.tdroid.bridge.domain.IUserService;
+import com.tk.common.IService;
+import com.tk.common.domain.IUserService;
 
 import io.reactivex.Observable;
 
@@ -13,7 +13,7 @@ import io.reactivex.Observable;
  * </pre>
  */
 
-public class UserService implements IUserService, IService {
+public class UserServiceImpl implements IUserService, IService {
     @Override
     public String getName() {
         return getClass().getSimpleName();

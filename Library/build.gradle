@@ -18,6 +18,7 @@ dependencies {
      * compileOnly 只参与编译，不打包
      * runtimeOnly 不参与编译，打包（一般不用）
      */
+    api project(':Common')
     api project(':Annotation')
     //AOP切面的支持(2)
     api rootProject.ext.dependencies["aspect"]
