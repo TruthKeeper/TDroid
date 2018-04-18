@@ -1,6 +1,7 @@
 package com.tk.tdroid.utils.audio;
 
 import android.media.CamcorderProfile;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
 import android.support.annotation.IntRange;
 import android.support.annotation.MainThread;
@@ -39,7 +40,7 @@ public final class SoundRecordHelper {
      */
     private static final int VOLUME_DELAY = 150;
     /**
-     * 音量监听回调时间间隔，单位：毫秒
+     * 计时监听回调时间间隔，单位：毫秒
      */
     private static final int TIMER_DELAY = 100;
     /**
@@ -50,10 +51,6 @@ public final class SoundRecordHelper {
      * 是否录音中
      */
     private boolean isRecording = false;
-    /**
-     * 记录开始录音的时间
-     */
-    private long startTime;
     /**
      * 录音存放路径
      */
@@ -119,7 +116,6 @@ public final class SoundRecordHelper {
         if (timerDisposable != null && !timerDisposable.isDisposed()) {
             timerDisposable.dispose();
         }
-        startTime = System.currentTimeMillis();
         Observable.interval(0, TIMER_DELAY, TimeUnit.MILLISECONDS)
                 .compose(new AsyncCall<Long>())
                 .doOnSubscribe(new Consumer<Disposable>() {
@@ -132,7 +128,7 @@ public final class SoundRecordHelper {
                     @Override
                     public void accept(Long aLong) throws Exception {
                         if (isRecording && onTimerListener != null) {
-                            onTimerListener.onTimer(System.currentTimeMillis() - startTime);
+                            onTimerListener.onTimer(aLong);
                         }
                     }
                 });
@@ -221,10 +217,8 @@ public final class SoundRecordHelper {
         if (timerDisposable != null && !timerDisposable.isDisposed()) {
             timerDisposable.dispose();
         }
-        long soundLength = System.currentTimeMillis() - startTime;
-
         if (soundFile.exists() && soundFile.isFile()) {
-            return new SoundRecordResult(soundFile, soundLength);
+            return new SoundRecordResult(soundFile, getMediaDuring(soundFile.getAbsolutePath()));
         } else {
             return null;
         }
@@ -251,6 +245,24 @@ public final class SoundRecordHelper {
      */
     public boolean isRecording() {
         return isRecording;
+    }
+
+    /**
+     * 获取音频文件的时长
+     *
+     * @param path
+     * @return 单位：毫秒
+     */
+    public static long getMediaDuring(String path) {
+        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+        try {
+            retriever.setDataSource(path);
+            return Long.parseLong(retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+        } catch (Exception e) {
+        } finally {
+            retriever.release();
+        }
+        return -1;
     }
 
     /**
