@@ -10,14 +10,8 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 //组件化下的配置
-                arguments = [moduleName: project.getName()]
+                arguments = [moduleName: 'mine']
             }
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), rootProject.file("proguard-rules.pro")
         }
     }
 }

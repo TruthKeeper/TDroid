@@ -307,16 +307,16 @@ public final class SelectorFactory {
 
     private GradientDrawable generateShape(int index) {
         GradientDrawable drawable = null;
+        boolean stroke = strokes[index][0] > 0 && strokes[index][1] != SelectorFactory.INVALID;
         if (gradients[index] != null && gradients[index].first != null && gradients[index].second != null) {
             //渐变
             drawable = new GradientDrawable(gradients[index].first, gradients[index].second);
             drawable.setCornerRadii(radius[index]);
-            if (strokes[index] != null) {
+            if (stroke) {
                 drawable.setStroke(strokes[index][0], strokes[index][1]);
             }
         } else {
             boolean solid = solids[index] != SelectorFactory.INVALID;
-            boolean stroke = strokes[index] != null && strokes[index][0] > 0 && strokes[index][1] != SelectorFactory.INVALID;
             if (solid || stroke) {
                 //solid不为INVALID或者有Stroke视为需要一个图层
                 drawable = new GradientDrawable();
