@@ -22,7 +22,7 @@ public class ResultInfo implements Parcelable {
         this.requestCode = requestCode;
         this.resultCode = resultCode;
         this.data = data;
-        this.success = requestCode == Activity.RESULT_OK;
+        this.success = resultCode == Activity.RESULT_OK;
     }
 
     @Override
