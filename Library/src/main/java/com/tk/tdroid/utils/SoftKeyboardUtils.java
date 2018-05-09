@@ -22,10 +22,13 @@ public final class SoftKeyboardUtils {
      * 显示软键盘
      *
      * @param view
+     * @param requestFocus
      */
-    public static void showSoftKeyboard(@NonNull View view) {
+    public static void showSoftKeyboard(@NonNull View view, boolean requestFocus) {
         InputMethodManager manager = (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        view.requestFocus();
+        if (requestFocus) {
+            view.requestFocus();
+        }
         manager.showSoftInput(view, 0);
     }
 
@@ -33,10 +36,13 @@ public final class SoftKeyboardUtils {
      * 隐藏软键盘
      *
      * @param view
+     * @param clearFocus
      */
-    public static void hideSoftKeyboard(@NonNull View view) {
+    public static void hideSoftKeyboard(@NonNull View view, boolean clearFocus) {
         InputMethodManager manager = (InputMethodManager) Utils.getApp().getSystemService(Context.INPUT_METHOD_SERVICE);
-        view.clearFocus();
+        if (clearFocus) {
+            view.clearFocus();
+        }
         manager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
@@ -70,7 +76,7 @@ public final class SoftKeyboardUtils {
             if (view != null && (view instanceof EditText || CollectionUtils.searchFirstIndex(filterViews, view) != -1)) {
                 //点击的是EditText或者需要过滤
             } else {
-                hideSoftKeyboard(currentFocusView);
+                hideSoftKeyboard(currentFocusView, false);
             }
         }
     }

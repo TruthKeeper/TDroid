@@ -117,4 +117,30 @@ public final class ViewUtils {
         }
         return null;
     }
+
+    /**
+     * 判断按钮是否可点击，通过校验{@link EditText}的内内容是否为空
+     *
+     * @param btn
+     * @param views
+     */
+    public static void checkBtnEnabledByEditText(View btn, EditText... views) {
+        for (EditText view : views) {
+            if (view.length() == 0) {
+                btn.setEnabled(false);
+                return;
+            }
+        }
+        btn.setEnabled(true);
+    }
+
+    /**
+     * 判断清除按钮是否显示
+     *
+     * @param clearBtn
+     * @param editText
+     */
+    public static void checkClearBtnVisible(View clearBtn, EditText editText) {
+        clearBtn.setVisibility(editText.length() > 0 && editText.hasFocus() ? View.VISIBLE : View.INVISIBLE);
+    }
 }
