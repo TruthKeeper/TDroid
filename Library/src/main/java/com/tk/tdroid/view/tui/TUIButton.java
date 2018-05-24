@@ -1,4 +1,4 @@
-package com.tk.tdroid.ui;
+package com.tk.tdroid.view.tui;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

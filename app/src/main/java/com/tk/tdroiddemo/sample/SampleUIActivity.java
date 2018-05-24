@@ -6,8 +6,8 @@ import android.view.View;
 
 import com.tk.tdroid.base.BaseActivity;
 import com.tk.tdroiddemo.R;
-import com.tk.tdroid.ui.TUIRelativeLayout;
-import com.tk.tdroid.ui.TUITextView;
+import com.tk.tdroid.view.tui.TUIRelativeLayout;
+import com.tk.tdroid.view.tui.TUITextView;
 
 /**
  * <pre>

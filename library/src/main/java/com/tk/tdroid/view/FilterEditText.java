@@ -9,7 +9,7 @@ import android.text.Spanned;
 import android.util.AttributeSet;
 
 import com.tk.tdroid.R;
-import com.tk.tdroid.ui.TUIEditText;
+import com.tk.tdroid.view.tui.TUIEditText;
 import com.tk.tdroid.utils.BitUtils;
 
 import java.lang.annotation.Retention;

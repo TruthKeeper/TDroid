@@ -1,4 +1,4 @@
-package com.tk.tdroid.ui;
+package com.tk.tdroid.view.tui;
 
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -6,11 +6,11 @@ import android.support.annotation.NonNull;
 /**
  * <pre>
  *      author : TK
- *      time : 2017/12/27
+ *      time : 2018/1/10
  *      desc :
  * </pre>
  */
 
-public interface IView {
-    void updateBackground(@NonNull Drawable bg);
+public interface IImageView extends IView {
+    void updateSrc(@NonNull Drawable src);
 }

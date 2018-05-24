@@ -28,11 +28,11 @@ public final class SelectorFactory {
 
     private float[][] radius = new float[STATES.length][8];
     private int[] solids = new int[]{
-            Color.TRANSPARENT,
-            Color.TRANSPARENT,
-            Color.TRANSPARENT,
-            Color.TRANSPARENT,
-            Color.TRANSPARENT};
+            INVALID,
+            INVALID,
+            INVALID,
+            INVALID,
+            INVALID};
     private int[][] strokes = new int[STATES.length][2];
     private Pair<GradientDrawable.Orientation, int[]>[] gradients = new Pair[STATES.length];
     private int pressedRipple = INVALID;
