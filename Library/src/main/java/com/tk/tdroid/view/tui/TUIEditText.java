@@ -30,7 +30,7 @@ public class TUIEditText extends EditText implements ITextView {
     }
 
     public TUIEditText(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, R.style.TUIEditText);
+        this(context, attrs,R.attr.editTextStyle);
     }
 
     public TUIEditText(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
