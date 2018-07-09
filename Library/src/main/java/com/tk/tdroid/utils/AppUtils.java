@@ -10,6 +10,8 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
+import android.os.Environment;
+import android.os.StatFs;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -17,6 +19,7 @@ import android.telephony.TelephonyManager;
 
 import com.tk.tdroid.BuildConfig;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.UUID;
@@ -176,6 +179,20 @@ public final class AppUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * 获取剩余可用空间
+     *
+     * @return
+     */
+    public static long getEnableSpace() {
+        File path = Environment.getDataDirectory();
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize = stat.getBlockSize();
+        long totalBlocks = stat.getBlockCount();
+        long availableBlocks = stat.getAvailableBlocks();
+        return (totalBlocks - availableBlocks) * blockSize;
     }
 
     /**
