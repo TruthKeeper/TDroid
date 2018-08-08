@@ -1,4 +1,4 @@
-package com.tk.tdroid.view;
+package com.tk.tdroid.view.viewpager;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
