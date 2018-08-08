@@ -1,9 +1,9 @@
 package com.tk.tdroid.permission;
 
+import android.app.Activity;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -63,8 +63,8 @@ public final class PermissionManager {
     private static final String TAG = "PermissionManager";
     private RxPermissionFragment fragment;
 
-    private PermissionManager(FragmentActivity activity) {
-        FragmentManager manager = activity.getSupportFragmentManager();
+    private PermissionManager(Activity activity) {
+        FragmentManager manager = activity.getFragmentManager();
         Fragment byTag = manager.findFragmentByTag(TAG);
         if (byTag == null) {
             fragment = new RxPermissionFragment();
@@ -103,7 +103,7 @@ public final class PermissionManager {
      * @param activity
      * @return
      */
-    public static PermissionManager with(@NonNull FragmentActivity activity) {
+    public static PermissionManager with(@NonNull Activity activity) {
         return new PermissionManager(activity);
     }
 }

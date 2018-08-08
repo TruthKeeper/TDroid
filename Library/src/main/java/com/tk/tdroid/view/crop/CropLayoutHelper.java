@@ -12,7 +12,6 @@ import android.graphics.Region;
 import android.support.annotation.StyleableRes;
 import android.view.MotionEvent;
 
-
 import com.tk.tdroid.utils.SelectorFactory;
 
 import java.util.Arrays;

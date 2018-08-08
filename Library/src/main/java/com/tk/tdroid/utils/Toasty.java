@@ -1,15 +1,11 @@
 package com.tk.tdroid.utils;
 
-import android.app.AppOpsManager;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Binder;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.ColorInt;
@@ -30,7 +26,6 @@ import android.widget.Toast;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.lang.reflect.Method;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static android.widget.Toast.LENGTH_SHORT;
@@ -70,33 +65,28 @@ public class Toasty {
     }
 
     /**
-     * 判断当前Toast是否可用
+     * 判断当前Toast是否可用，5.0↓==true
      *
      * @return 不可用时需用户手动开启 {@link IntentUtils#toNotifySetting()}
      */
     public static boolean checkEnabled() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return NotificationManagerCompat.from(Utils.getApp()).areNotificationsEnabled();
-        } else {
-            AppOpsManager mAppOps = (AppOpsManager) Utils.getApp().getSystemService(Context.APP_OPS_SERVICE);
-            Class<? extends AppOpsManager> cls = mAppOps.getClass();
-            try {
-                Method method = cls.getDeclaredMethod("noteOpNoThrow", int.class, int.class, String.class);
-                if (method.invoke(mAppOps, 11, Binder.getCallingUid(), Utils.getApp().getPackageName()).equals(AppOpsManager.MODE_ALLOWED)) {
-                    return true;
-                } else {
-                    return false;
-                }
-            } catch (Exception e) {
-            }
-            return true;
-        }
+        return NotificationManagerCompat.from(Utils.getApp()).areNotificationsEnabled();
     }
 
     /**
      * 显示
      *
      * @param resId
+     */
+    public static void show(@StringRes int resId) {
+        show(resId, null);
+    }
+
+    /**
+     * 显示
+     *
+     * @param resId
+     * @param config
      */
     public static void show(@StringRes int resId, @Nullable final Config config) {
         show(Utils.getApp().getString(resId), config);
@@ -106,6 +96,16 @@ public class Toasty {
      * 显示
      *
      * @param text
+     */
+    public static void show(@Nullable CharSequence text) {
+        show(text, null);
+    }
+
+    /**
+     * 显示
+     *
+     * @param text
+     * @param config
      */
     public static void show(@Nullable CharSequence text, @Nullable final Config config) {
         final Config realConfig = config == null ? new Config.Builder().build() : config;

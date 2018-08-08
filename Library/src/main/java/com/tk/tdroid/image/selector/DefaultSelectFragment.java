@@ -1,7 +1,6 @@
 package com.tk.tdroid.image.selector;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,7 +8,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.util.SparseArrayCompat;
 import android.widget.Toast;
 
@@ -26,8 +27,7 @@ import java.io.IOException;
  *     desc   :
  * </pre>
  */
-public class ImageSelectFragment extends Fragment {
-
+public class DefaultSelectFragment extends Fragment implements ISelector {
     private static final String IMG_PREFIX = "IMG_";
     private static final String IMG_SUFFIX = ".jpeg";
 
@@ -42,6 +42,129 @@ public class ImageSelectFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
+    }
+
+    /**
+     * 开启拍照
+     *
+     * @param requestCode
+     * @param crop
+     * @param singleCallback
+     */
+    @Override
+    public void startCamera(int requestCode, boolean crop, @NonNull SingleCallback singleCallback) {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (null != intent.resolveActivity(getActivity().getPackageManager())) {
+            try {
+                tempFile = createTmpImageFile();
+                if (tempFile.exists()) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
+                    if (crop) {
+                        cropCameraArray.put(requestCode, singleCallback);
+                    } else {
+                        cameraArray.put(requestCode, singleCallback);
+                    }
+                    startActivityForResult(intent, requestCode);
+                } else {
+                    Toast.makeText(Utils.getApp(), "相册无法保存照片", Toast.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(Utils.getApp(), "相册无法保存照片", Toast.LENGTH_SHORT).show();
+                FileUtils.deleteFile(tempFile);
+            }
+        } else {
+            Toast.makeText(Utils.getApp(), "您的手机不支持相机", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 开启相册单选
+     *
+     * @param requestCode
+     * @param crop
+     * @param singleCallback
+     */
+    @Override
+    public void startSingleAlbum(int requestCode, boolean crop, @NonNull SingleCallback singleCallback) {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        albumArray.put(requestCode, singleCallback);
+        if (crop) {
+            cropAlbumArray.put(requestCode, singleCallback);
+        } else {
+            albumArray.put(requestCode, singleCallback);
+        }
+        startActivityForResult(intent, requestCode);
+    }
+
+    /**
+     * 开启多选相册
+     *
+     * @param requestCode
+     * @param selectCount
+     * @param multiCallback
+     */
+    @Override
+    public void startMultiAlbum(int requestCode, int selectCount, @NonNull MultiCallback multiCallback) {
+        //默认不支持
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            cameraArray.delete(requestCode);
+            albumArray.delete(requestCode);
+            cropCameraArray.delete(requestCode);
+            cropAlbumArray.delete(requestCode);
+            return;
+        }
+        SingleCallback singleCallback = cropCameraArray.get(requestCode);
+        if (singleCallback != null) {
+            if (FileUtils.exist(tempCropFile)) {
+                //裁剪结束
+                cropCameraArray.delete(requestCode);
+                singleCallback.onSelect(tempCropFile);
+                tempCropFile = null;
+            } else {
+                //去裁剪
+                if (tempFile != null) {
+                    tempCropFile = startCrop(requestCode, tempFile);
+                    tempFile = null;
+                }
+            }
+            return;
+        }
+        singleCallback = cropAlbumArray.get(requestCode);
+        if (singleCallback != null) {
+            if (FileUtils.exist(tempCropFile)) {
+                //裁剪结束
+                cropAlbumArray.delete(requestCode);
+                singleCallback.onSelect(tempCropFile);
+                tempCropFile = null;
+            } else {
+                //去裁剪
+                File albumImageFile = findAlbumImageFile(data);
+                if (albumImageFile != null) {
+                    tempCropFile = startCrop(requestCode, albumImageFile);
+                }
+            }
+            return;
+        }
+        singleCallback = cameraArray.get(requestCode);
+        if (singleCallback != null) {
+            if (tempFile != null) {
+                singleCallback.onSelect(tempFile);
+                tempFile = null;
+            }
+            return;
+        }
+        singleCallback = albumArray.get(requestCode);
+        if (singleCallback != null) {
+            File albumImageFile = findAlbumImageFile(data);
+            if (albumImageFile != null) {
+                singleCallback.onSelect(albumImageFile);
+            }
+        }
     }
 
     /**
@@ -64,44 +187,6 @@ public class ImageSelectFragment extends Fragment {
         return File.createTempFile(IMG_PREFIX, IMG_SUFFIX, dir);
     }
 
-    void startCamera(int requestCode, boolean crop, SingleCallback singleCallback) {
-        clearTempFile();
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (null != intent.resolveActivity(getActivity().getPackageManager())) {
-            try {
-                tempFile = createTmpImageFile();
-                if (tempFile.exists()) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(tempFile));
-                    if (crop) {
-                        cropCameraArray.put(requestCode, singleCallback);
-                    } else {
-                        cameraArray.put(requestCode, singleCallback);
-                    }
-                    startActivityForResult(intent, requestCode);
-                } else {
-                    Toast.makeText(Utils.getApp(), "相册无法保存照片", Toast.LENGTH_SHORT).show();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(Utils.getApp(), "相册无法保存照片", Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            Toast.makeText(Utils.getApp(), "您的手机不支持相机", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    void startAlbum(int requestCode, boolean crop, SingleCallback singleCallback) {
-        clearTempFile();
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        albumArray.put(requestCode, singleCallback);
-        if (crop) {
-            cropAlbumArray.put(requestCode, singleCallback);
-        } else {
-            albumArray.put(requestCode, singleCallback);
-        }
-        startActivityForResult(intent, requestCode);
-    }
-
     /**
      * 裁剪
      *
@@ -116,7 +201,8 @@ public class ImageSelectFragment extends Fragment {
         intent.putExtra("crop", "true");
         intent.putExtra("scale", true);
         intent.putExtra("scaleUpIfNeeded", true);
-        if (android.os.Build.MODEL.contains("HUAWEI")) {
+        if (android.os.Build.MODEL.contains("HUAWEI")
+                || android.os.Build.BRAND.contains("HUAWEI")) {
             //华为特殊处理 不然会显示圆
             intent.putExtra("aspectX", 9998);
             intent.putExtra("aspectY", 9999);
@@ -142,62 +228,13 @@ public class ImageSelectFragment extends Fragment {
         return output;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_CANCELED) {
-            clearTempFile();
-            return;
-        }
-        SingleCallback singleCallback = cropCameraArray.get(requestCode);
-        if (singleCallback != null) {
-            if (FileUtils.exist(tempCropFile)) {
-                //裁剪结束
-                cropCameraArray.delete(requestCode);
-                singleCallback.onSelect(tempCropFile);
-            } else {
-                //去裁剪
-                if (tempFile != null) {
-                    tempCropFile = startCrop(requestCode, tempFile);
-                }
-            }
-            return;
-        }
-        singleCallback = cropAlbumArray.get(requestCode);
-        if (singleCallback != null) {
-            if (FileUtils.exist(tempCropFile)) {
-                //裁剪结束
-                cropAlbumArray.delete(requestCode);
-                singleCallback.onSelect(tempCropFile);
-            } else {
-                //去裁剪
-                File albumImageFile = findAlbumImageFile(data);
-                if (albumImageFile != null) {
-                    tempCropFile = startCrop(requestCode, albumImageFile);
-                }
-            }
-            return;
-        }
-        singleCallback = cameraArray.get(requestCode);
-        if (singleCallback != null) {
-            if (tempFile != null) {
-                singleCallback.onSelect(tempFile);
-            }
-            return;
-        }
-        singleCallback = albumArray.get(requestCode);
-        if (singleCallback != null) {
-            File albumImageFile = findAlbumImageFile(data);
-            if (albumImageFile != null) {
-                singleCallback.onSelect(albumImageFile);
-            }
-        }
-    }
-
-    private void clearTempFile() {
-        FileUtils.deleteFile(tempFile);
-        FileUtils.deleteFile(tempCropFile);
-    }
-
+    /**
+     * 找到映射的相册文件
+     *
+     * @param data
+     * @return
+     */
+    @Nullable
     private File findAlbumImageFile(Intent data) {
         Uri selectedImage = data.getData();
         if (selectedImage != null) {

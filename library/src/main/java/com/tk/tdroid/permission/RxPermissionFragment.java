@@ -1,10 +1,11 @@
 package com.tk.tdroid.permission;
 
+import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v4.util.ArrayMap;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class RxPermissionFragment extends Fragment {
                 }
             }
         }
-        if (!requestList.isEmpty() && Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+        if (!requestList.isEmpty() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             //发起请求
             requestPermissions(requestList.toArray(new String[requestList.size()]), REQUEST);
         }
@@ -81,6 +82,7 @@ public class RxPermissionFragment extends Fragment {
                 });
     }
 
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         for (int i = 0; i < permissions.length; i++) {

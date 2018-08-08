@@ -24,9 +24,7 @@ public interface IContract {
     interface IPresenterView {
         Context getContext();
 
-        void close();
-
-        void closeImmediately();
+        void close(boolean anim);
 
         void showToast(String tip);
 

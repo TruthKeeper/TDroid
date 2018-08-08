@@ -7,10 +7,10 @@ import java.io.File;
 /**
  * <pre>
  *     author : TK
- *     time   : 2018/01/29
- *     desc   : 图片选择回调
+ *     time   : 2018/07/26
+ *     desc   : 单选
  * </pre>
  */
-public interface Callback {
+public interface SingleCallback {
     void onSelect(@NonNull File file);
 }

@@ -17,7 +17,10 @@ import java.lang.annotation.RetentionPolicy;
 
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.FIT_CENTER;
-import static com.tk.tdroid.image.load.ImageRequest.Priority.*;
+import static com.tk.tdroid.image.load.ImageRequest.Priority.HIGH;
+import static com.tk.tdroid.image.load.ImageRequest.Priority.IMMEDIATE;
+import static com.tk.tdroid.image.load.ImageRequest.Priority.LOW;
+import static com.tk.tdroid.image.load.ImageRequest.Priority.NORMAL;
 
 /**
  * <pre>

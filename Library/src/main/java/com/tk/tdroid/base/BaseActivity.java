@@ -1,10 +1,12 @@
 package com.tk.tdroid.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -19,6 +21,7 @@ import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
+import com.tk.tdroid.utils.Utils;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -32,6 +35,7 @@ import io.reactivex.subjects.Subject;
  *          <li>触摸隐藏软键盘{@link BaseActivity#touchHideSoftKeyboard()}</li>
  *          <li>自动保存和恢复数据{@link BaseActivity#saveAndRestoreData()}</li>
  *          <li>自动注入携带数据{@link BaseActivity#autoInjectData()}</li>
+ *          <li>支持屏幕适配{@link BaseActivity#designFitMode()}</li>
  *      </ol>
  * </pre>
  */
@@ -71,6 +75,12 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public void setContentView(int layoutResID) {
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
+        DesignFit fitMode = designFitMode();
+        if (fitMode == DesignFit.Width) {
+            adaptScreen(this, designDpSize(), true);
+        } else if (fitMode == DesignFit.Height) {
+            adaptScreen(this, designDpSize(), false);
+        }
         super.setContentView(layoutResID);
     }
 
@@ -136,7 +146,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
 
 
     private void onLifecycleNext(ActivityLifecycleImpl lifecycle) {
-        if (bindLifecycleEnabled) {
+        if (bindLifecycleEnabled && lifecycleSubject != null) {
             lifecycleSubject.onNext(lifecycle);
         }
     }
@@ -228,5 +238,44 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public boolean autoInjectData() {
         return false;
+    }
+
+    /**
+     * 获取设计稿适配屏幕模式
+     *
+     * @return
+     */
+    @Override
+    public DesignFit designFitMode() {
+        return DesignFit.Height;
+    }
+
+    /**
+     * 获取设计稿适配屏幕大小
+     *
+     * @return
+     */
+    @Override
+    public int designDpSize() {
+        return 568;
+    }
+
+    /**
+     * 适配屏幕 Thanks For <a href="https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA">今日头条技术团队</a>
+     *
+     * @param activity
+     * @param dpSize
+     * @param widthFit
+     */
+    private static void adaptScreen(Activity activity, float dpSize, boolean widthFit) {
+        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
+        final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
+        if (widthFit) {
+            activityDm.density = activityDm.widthPixels / dpSize;
+        } else {
+            activityDm.density = activityDm.heightPixels / dpSize;
+        }
+        activityDm.scaledDensity = activityDm.density * (appDm.scaledDensity / appDm.density);
+        activityDm.densityDpi = (int) (160 * activityDm.density);
     }
 }

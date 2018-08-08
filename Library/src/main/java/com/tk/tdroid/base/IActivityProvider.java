@@ -40,4 +40,21 @@ interface IActivityProvider {
      */
     boolean autoInjectData();
 
+    /**
+     * 获取设计稿适配屏幕模式
+     *
+     * @return
+     */
+    DesignFit designFitMode();
+
+    /**
+     * 获取设计稿适配屏幕大小
+     *
+     * @return
+     */
+    int designDpSize();
+
+    enum DesignFit {
+        Width, Height
+    }
 }

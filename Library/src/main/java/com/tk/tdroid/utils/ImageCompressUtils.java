@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
 import android.support.v4.util.Pair;
 import android.util.Base64;
 

@@ -4,9 +4,9 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.tk.tdroid.http.interceptor.CookieInterceptor;
 import com.tk.tdroid.utils.EmptyUtils;
 import com.tk.tdroid.utils.Utils;
-import com.tk.tdroid.http.interceptor.CookieInterceptor;
 
 import java.io.File;
 import java.io.InputStream;

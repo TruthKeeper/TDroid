@@ -59,14 +59,8 @@ public class MVPActivity<P extends IContract.IPresenter> extends BaseActivity im
     }
 
     @Override
-    public void close() {
+    public void close(boolean anim) {
         finish();
-    }
-
-    @Override
-    public void closeImmediately() {
-        finish();
-        overridePendingTransition(0, 0);
     }
 
     @Override

@@ -24,7 +24,10 @@ import okhttp3.internal.http.HttpHeaders;
 import okio.Buffer;
 import okio.BufferedSource;
 
-import static com.tk.tdroid.http.interceptor.LogInterceptor.Level.*;
+import static com.tk.tdroid.http.interceptor.LogInterceptor.Level.BASIC;
+import static com.tk.tdroid.http.interceptor.LogInterceptor.Level.BODY;
+import static com.tk.tdroid.http.interceptor.LogInterceptor.Level.HEADERS;
+import static com.tk.tdroid.http.interceptor.LogInterceptor.Level.NONE;
 
 /**
  * <pre>

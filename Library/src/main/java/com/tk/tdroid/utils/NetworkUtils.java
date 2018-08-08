@@ -249,9 +249,8 @@ public final class NetworkUtils {
      * @return
      */
     public static boolean isWifiConnected() {
-        ConnectivityManager cm = (ConnectivityManager) Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm != null && cm.getActiveNetworkInfo() != null
-                && cm.getActiveNetworkInfo().getType() == ConnectivityManager.TYPE_WIFI;
+        NetworkInfo info = getActiveNetworkInfo();
+        return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     /**
@@ -377,6 +376,9 @@ public final class NetworkUtils {
      * @return
      */
     private static NetworkInfo getActiveNetworkInfo() {
-        return ((ConnectivityManager) Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
-    }
+        try {
+            return ((ConnectivityManager) Utils.getApp().getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        } catch (Exception e) {
+            return null;
+        } }
 }

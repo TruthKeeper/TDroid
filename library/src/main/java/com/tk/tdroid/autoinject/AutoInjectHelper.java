@@ -2,6 +2,7 @@ package com.tk.tdroid.autoinject;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,20 +22,23 @@ public final class AutoInjectHelper {
         throw new IllegalStateException();
     }
 
-    public static void inject(Activity activity) {
+    public static void inject(@Nullable Activity activity) {
         injectByCache(activity);
     }
 
-    public static void inject(Fragment fragment) {
+    public static void inject(@Nullable Fragment fragment) {
         injectByCache(fragment);
     }
 
-    public static void inject(android.support.v4.app.Fragment fragment) {
+    public static void inject(@Nullable android.support.v4.app.Fragment fragment) {
         injectByCache(fragment);
     }
 
     @SuppressWarnings("unchecked")
     private static void injectByCache(Object object) {
+        if (object == null) {
+            return;
+        }
         try {
             String findClassName = object.getClass().getName() + SUFFIX;
             IAutoInject iAutoInject = CACHE.get(findClassName);

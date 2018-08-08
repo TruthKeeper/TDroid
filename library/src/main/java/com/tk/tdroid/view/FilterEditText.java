@@ -4,13 +4,17 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
 import android.text.InputFilter;
+import android.text.InputType;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.widget.EditText;
 
 import com.tk.tdroid.R;
-import com.tk.tdroid.view.tui.TUIEditText;
 import com.tk.tdroid.utils.BitUtils;
+import com.tk.tdroid.view.tui.TUIEditText;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -31,6 +35,55 @@ import static com.tk.tdroid.view.FilterEditText.Flag.SPACE;
  */
 
 public class FilterEditText extends TUIEditText {
+    /**
+     * 保留几位小数的过滤器
+     */
+    public static class KeepDecimal implements TextWatcher {
+        private final EditText editText;
+        private final int num;
+
+        public KeepDecimal(EditText editText) {
+            this(editText, 2);
+        }
+
+        public KeepDecimal(EditText editText, int num) {
+            this.editText = editText;
+            editText.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL | InputType.TYPE_CLASS_NUMBER);
+            this.num = num;
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String string = s.toString();
+            if (string.contains(".")) {
+                if (string.length() - 1 - string.indexOf(".") > num) {
+                    //去除超过保留位数的
+                    string = string.substring(0, string.indexOf(".") + num + 1);
+
+                    editText.setText(string);
+                    editText.setSelection(editText.length());
+                }
+            }
+            if (string.startsWith(".")) {
+                string = "0" + string;
+
+                editText.setText(string);
+                editText.setSelection(2);
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count,
+                                      int after) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    }
+
     @IntDef({EMOJI, SPACE, NEWLINE})
     @Retention(RetentionPolicy.SOURCE)
     public @interface Flag {
@@ -60,6 +113,7 @@ public class FilterEditText extends TUIEditText {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FilterEditText);
         flags = array.getInt(R.styleable.FilterEditText_fet_filter, 0);
         array.recycle();
+        setSingleLine(BitUtils.containsFlag(this.flags, NEWLINE));
     }
 
     @Override

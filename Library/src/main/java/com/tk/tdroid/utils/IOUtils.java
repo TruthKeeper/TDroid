@@ -23,12 +23,13 @@ public final class IOUtils {
      * @param closeable
      */
     public static void close(@Nullable Closeable closeable) {
-        if (null != closeable) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        if (EmptyUtils.isEmpty(closeable)) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -38,6 +39,9 @@ public final class IOUtils {
      * @param closeable
      */
     public static void close(@Nullable Closeable... closeable) {
+        if (EmptyUtils.isEmpty(closeable)) {
+            return;
+        }
         for (Closeable c : closeable) {
             close(c);
         }
@@ -49,12 +53,13 @@ public final class IOUtils {
      * @param closeable
      */
     public static void closeQuietly(@Nullable Closeable closeable) {
-        if (null != closeable) {
-            try {
-                closeable.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (EmptyUtils.isEmpty(closeable)) {
+            return;
+        }
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -64,6 +69,9 @@ public final class IOUtils {
      * @param closeable
      */
     public static void closeQuietly(@Nullable Closeable... closeable) {
+        if (EmptyUtils.isEmpty(closeable)) {
+            return;
+        }
         for (Closeable c : closeable) {
             closeQuietly(c);
         }

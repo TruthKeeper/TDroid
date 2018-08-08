@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity implements FasterAdapter.OnItemCl
                 .putExtra("sex", true)
                 .putExtra("parent", new SampleAutoInjectActivity.Extra("李四", "王五")))));
 
-        adapter = FasterAdapter.<Item>create()
+        adapter = new FasterAdapter.Builder<Item>()
                 .bind(Item.class, new MainStrategy())
                 .data(list)
                 .itemClickListener(this)
