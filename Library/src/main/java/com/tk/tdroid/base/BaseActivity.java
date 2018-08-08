@@ -20,6 +20,7 @@ import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
+import com.tk.tdroid.utils.DensityUtil;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
 import com.tk.tdroid.utils.Utils;
 
@@ -77,9 +78,9 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
         DesignFit fitMode = designFitMode();
         if (fitMode == DesignFit.Width) {
-            adaptScreen(this, designDpSize(), true);
+            DensityUtil.adaptScreen(this, designDpSize(), true);
         } else if (fitMode == DesignFit.Height) {
-            adaptScreen(this, designDpSize(), false);
+            DensityUtil.adaptScreen(this, designDpSize(), false);
         }
         super.setContentView(layoutResID);
     }
@@ -258,24 +259,5 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public int designDpSize() {
         return 568;
-    }
-
-    /**
-     * 适配屏幕 Thanks For <a href="https://mp.weixin.qq.com/s/d9QCoBP6kV9VSWvVldVVwA">今日头条技术团队</a>
-     *
-     * @param activity
-     * @param dpSize
-     * @param widthFit
-     */
-    private static void adaptScreen(Activity activity, float dpSize, boolean widthFit) {
-        final DisplayMetrics appDm = Utils.getApp().getResources().getDisplayMetrics();
-        final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
-        if (widthFit) {
-            activityDm.density = activityDm.widthPixels / dpSize;
-        } else {
-            activityDm.density = activityDm.heightPixels / dpSize;
-        }
-        activityDm.scaledDensity = activityDm.density * (appDm.scaledDensity / appDm.density);
-        activityDm.densityDpi = (int) (160 * activityDm.density);
     }
 }
