@@ -742,4 +742,22 @@
         <attr name="tui_src_disabled" />
         <attr name="tui_srcTint_disabled" />
     </declare-styleable>
+    <!--密码输入控件-->
+    <declare-styleable name="PasswordInputView">
+        <attr name="ppv_style" format="enum">
+            <enum name="underline" value="0" />
+            <enum name="rect" value="1" />
+        </attr>
+        <attr name="ppv_pointRadius" format="dimension" />
+        <attr name="ppv_pointColor" format="color" />
+        <attr name="ppv_count" format="integer" />
+
+        <attr name="ppv_underlineColor" format="color" />
+        <attr name="ppv_underlineThickness" format="dimension" />
+
+        <attr name="ppv_rectCorner" format="dimension" />
+        <attr name="ppv_rectStroke" format="dimension" />
+        <attr name="ppv_rectStrokeColor" format="color" />
+
+    </declare-styleable>
 </resources>

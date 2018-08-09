@@ -61,6 +61,8 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+-keep class android.support.design.widget.TabLayout{*;}
+-keep class android.widget.Editor{*;}
 #-------------------------------------------第三方Library start-------------------------------------------
 #腾讯互动直播
 -keep class qalsdk.**{*;}

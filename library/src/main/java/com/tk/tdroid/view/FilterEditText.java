@@ -3,7 +3,6 @@ package com.tk.tdroid.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.IntDef;
-import android.support.v7.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -30,7 +29,7 @@ import static com.tk.tdroid.view.FilterEditText.Flag.SPACE;
  * <pre>
  *      author : TK
  *      time : 2017/11/21
- *      desc : 过滤指定格式的{@link AppCompatEditText}
+ *      desc : 过滤指定格式的{@link TUIEditText}
  * </pre>
  */
 

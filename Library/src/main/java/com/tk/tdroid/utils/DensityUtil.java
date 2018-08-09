@@ -47,7 +47,10 @@ public final class DensityUtil {
      *
      * @param activity
      */
-    public static void cancelAdaptScreen(final Activity activity) {
+    public static void cancelAdaptScreen(@Nullable Activity activity) {
+        if (activity == null) {
+            return;
+        }
         final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
         final DisplayMetrics resourceDm = Resources.getSystem().getDisplayMetrics();
 

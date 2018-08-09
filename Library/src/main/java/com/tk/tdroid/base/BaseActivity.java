@@ -1,12 +1,10 @@
 package com.tk.tdroid.base;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -22,7 +20,6 @@ import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
 import com.tk.tdroid.utils.DensityUtil;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
-import com.tk.tdroid.utils.Utils;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
