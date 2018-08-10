@@ -52,6 +52,17 @@
         <attr name="crop_strokeColor" />
         <attr name="crop_strokeAbove" />
     </declare-styleable>
+    <declare-styleable name="CropConstraintLayout">
+        <attr name="crop_asCircle" />
+        <attr name="crop_corner" />
+        <attr name="crop_topLeftCorner" />
+        <attr name="crop_topRightCorner" />
+        <attr name="crop_bottomRightCorner" />
+        <attr name="crop_bottomLeftCorner" />
+        <attr name="crop_strokeWidth" />
+        <attr name="crop_strokeColor" />
+        <attr name="crop_strokeAbove" />
+    </declare-styleable>
     <!--背景Shape Solid颜色-->
     <attr name="tui_bg_solid_default" format="color" />
     <attr name="tui_bg_solid_pressed" format="color" />

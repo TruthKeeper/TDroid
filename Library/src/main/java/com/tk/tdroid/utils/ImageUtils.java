@@ -9,7 +9,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.support.annotation.ColorInt;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.content.res.AppCompatResources;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,7 +35,10 @@ public final class ImageUtils {
      * @param path
      * @return
      */
-    public static int getImageDegree(@NonNull String path) {
+    public static int getImageDegree(@Nullable String path) {
+        if (EmptyUtils.isEmpty(path)) {
+            return 0;
+        }
         try {
             ExifInterface exifInterface = new ExifInterface(path);
             int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
@@ -53,25 +59,42 @@ public final class ImageUtils {
     /**
      * 通过Drawable来获取Bitmap
      *
+     * @param resId
+     * @return
+     */
+    public static Bitmap drawable2Bitmap(@DrawableRes int resId) {
+        return drawable2Bitmap(AppCompatResources.getDrawable(Utils.getApp(), resId));
+    }
+
+    /**
+     * 通过Drawable来获取Bitmap
+     *
+     * @param resId
+     * @param outputWidth
+     * @param outputHeight
+     * @return
+     */
+    public static Bitmap drawable2Bitmap(@DrawableRes int resId, int outputWidth, int outputHeight) {
+        return drawable2Bitmap(AppCompatResources.getDrawable(Utils.getApp(), resId), outputWidth, outputHeight);
+    }
+
+    /**
+     * 通过Drawable来获取Bitmap
+     *
      * @param drawable
      * @return
      */
-    public static Bitmap drawable2Bitmap(@NonNull Drawable drawable) {
+    public static Bitmap drawable2Bitmap(@Nullable Drawable drawable) {
+        if (drawable == null) {
+            return null;
+        }
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap() != null) {
                 return bitmapDrawable.getBitmap();
             }
         }
-        int w = drawable.getIntrinsicWidth();
-        int h = drawable.getIntrinsicHeight();
-
-        Bitmap bitmap = Bitmap.createBitmap(w, h, drawable.getOpacity() != PixelFormat.OPAQUE
-                ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, w, h);
-        drawable.draw(canvas);
-        return bitmap;
+        return drawable2Bitmap(drawable, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
     }
 
     /**
@@ -82,7 +105,10 @@ public final class ImageUtils {
      * @param outputHeight
      * @return
      */
-    public static Bitmap drawable2Bitmap(@NonNull Drawable drawable, int outputWidth, int outputHeight) {
+    public static Bitmap drawable2Bitmap(@Nullable Drawable drawable, int outputWidth, int outputHeight) {
+        if (drawable == null) {
+            return null;
+        }
         Bitmap bitmap = Bitmap.createBitmap(outputWidth, outputHeight, drawable.getOpacity() != PixelFormat.OPAQUE
                 ? Bitmap.Config.ARGB_8888 : Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
@@ -109,7 +135,10 @@ public final class ImageUtils {
      * @param bitmap
      * @return
      */
-    public static Drawable bitmap2Drawable(@NonNull Bitmap bitmap) {
+    public static Drawable bitmap2Drawable(@Nullable Bitmap bitmap) {
+        if (bitmap == null) {
+            return null;
+        }
         return new BitmapDrawable(Utils.getApp().getResources(), bitmap);
     }
 
@@ -119,7 +148,10 @@ public final class ImageUtils {
      * @param bitmap
      * @return
      */
-    public static byte[] bitmap2Bytes(@NonNull Bitmap bitmap) {
+    public static byte[] bitmap2Bytes(@Nullable Bitmap bitmap) {
+        if (bitmap == null) {
+            return new byte[]{};
+        }
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
         byte[] bytes = baos.toByteArray();

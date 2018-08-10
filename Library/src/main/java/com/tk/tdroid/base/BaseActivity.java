@@ -1,5 +1,7 @@
 package com.tk.tdroid.base;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -33,6 +35,7 @@ import io.reactivex.subjects.Subject;
  *          <li>触摸隐藏软键盘{@link BaseActivity#touchHideSoftKeyboard()}</li>
  *          <li>自动保存和恢复数据{@link BaseActivity#saveAndRestoreData()}</li>
  *          <li>自动注入携带数据{@link BaseActivity#autoInjectData()}</li>
+ *          <li>支持是否在异常关闭后重走LauncherActivity{@link BaseActivity#restartLauncherActivity()}</li>
  *          <li>支持屏幕适配{@link BaseActivity#designFitMode()}</li>
  *      </ol>
  * </pre>
@@ -45,6 +48,8 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     private final boolean touchHideSoftKeyboard;
     private final boolean saveAndRestoreData;
     private final boolean autoInjectData;
+    private final boolean restartLauncherActivity;
+    private final DesignFit fitMode;
 
     static {
         //SVG <Vector>的支持
@@ -59,11 +64,23 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         touchHideSoftKeyboard = touchHideSoftKeyboard();
         saveAndRestoreData = saveAndRestoreData();
         autoInjectData = autoInjectData();
+        restartLauncherActivity = restartLauncherActivity();
+        fitMode = designFitMode();
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null && restartLauncherActivity) {
+            Intent launcher = getPackageManager().getLaunchIntentForPackage(getPackageName());
+            if (launcher == null) {
+                throw new NullPointerException("Launcher is null");
+            }
+            startActivity(launcher.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+            finish();
+            overridePendingTransition(0, 0);
+            return;
+        }
         if (autoInjectData) {
             AutoInjectHelper.inject(this);
         }
@@ -73,7 +90,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     public void setContentView(int layoutResID) {
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
-        DesignFit fitMode = designFitMode();
         if (fitMode == DesignFit.Width) {
             DensityUtil.adaptScreen(this, designDpSize(), true);
         } else if (fitMode == DesignFit.Height) {
@@ -235,6 +251,16 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
      */
     @Override
     public boolean autoInjectData() {
+        return false;
+    }
+
+    /**
+     * 内存不足或者关闭权限导致{@link Activity}非正常关闭时，是否重走LauncherActivity
+     *
+     * @return
+     */
+    @Override
+    public boolean restartLauncherActivity() {
         return false;
     }
 

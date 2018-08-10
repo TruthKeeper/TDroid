@@ -41,6 +41,13 @@ interface IActivityProvider {
     boolean autoInjectData();
 
     /**
+     * 内存不足或者关闭权限导致{@link android.app.Activity}非正常关闭时，是否重走LauncherActivity
+     *
+     * @return
+     */
+    boolean restartLauncherActivity();
+
+    /**
      * 获取设计稿适配屏幕模式
      *
      * @return
