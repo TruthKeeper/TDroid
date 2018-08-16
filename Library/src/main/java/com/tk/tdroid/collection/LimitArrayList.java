@@ -1,7 +1,10 @@
 package com.tk.tdroid.collection;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * <pre>
@@ -12,12 +15,29 @@ import java.util.Collection;
  */
 
 public class LimitArrayList<E> extends ArrayList<E> {
-    //限制256大小
-    private int limit = 1 << 8;
+    /**
+     * 默认限制256大小
+     */
+    private static final int DEFAULT_LIMIT = 1 << 8;
+    private final int limit;
 
-    private OnRecycleListener onRecycleListener;
+    private OnRecycleListener<E> onRecycleListener;
 
-    public void setLimit(int limit) {
+    public LimitArrayList() {
+        limit = DEFAULT_LIMIT;
+    }
+
+    public LimitArrayList(int limit) {
+        this.limit = limit;
+    }
+
+    public LimitArrayList(int initialCapacity, int limit) {
+        super(initialCapacity);
+        this.limit = limit;
+    }
+
+    public LimitArrayList(@NonNull Collection<? extends E> c, int limit) {
+        super(c);
         this.limit = limit;
     }
 
@@ -51,18 +71,19 @@ public class LimitArrayList<E> extends ArrayList<E> {
     private synchronized void recycle() {
         int count = size() - limit;
         if (count > 0) {
-            removeAll(new ArrayList<>(subList(0, count)));
+            final List<E> list = new ArrayList<>(subList(0, count));
+            removeAll(list);
             if (onRecycleListener != null) {
-                onRecycleListener.onChange(count);
+                onRecycleListener.onRecycle(list);
             }
         }
     }
 
-    public void setOnRecycleListener(OnRecycleListener onRecycleListener) {
+    public void setOnRecycleListener(OnRecycleListener<E> onRecycleListener) {
         this.onRecycleListener = onRecycleListener;
     }
 
-    public interface OnRecycleListener {
-        void onChange(int removeCount);
+    public interface OnRecycleListener<T> {
+        void onRecycle(List<T> list);
     }
 }

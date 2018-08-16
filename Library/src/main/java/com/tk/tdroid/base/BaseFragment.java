@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +21,9 @@ import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
+import com.tk.tdroid.utils.EmptyUtils;
+
+import java.util.List;
 
 import io.reactivex.subjects.PublishSubject;
 import io.reactivex.subjects.Subject;
@@ -46,7 +49,18 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     private final boolean saveAndRestoreData;
     private final boolean autoInjectData;
 
-    private boolean hasCreated;
+    /**
+     * 是否是第一次显示
+     */
+    private boolean isFirstVisible = true;
+    /**
+     * 视图是否创建爱
+     */
+    private boolean isViewCreated = false;
+    /**
+     * 当前是否显示给用户
+     */
+    private boolean currentVisible = false;
 
     private View rootView;
 
@@ -63,21 +77,15 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (!hasCreated) {
-            //视图还未被创建
-            return;
-        }
-        if (visibleObserverEnabled) {
-            onVisibleChange(isVisibleToUser);
+        if (isViewCreated) {
+            dispatchVisible(isVisibleToUser);
         }
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (visibleObserverEnabled) {
-            onVisibleChange(!hidden);
-        }
+        dispatchVisible(!hidden);
     }
 
     @Override
@@ -101,9 +109,8 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (autoInjectData) {
             AutoInjectHelper.inject(this);
         }
@@ -124,7 +131,7 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     protected abstract int getLayoutId();
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         onLifecycleNext(FragmentLifecycleImpl.ON_VIEW_CREATED);
     }
@@ -133,9 +140,9 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         onLifecycleNext(FragmentLifecycleImpl.ON_ACTIVITY_CREATED);
-        hasCreated = true;
-        if (getUserVisibleHint() && visibleObserverEnabled) {
-            onVisibleChange(true);
+        isViewCreated = true;
+        if (!isHidden() && getUserVisibleHint()) {
+            dispatchVisible(true);
         }
     }
 
@@ -149,12 +156,20 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     public void onResume() {
         super.onResume();
         onLifecycleNext(FragmentLifecycleImpl.ON_RESUME);
+        if (!isFirstVisible
+                && !isHidden()
+                && getUserVisibleHint()) {
+            dispatchVisible(true);
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         onLifecycleNext(FragmentLifecycleImpl.ON_PAUSE);
+        if (getUserVisibleHint()) {
+            dispatchVisible(false);
+        }
     }
 
     @Override
@@ -167,6 +182,9 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     public void onDestroyView() {
         super.onDestroyView();
         onLifecycleNext(FragmentLifecycleImpl.ON_DESTROY_VIEW);
+        isViewCreated = false;
+        isFirstVisible = true;
+        currentVisible = false;
     }
 
     @Override
@@ -185,6 +203,74 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
         if (bindLifecycleEnabled) {
             lifecycleSubject.onNext(lifecycle);
         }
+    }
+
+    /**
+     * 分发
+     *
+     * @param visible
+     */
+    private void dispatchVisible(boolean visible) {
+        if (!visibleObserverEnabled) {
+            //不支持监听则return
+            return;
+        }
+        if (currentVisible == visible) {
+            //未变化则return
+            return;
+        }
+        if (visible && isParentInvisible()) {
+            //当前是嵌套的子Fragment，父未显示，子显示的情况就return
+            return;
+        }
+        currentVisible = visible;
+        if (visible) {
+            if (isFirstVisible) {
+                isFirstVisible = false;
+                onFragmentFirstVisible();
+            }
+            onFragmentResume();
+            dispatchChildVisibleState(true);
+        } else {
+            onFragmentPause();
+            dispatchChildVisibleState(false);
+        }
+    }
+
+    /**
+     * 父Fragment是否不可见
+     *
+     * @return
+     */
+    private boolean isParentInvisible() {
+        Fragment parent = getParentFragment();
+        return parent != null && parent instanceof BaseFragment && !((BaseFragment) parent).isCurrentVisible();
+    }
+
+    /**
+     * ViewPager嵌套ViewPager时的手动分发
+     *
+     * @param visible
+     */
+    private void dispatchChildVisibleState(boolean visible) {
+        FragmentManager childFragmentManager = getChildFragmentManager();
+        List<Fragment> fragments = childFragmentManager.getFragments();
+        if (!EmptyUtils.isEmpty(fragments)) {
+            for (Fragment child : fragments) {
+                if (child instanceof BaseFragment && !child.isHidden() && child.getUserVisibleHint()) {
+                    ((BaseFragment) child).dispatchVisible(visible);
+                }
+            }
+        }
+    }
+
+    /**
+     * 当前是否可见
+     *
+     * @return
+     */
+    public boolean isCurrentVisible() {
+        return currentVisible;
     }
 
     /**
@@ -219,15 +305,21 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     }
 
     /**
-     * 用于{@link ViewPager}场景下的懒加载 , 重写
-     * <ul>
-     * <li>{@link ViewPager}场景下的懒加载</li>
-     * <li>{@link FragmentTransaction#show(Fragment)} 和 {@link FragmentTransaction#hide(Fragment)} 的回调</li>
-     * </ul>
-     *
-     * @param isVisible <br>{@code true} : 不可见 -> 可见<br>{@code false} : 可见 -> 不可见
+     * Fragment第一次显示
      */
-    public void onVisibleChange(boolean isVisible) {
+    public void onFragmentFirstVisible() {
+    }
+
+    /**
+     * Fragment可见了
+     */
+    public void onFragmentResume() {
+    }
+
+    /**
+     * Fragment不可见了
+     */
+    public void onFragmentPause() {
     }
 
     /**
@@ -241,13 +333,19 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     }
 
     /**
-     * 是否支持观察页面可见性变化 , 用于{@link ViewPager}场景下的懒加载 , 重写{@link BaseFragment#onVisibleChange(boolean)}
+     * 是否支持观察页面可见性变化 , 用于{@link ViewPager}等场景下的懒加载 ,
+     * 重写
+     * <ul>
+     * <li>{@link BaseFragment#onFragmentFirstVisible()} </li>
+     * <li>{@link BaseFragment#onFragmentResume()} </li>
+     * <li>{@link BaseFragment#onFragmentPause()} </li>
+     * </ul>
      *
      * @return
      */
     @Override
     public boolean visibleObserverEnabled() {
-        return true;
+        return false;
     }
 
     /**

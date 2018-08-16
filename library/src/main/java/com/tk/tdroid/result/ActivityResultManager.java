@@ -26,8 +26,7 @@ public final class ActivityResultManager {
             fragment = new ResultFragment();
             manager.beginTransaction()
                     .add(fragment, TAG)
-                    .commitAllowingStateLoss();
-            manager.executePendingTransactions();
+                    .commitNowAllowingStateLoss();
         } else {
             fragment = (ResultFragment) byTag;
         }

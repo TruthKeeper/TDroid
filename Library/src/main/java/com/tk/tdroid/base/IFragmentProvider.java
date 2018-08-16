@@ -1,7 +1,5 @@
 package com.tk.tdroid.base;
 
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 
 import com.tdroid.annotation.AutoInject;
@@ -24,10 +22,12 @@ interface IFragmentProvider {
     boolean bindLifecycleEnabled();
 
     /**
-     * 是否支持观察页面可见性变化 , 回调{@link BaseFragment#onVisibleChange(boolean)}
+     * 是否支持观察页面可见性变化 , 用于{@link ViewPager}等场景下的懒加载 ,
+     * 重写
      * <ul>
-     * <li>{@link ViewPager}场景下的懒加载</li>
-     * <li>{@link FragmentTransaction#show(Fragment)} 和 {@link FragmentTransaction#hide(Fragment)} 的回调</li>
+     * <li>{@link BaseFragment#onFragmentFirstVisible()} </li>
+     * <li>{@link BaseFragment#onFragmentResume()} </li>
+     * <li>{@link BaseFragment#onFragmentPause()} </li>
      * </ul>
      *
      * @return

@@ -21,8 +21,8 @@ import io.reactivex.subjects.Subject;
  * </pre>
  */
 public class ResultFragment extends Fragment {
-    private Map<Integer, Callback> resultCallbacks = new ArrayMap<>();
-    private Map<Integer, Subject<ResultInfo>> resultRxCallbacks = new ArrayMap<>();
+    private final Map<Integer, Callback> resultCallbacks = new ArrayMap<>();
+    private final Map<Integer, Subject<ResultInfo>> resultRxCallbacks = new ArrayMap<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

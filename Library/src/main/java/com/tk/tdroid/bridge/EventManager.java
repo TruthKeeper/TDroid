@@ -164,25 +164,21 @@ public final class EventManager {
      * 发送一个事件
      *
      * @param eventTag
-     * @param param
-     * @param <Param>
+     * @param event
      * @return
      */
     public void post(@NonNull String eventTag, @Nullable String event) {
-        if (EmptyUtils.isEmpty(eventTag)) {
-            return;
-        }
         List<IReceiver> receiverList = mReceiverMap.get(eventTag);
-        if (receiverList != null) {
-            try {
-                for (IReceiver receiver : receiverList) {
-                    if (receiver != null) {
+        if (!EmptyUtils.isEmpty(receiverList)) {
+            for (IReceiver receiver : receiverList) {
+                if (receiver != null) {
+                    try {
                         receiver.onEventReceive(eventTag, event);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Call Exception , EventTag : " + eventTag);
+                        e.printStackTrace();
                     }
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Call Exception , EventTag : " + eventTag);
-                e.printStackTrace();
             }
         }
     }
@@ -192,7 +188,6 @@ public final class EventManager {
      *
      * @param eventTag
      * @param event
-     * @param <Event>
      */
     public void postSticky(@NonNull String eventTag, @Nullable String event) {
         synchronized (mStickyEventMap) {

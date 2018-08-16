@@ -56,16 +56,7 @@ public class SampleSaveRestoreActivity extends BaseActivity {
                 ((SampleSaveRestoreFragment) getSupportFragmentManager().findFragmentById(R.id.fragment)).init();
             }
         });
-    }
 
-    @Override
-    public boolean saveAndRestoreData() {
-        return true;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState != null) {
             String gsonStr = new Gson().toJson(sample);
             Log.e("SaveRestoreActivity", gsonStr);
@@ -77,6 +68,11 @@ public class SampleSaveRestoreActivity extends BaseActivity {
                 tvTip.append(arrayStr);
             }
         }
+    }
+
+    @Override
+    public boolean saveAndRestoreData() {
+        return true;
     }
 
     public static class Sample {

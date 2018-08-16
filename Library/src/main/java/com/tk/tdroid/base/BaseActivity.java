@@ -71,15 +71,20 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState != null && restartLauncherActivity) {
-            Intent launcher = getPackageManager().getLaunchIntentForPackage(getPackageName());
-            if (launcher == null) {
-                throw new NullPointerException("Launcher is null");
+        if (savedInstanceState != null) {
+            if (restartLauncherActivity) {
+                Intent launcher = getPackageManager().getLaunchIntentForPackage(getPackageName());
+                if (launcher == null) {
+                    throw new NullPointerException("Launcher is null");
+                }
+                startActivity(launcher.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                finish();
+                overridePendingTransition(0, 0);
+                return;
             }
-            startActivity(launcher.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
-            finish();
-            overridePendingTransition(0, 0);
-            return;
+            if (saveAndRestoreData) {
+                SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
+            }
         }
         if (autoInjectData) {
             AutoInjectHelper.inject(this);
@@ -103,14 +108,6 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
         super.onSaveInstanceState(outState);
         if (saveAndRestoreData) {
             SaveRestoreHelper.onSaveInstanceState(this, outState);
-        }
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        if (saveAndRestoreData) {
-            SaveRestoreHelper.onRestoreInstanceState(this, savedInstanceState);
         }
     }
 

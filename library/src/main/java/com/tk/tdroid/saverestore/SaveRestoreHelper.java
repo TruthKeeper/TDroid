@@ -46,11 +46,7 @@ public final class SaveRestoreHelper {
                 Class<?> findClass = Class.forName(object.getClass().getName() + SUFFIX);
                 iSaveRestore = (ISaveRestore) findClass.newInstance();
                 CACHE.put(object.getClass(), iSaveRestore);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

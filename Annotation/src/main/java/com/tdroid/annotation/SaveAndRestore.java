@@ -9,7 +9,8 @@ import java.lang.annotation.Target;
  * <pre>
  *      author : TK
  *      time : 2018/1/16
- *      desc : 用于在Activity 和 Fragment onSaveInstanceState时自动保存数据，并在合适时机还原数据
+ *      desc : 支持基本类型、数组、android.os.Parcelable、{java.io.Serializable和com.google.gson.Gson
+ *      用于在Activity 和 Fragment onSaveInstanceState时自动保存数据，并在合适时机还原数据
  * </pre>
  */
 @Retention(RetentionPolicy.SOURCE)

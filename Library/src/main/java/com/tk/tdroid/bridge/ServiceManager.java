@@ -1,7 +1,9 @@
 package com.tk.tdroid.bridge;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.util.ArrayMap;
+import android.util.Log;
 
 import com.tk.common.IService;
 
@@ -15,6 +17,7 @@ import java.util.Map;
  * </pre>
  */
 public final class ServiceManager {
+    private static final String TAG = "ServiceManager";
     private final static Map<String, IService> mServiceMap = new ArrayMap<>();
 
     private ServiceManager() {
@@ -45,11 +48,11 @@ public final class ServiceManager {
      * @return
      */
     @SuppressWarnings("unchecked")
-    @NonNull
+    @Nullable
     public static <Service extends IService> Service get(@NonNull String serviceName) {
         final IService service = mServiceMap.get(serviceName);
         if (service == null) {
-            throw new NullPointerException("Service is not registered !");
+            Log.e(TAG, "can not find Service：" + serviceName);
         }
         return (Service) service;
     }

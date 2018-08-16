@@ -199,7 +199,9 @@ public final class IntentUtils {
             intent.putExtra("app_package", Utils.getApp().getPackageName());
             intent.putExtra("app_uid", Binder.getCallingUid());
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Utils.getApp().startActivity(intent);
+            if (IntentUtils.isSafeActivity(intent)) {
+                Utils.getApp().startActivity(intent);
+            }
         } else {
             toSetting();
         }
