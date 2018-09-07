@@ -112,7 +112,9 @@ public class FilterEditText extends TUIEditText {
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.FilterEditText);
         flags = array.getInt(R.styleable.FilterEditText_fet_filter, 0);
         array.recycle();
-        setSingleLine(BitUtils.containsFlag(this.flags, NEWLINE));
+        if (BitUtils.containsFlag(this.flags, NEWLINE)) {
+            setSingleLine(true);
+        }
     }
 
     @Override

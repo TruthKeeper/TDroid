@@ -2,7 +2,10 @@ package com.tk.tdroid.view.tui;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,6 +26,11 @@ import com.tk.tdroid.R;
 
 public class TUILinearLayout extends LinearLayout implements IView {
     private TUIHelper<IView> uiHelper;
+    private int dividerSize = 0;
+    private int dividerColor = Color.TRANSPARENT;
+    private int dividerBgColor = Color.TRANSPARENT;
+    private int dividerPaddingStart = 0;
+    private int dividerPaddingEnd = 0;
 
     public TUILinearLayout(Context context) {
         super(context);
@@ -104,16 +112,63 @@ public class TUILinearLayout extends LinearLayout implements IView {
 
             uiHelper.updateBackground();
 
+            dividerSize = typedArray.getDimensionPixelOffset(R.styleable.TUILinearLayout_tui_dividerSize, 0);
+            dividerColor = typedArray.getColor(R.styleable.TUILinearLayout_tui_dividerColor, Color.TRANSPARENT);
+            dividerBgColor = typedArray.getColor(R.styleable.TUILinearLayout_tui_dividerBgColor, Color.TRANSPARENT);
+            dividerPaddingStart = typedArray.getDimensionPixelOffset(R.styleable.TUILinearLayout_tui_dividerPaddingStart, 0);
+            dividerPaddingEnd = typedArray.getDimensionPixelOffset(R.styleable.TUILinearLayout_tui_dividerPaddingEnd, 0);
             typedArray.recycle();
+
+            generateDivider();
         }
+    }
+
+    private void generateDivider() {
+        int orientation = getOrientation();
+        if (dividerSize <= 0) {
+            return;
+        }
+        GradientDrawable[] layers = new GradientDrawable[2];
+        layers[0] = new GradientDrawable();
+        layers[0].setSize(orientation == HORIZONTAL ? dividerSize : 0,
+                orientation == HORIZONTAL ? 0 : dividerSize);
+        layers[0].setColor(dividerBgColor);
+        layers[1] = new GradientDrawable();
+        layers[1].setSize(orientation == HORIZONTAL ? dividerSize : 0,
+                orientation == HORIZONTAL ? 0 : dividerSize);
+        layers[1].setColor(dividerColor);
+
+        LayerDrawable drawable = new LayerDrawable(layers);
+        drawable.setLayerInset(1,
+                orientation == HORIZONTAL ? 0 : dividerPaddingStart,
+                orientation == HORIZONTAL ? dividerPaddingStart : 0,
+                orientation == HORIZONTAL ? 0 : dividerPaddingEnd,
+                orientation == HORIZONTAL ? dividerPaddingEnd : 0);
+
+        super.setDividerDrawable(drawable);
+    }
+
+    @Override
+    public void setOrientation(int orientation) {
+        super.setOrientation(orientation);
+        generateDivider();
     }
 
     public TUIHelper<IView> getUiHelper() {
         return uiHelper;
     }
 
+
     @Override
     public void updateBackground(@NonNull Drawable bg) {
         setBackground(bg);
+    }
+
+    @Override
+    public void setDividerDrawable(Drawable divider) {
+    }
+
+    @Override
+    public void setDividerPadding(int padding) {
     }
 }

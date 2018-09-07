@@ -54,7 +54,7 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
      */
     private boolean isFirstVisible = true;
     /**
-     * 视图是否创建爱
+     * 视图是否创建
      */
     private boolean isViewCreated = false;
     /**
@@ -213,6 +213,9 @@ public abstract class BaseFragment extends Fragment implements ILifecycleProvide
     private void dispatchVisible(boolean visible) {
         if (!visibleObserverEnabled) {
             //不支持监听则return
+            return;
+        }
+        if (getView() == null) {
             return;
         }
         if (currentVisible == visible) {

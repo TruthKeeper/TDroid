@@ -919,7 +919,7 @@ public class TUIHelper<TUI extends IView> {
             return null;
         }
         final int w = width > 0 ? width : drawableDefault.getIntrinsicWidth();
-        final int h = height > 0 ? width : drawableDefault.getIntrinsicHeight();
+        final int h = height > 0 ? height : drawableDefault.getIntrinsicHeight();
         StateListDrawable drawable = new StateListDrawable();
 
         if (drawableSelected != null) {

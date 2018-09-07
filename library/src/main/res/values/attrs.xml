@@ -313,6 +313,12 @@
         <attr name="tui_bg_gradientDirection_selected" />
         <attr name="tui_bg_gradientDirection_focused" />
         <attr name="tui_bg_gradientDirection_disabled" />
+
+        <attr name="tui_dividerSize" format="dimension" />
+        <attr name="tui_dividerColor" format="color" />
+        <attr name="tui_dividerBgColor" format="color" />
+        <attr name="tui_dividerPaddingStart" format="dimension" />
+        <attr name="tui_dividerPaddingEnd" format="dimension" />
     </declare-styleable>
     <declare-styleable name="TUIRelativeLayout">
         <attr name="tui_bg_solid_default" />

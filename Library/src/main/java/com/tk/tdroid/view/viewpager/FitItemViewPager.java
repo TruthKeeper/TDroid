@@ -58,7 +58,7 @@ public class FitItemViewPager extends DisableViewPager {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (getAdapter() != null) {
+        if (getAdapter() != null && getAdapter().getCount() > 0) {
             int height;
             View view = null;
             if (getAdapter() instanceof AbsViewAdapter) {
