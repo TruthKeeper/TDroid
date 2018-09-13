@@ -777,4 +777,17 @@
         <attr name="ppv_rectStrokeColor" format="color" />
 
     </declare-styleable>
+    <!--仿微信九宫格图片-->
+    <declare-styleable name="NineGridLayout">
+        <!--间隔-->
+        <attr name="ngl_gridPadding" format="dimension" />
+        <!--单张图片时的最小宽度百分比-->
+        <attr name="ngl_singleImageMinWidthPercent" format="float" />
+        <!--单张图片时的最小高度百分比-->
+        <attr name="ngl_singleImageMinHeightPercent" format="float" />
+        <!--单张图片时的最大宽度百分比-->
+        <attr name="ngl_singleImageMaxWidthPercent" format="float" />
+        <!--单张图片时的最大高度百分比-->
+        <attr name="ngl_singleImageMaxHeightPercent" format="float" />
+    </declare-styleable>
 </resources>
