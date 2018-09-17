@@ -2,9 +2,15 @@ package com.tk.tdroid.rx;
 
 import android.support.annotation.NonNull;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.TextView;
+
+import com.tk.tdroid.utils.SoftKeyboardUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +42,18 @@ public final class RxView {
      * @return
      */
     public static Observable<Object> click(@NonNull final View view) {
-        return new ViewClickObservable(view);
+        return click(view, true);
+    }
+
+    /**
+     * 点击事件监听
+     *
+     * @param view
+     * @param disposable 是否可被中断
+     * @return
+     */
+    public static Observable<Object> click(@NonNull final View view, final boolean disposable) {
+        return new ViewClickObservable(view, disposable);
     }
 
     /**
@@ -46,7 +63,18 @@ public final class RxView {
      * @return
      */
     public static Observable<Object> longClick(@NonNull final View view) {
-        return new ViewLongClickObservable(view);
+        return longClick(view, true);
+    }
+
+    /**
+     * 长按事件监听
+     *
+     * @param view
+     * @param disposable 是否可被中断
+     * @return
+     */
+    public static Observable<Object> longClick(@NonNull final View view, final boolean disposable) {
+        return new ViewLongClickObservable(view, disposable);
     }
 
     /**
@@ -56,7 +84,40 @@ public final class RxView {
      * @return
      */
     public static Observable<Object> onTextChange(@NonNull final EditText editText) {
-        return new TextChangeObservable(editText);
+        return onTextChange(editText, true);
+    }
+
+    /**
+     * 文本变化监听
+     *
+     * @param editText
+     * @param disposable 是否可被中断
+     * @return
+     */
+    public static Observable<Object> onTextChange(@NonNull final EditText editText, final boolean disposable) {
+        return new TextChangeObservable(editText, disposable);
+    }
+
+    /**
+     * 联想搜索
+     *
+     * @param editText
+     * @return
+     */
+    public static Observable<String> editSearch(@NonNull final EditText editText) {
+        return editSearch(editText, true);
+    }
+
+    /**
+     * 联想搜索
+     *
+     * @param editText
+     * @param disposable 是否可被中断
+     * @return
+     */
+    public static Observable<String> editSearch(@NonNull final EditText editText, final boolean disposable) {
+        return new EditSearchObservable(editText, disposable)
+                .debounce(500, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -67,13 +128,35 @@ public final class RxView {
      * @return
      */
     public static Observable<Integer> comboClick(@NonNull final View view, final long maxIntervalMilli) {
-        return new ViewClickObservable(view)
-                .map(new Function<Object, Integer>() {
-                    @Override
-                    public Integer apply(Object o) throws Exception {
-                        return 1;
-                    }
-                })
+        return comboClick(new ViewClickObservable(view, true), maxIntervalMilli);
+    }
+
+    /**
+     * 连击
+     *
+     * @param view
+     * @param maxIntervalMilli 最大的连击间隔 单位:毫秒
+     * @param disposable       是否可被中断
+     * @return
+     */
+    public static Observable<Integer> comboClick(@NonNull final View view, final long maxIntervalMilli, final boolean disposable) {
+        return comboClick(new ViewClickObservable(view, disposable), maxIntervalMilli);
+    }
+
+    /**
+     * 连击
+     *
+     * @param observable
+     * @param maxIntervalMilli 最大的连击间隔 单位:毫秒
+     * @return
+     */
+    public static <T> Observable<Integer> comboClick(@NonNull final Observable<T> observable, final long maxIntervalMilli) {
+        return observable.map(new Function<Object, Integer>() {
+            @Override
+            public Integer apply(Object o) throws Exception {
+                return 1;
+            }
+        })
                 .timestamp()
                 .scan(new BiFunction<Timed<Integer>, Timed<Integer>, Timed<Integer>>() {
                     @Override
@@ -95,9 +178,11 @@ public final class RxView {
 
     private static final class ViewClickObservable extends Observable<Object> {
         private final View view;
+        private final boolean disposable;
 
-        ViewClickObservable(@NonNull View view) {
+        ViewClickObservable(@NonNull View view, boolean disposable) {
             this.view = view;
+            this.disposable = disposable;
         }
 
         @Override
@@ -119,7 +204,9 @@ public final class RxView {
 
                 @Override
                 protected void onDispose() {
-                    view.setOnClickListener(null);
+                    if (disposable) {
+                        view.setOnClickListener(null);
+                    }
                 }
             });
 
@@ -128,9 +215,11 @@ public final class RxView {
 
     private static final class ViewLongClickObservable extends Observable<Object> {
         private final View view;
+        private final boolean disposable;
 
-        ViewLongClickObservable(@NonNull View view) {
+        ViewLongClickObservable(@NonNull View view, boolean disposable) {
             this.view = view;
+            this.disposable = disposable;
         }
 
         @Override
@@ -153,7 +242,9 @@ public final class RxView {
 
                 @Override
                 protected void onDispose() {
-                    view.setOnLongClickListener(null);
+                    if (disposable) {
+                        view.setOnLongClickListener(null);
+                    }
                 }
             });
         }
@@ -161,9 +252,11 @@ public final class RxView {
 
     private static final class TextChangeObservable extends Observable<Object> {
         private final EditText editText;
+        private final boolean disposable;
 
-        TextChangeObservable(@NonNull EditText editText) {
+        TextChangeObservable(@NonNull EditText editText, boolean disposable) {
             this.editText = editText;
+            this.disposable = disposable;
         }
 
         @Override
@@ -197,10 +290,79 @@ public final class RxView {
 
                 @Override
                 protected void onDispose() {
-                    editText.removeTextChangedListener(watcher);
-                    watcher = null;
+                    if (disposable) {
+                        editText.removeTextChangedListener(watcher);
+                        watcher = null;
+                    }
                 }
 
+            });
+        }
+    }
+
+    private static final class EditSearchObservable extends Observable<String> {
+        private final EditText editText;
+        private final boolean disposable;
+
+        EditSearchObservable(@NonNull EditText editText, boolean disposable) {
+            this.editText = editText;
+            this.disposable = disposable;
+        }
+
+        @Override
+        protected void subscribeActual(final Observer<? super String> observer) {
+            if (!RxUtils.checkMainThread()) {
+                return;
+            }
+            observer.onSubscribe(new MainThreadDisposable() {
+                private TextWatcher watcher = new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (!isDisposed()) {
+                            observer.onNext(s.toString());
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+
+                    }
+                };
+                private TextView.OnEditorActionListener actionListener = new TextView.OnEditorActionListener() {
+                    @Override
+                    public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                        if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                            editText.clearFocus();
+                            SoftKeyboardUtils.hideSoftKeyboard(editText, true);
+                            if (!isDisposed()) {
+                                observer.onNext(editText.getText().toString());
+                            }
+                        }
+                        return false;
+                    }
+                };
+
+                {
+                    editText.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+                    editText.setInputType(InputType.TYPE_CLASS_TEXT);
+                    editText.addTextChangedListener(watcher);
+                    editText.setOnEditorActionListener(actionListener);
+                }
+
+                @Override
+                protected void onDispose() {
+                    if (disposable) {
+                        editText.removeTextChangedListener(watcher);
+                        editText.setOnEditorActionListener(null);
+                        watcher = null;
+                        actionListener = null;
+                    }
+                }
             });
         }
     }

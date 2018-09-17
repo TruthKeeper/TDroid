@@ -8,8 +8,10 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.text.Editable;
 import android.text.Selection;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -238,6 +240,71 @@ public final class ViewUtils {
             if (drag) {
                 super.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
+        }
+    }
+
+    /**
+     * 对{@link EditText}进行空格分隔
+     */
+    public static class SpaceSplitWatcher implements TextWatcher {
+        private final EditText editText;
+        private final int each;
+
+        private boolean lock;
+        private int lastSpaceCount;
+
+        public SpaceSplitWatcher(@NonNull EditText editText) {
+            this(editText, 4);
+        }
+
+        public SpaceSplitWatcher(@NonNull EditText editText, int each) {
+            this.editText = editText;
+            this.each = each;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            lastSpaceCount = 0;
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) == ' ') {
+                    lastSpaceCount++;
+                }
+            }
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (lock) {
+                lock = false;
+                return;
+            }
+            lock = true;
+            //获取光标位置
+            int selectionIndex = editText.getSelectionEnd();
+            //去除空格
+            char[] chars = s.toString().replace(" ", "").toCharArray();
+            int spaceCount = 0;
+            // 每4个分组,加上空格组合成新的字符串
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < chars.length; i++) {
+                if (i % each == 0 && i != 0) {
+                    builder.append(" ");
+                    spaceCount++;
+                }
+                builder.append(chars[i]);
+            }
+            editText.setText(builder.toString());
+
+            if (spaceCount > lastSpaceCount) {
+                selectionIndex += (spaceCount - lastSpaceCount);
+            }
+            selectionIndex = Math.min(builder.length(), Math.max(0, selectionIndex));
+            editText.setSelection(selectionIndex);
         }
     }
 }
