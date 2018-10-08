@@ -178,7 +178,7 @@ public final class SoundPlayHelper {
     }
 
     /**
-     * 暂停
+     * 停止
      */
     public void stop() {
         mStatus = Status.IDLE;
@@ -186,6 +186,14 @@ public final class SoundPlayHelper {
             mMediaPlayer.stop();
         }
         mMediaPlayer.reset();
+        Record record = getLastPlayRecord();
+        if (!EmptyUtils.isEmpty(mPlayListeners) && !EmptyUtils.isEmpty(record)) {
+            for (OnPlayListener listener : mPlayListeners) {
+                if (null != listener) {
+                    listener.onPlayEnd(new Record(record));
+                }
+            }
+        }
     }
 
     /**

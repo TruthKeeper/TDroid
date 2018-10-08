@@ -34,16 +34,16 @@ public class AudioFocusHelper {
             @Override
             public void onAudioFocusChange(int focusChange) {
                 switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
-                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
+                    case AudioManager.AUDIOFOCUS_GAIN://长期占有
+                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT://短期占有
+//                    case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
                         //重新获取到焦点
                         audioListener.recoverFocus();
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS:
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+//                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                         //暂停操作
                         audioListener.lossFocus();
                         break;
