@@ -795,4 +795,23 @@
         <!--View的Id-->
         <attr name="pgc_view" format="reference" />
     </declare-styleable>
+    <!--支持圆角，阴影颜色、扩散程度、偏移和智能取色的ImageView-->
+    <declare-styleable name="ShadowImageView">
+        <!--圆角-->
+        <attr name="siv_corner" format="dimension" />
+        <!--是否启用阴影-->
+        <attr name="siv_shadowEnabled" format="boolean" />
+        <!--为阴影预留的Padding-->
+        <attr name="siv_shadowPadding" format="dimension" />
+        <!--阴影颜色-->
+        <attr name="siv_shadowColor" format="color|enum">
+            <enum name="smart" value="1" />
+        </attr>
+        <!--阴影扩散半径-->
+        <attr name="siv_shadowRadius" format="dimension" />
+        <!--阴影x轴偏移-->
+        <attr name="siv_shadowOffsetX" format="dimension" />
+        <!--阴影y轴偏移-->
+        <attr name="siv_shadowOffsetY" format="dimension" />
+    </declare-styleable>
 </resources>
