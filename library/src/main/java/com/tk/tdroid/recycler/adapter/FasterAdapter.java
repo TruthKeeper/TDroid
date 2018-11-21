@@ -160,7 +160,7 @@ public final class FasterAdapter<T> extends RecyclerView.Adapter<FasterHolder> {
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrollStateChanged(final RecyclerView recyclerView, final int newState) {
-            if (null == mLayoutManager) {
+            if (null == mLayoutManager || !recyclerView.isAttachedToWindow()) {
                 return;
             }
             int lastVisibleItemPosition = 0;

@@ -4,6 +4,8 @@ import android.graphics.Rect;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 /**
  * <pre>
@@ -25,25 +27,22 @@ public final class RecyclerUtils {
      * @param maxItem
      */
     public static void setMaxHeight(@NonNull RecyclerView recyclerView, @IntRange(from = 0) int maxItem) {
-        RecyclerView.Adapter adapter = recyclerView.getAdapter();
-        if (null == adapter) {
-            return;
-        }
-        int count = adapter.getItemCount();
-        if (count <= maxItem) {
-            return;
-        }
-        recyclerView.post(new Runnable() {
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void run() {
+            public void onGlobalLayout() {
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(0);
                 if (null == holder) {
                     return;
                 }
+                int itemCount = Math.min(maxItem, recyclerView.getAdapter().getItemCount());
+                ViewGroup.LayoutParams params = recyclerView.getLayoutParams();
                 Rect decoration = new Rect();
                 recyclerView.getDecoratedBoundsWithMargins(holder.itemView, decoration);
                 int height = decoration.bottom;
-                recyclerView.getLayoutParams().height = height * maxItem;
+                params.height = height * itemCount
+                        + recyclerView.getPaddingTop() + recyclerView.getPaddingBottom();
+                recyclerView.setLayoutParams(params);
             }
         });
     }

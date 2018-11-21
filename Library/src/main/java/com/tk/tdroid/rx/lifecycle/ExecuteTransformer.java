@@ -22,7 +22,7 @@ import io.reactivex.functions.BiFunction;
  * <pre>
  *      author : TK
  *      time : 2017/11/17
- *      desc :
+ *      desc : 调度转换器
  * </pre>
  */
 

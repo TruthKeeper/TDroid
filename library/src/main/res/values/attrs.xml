@@ -814,4 +814,26 @@
         <!--阴影y轴偏移-->
         <attr name="siv_shadowOffsetY" format="dimension" />
     </declare-styleable>
+    <!--支持间距控制的Ratingbar-->
+    <declare-styleable name="TRatingbar">
+        <!--星星的宽高，正方形-->
+        <attr name="tr_starSize" format="dimension" />
+        <!--星星之间的间距-->
+        <attr name="tr_starPadding" format="dimension" />
+        <!--星星总数-->
+        <attr name="tr_starSum" format="integer" />
+        <!--星星高亮数量-->
+        <attr name="tr_starRating" format="float" />
+        <!--是否作为指示器，不响应点击事件，默认true-->
+        <attr name="tr_isIndicator" format="boolean" />
+        <!--默认的资源-->
+        <attr name="tr_starHint" format="reference" />
+        <!--高亮的资源-->
+        <attr name="tr_starHigh" format="reference" />
+    </declare-styleable>
+    <!--同心圆环-->
+    <declare-styleable name="RingView">
+        <attr name="rv_checked" format="boolean" />
+        <attr name="rv_color" format="color" />
+    </declare-styleable>
 </resources>

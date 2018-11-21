@@ -27,7 +27,7 @@ import io.reactivex.functions.Function;
  * <pre>
  *      author : TK
  *      time : 2017/11/16
- *      desc : 生命周期转换
+ *      desc : 生命周期转换器
  * </pre>
  */
 
