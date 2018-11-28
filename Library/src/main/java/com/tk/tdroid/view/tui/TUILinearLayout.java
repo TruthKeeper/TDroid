@@ -126,6 +126,7 @@ public class TUILinearLayout extends LinearLayout implements IView {
     private void generateDivider() {
         int orientation = getOrientation();
         if (dividerSize <= 0) {
+            super.setDividerDrawable(null);
             return;
         }
         GradientDrawable[] layers = new GradientDrawable[2];

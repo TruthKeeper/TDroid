@@ -51,9 +51,10 @@
 
 ## 工具类
 
-- 音频焦点帮助类 utils.extra.AudioFocusHelper
-- 声音播放帮助类 utils.extra.SoundPlayHelper
-- 录制声音管理类 utils.extra.SoundRecordHelper
+- 音频焦点帮助类 utils.audio.AudioFocusHelper
+- 声音播放帮助类 utils.audio.SoundPlayHelper
+- 录制声音管理类 utils.audio.AudioRecordHelper
+- 扬声器帮助工具 utils.audio.SpeakerHelper
 - App工具类 utils.AppUtils
 - Bar工具类 utils.BarUtils
 - 位操作工具类 utils.BitUtils
@@ -83,6 +84,7 @@
 - SharedPreference工具类 utils.SharedPreferenceUtils
 - Shell命令工具类 utils.ShellUtils
 - 大小转换工具类 utils.SizeUtils
+- 软键盘观察者 utils.SoftKeyBoardObservable
 - 软键盘工具类 utils.SoftKeyboardUtils
 - Spannable生成工具 utils.SpannableFactory
 - 存储工具类 utils.StorageUtils

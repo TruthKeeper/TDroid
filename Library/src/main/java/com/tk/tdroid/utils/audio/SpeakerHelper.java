@@ -45,7 +45,7 @@ public final class SpeakerHelper {
 
         }
     };
-    private   PowerManager.WakeLock mWakeLock;
+    private PowerManager.WakeLock mWakeLock;
 
     private SpeakerHelper(boolean wakeLockEnabled) {
         if (wakeLockEnabled) {
