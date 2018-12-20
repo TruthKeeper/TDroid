@@ -7,6 +7,10 @@
 - **EventManager**：事件通信管理器，用于发送一个事件（支持粘性）以供多个接收端接收，支持组件化跨模块场景下调用
 - **ServiceManager**：服务注册工具，用于注册服务以供组件化场景下的跨模块调用
 
+### Download
+
+下载APK的工具
+
 ### Http
 
 > Retrofit2 + OkHttp3 + RxJava2 + Gson 示例代码见 sample.SampleHttp
