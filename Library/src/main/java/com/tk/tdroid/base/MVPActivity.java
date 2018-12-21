@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.tk.tdroid.utils.ReflectUtils;
+import com.tk.tdroid.utils.ReflectHelper;
 
 /**
  * <pre>
@@ -20,7 +20,7 @@ public class MVPActivity<P extends IContract.IPresenter> extends BaseActivity im
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Class<P> presenter = ReflectUtils.getT(getClass(), 0);
+        Class<P> presenter = ReflectHelper.getT(getClass(), 0);
         mPresenter = generatePresenter(presenter);
         if (mPresenter != null) {
             mPresenter.attach(this);
