@@ -2,12 +2,15 @@ package com.tk.tdroid.utils;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -205,5 +208,26 @@ public final class IntentUtils {
         } else {
             toSetting();
         }
+    }
+
+    /**
+     * 请求申请6.0以上的Doze休眠模式的白名单，即忽略电源优化
+     *
+     * @param activity
+     * @param requestCode
+     */
+    private void requestIgnoringBatteryOptimizations(@NonNull Activity activity, int requestCode) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return;
+        }
+        String packageName = activity.getPackageName();
+        PowerManager pm = (PowerManager) activity.getSystemService(Context.POWER_SERVICE);
+        if (pm.isIgnoringBatteryOptimizations(packageName)) {
+            return;
+        }
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+        intent.setData(Uri.parse("package:" + packageName));
+        activity.startActivityForResult(intent, requestCode);
     }
 }

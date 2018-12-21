@@ -59,7 +59,7 @@ interface IActivityProvider {
      *
      * @return
      */
-    int designDpSize();
+    int designSize();
 
     enum DesignFit {
         Width, Height

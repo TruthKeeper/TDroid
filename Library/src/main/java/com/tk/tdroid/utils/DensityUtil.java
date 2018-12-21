@@ -21,45 +21,6 @@ public final class DensityUtil {
     }
 
     /**
-     * 适配屏幕 Thanks For <a href="https://juejin.im/post/5b6250bee51d451918537021">Blankj and 今日头条技术团队</a>
-     *
-     * @param activity
-     * @param dpSize
-     * @param widthFit
-     */
-    public static void adaptScreen(@Nullable Activity activity, float dpSize, boolean widthFit) {
-        if (activity == null) {
-            return;
-        }
-        final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
-        final DisplayMetrics resourceDm = Resources.getSystem().getDisplayMetrics();
-        if (widthFit) {
-            activityDm.density = activityDm.widthPixels / dpSize;
-        } else {
-            activityDm.density = activityDm.heightPixels / dpSize;
-        }
-        activityDm.scaledDensity = activityDm.density * (resourceDm.scaledDensity / resourceDm.density);
-        activityDm.densityDpi = (int) (160 * activityDm.density);
-    }
-
-    /**
-     * 取消适配屏幕
-     *
-     * @param activity
-     */
-    public static void cancelAdaptScreen(@Nullable Activity activity) {
-        if (activity == null) {
-            return;
-        }
-        final DisplayMetrics activityDm = activity.getResources().getDisplayMetrics();
-        final DisplayMetrics resourceDm = Resources.getSystem().getDisplayMetrics();
-
-        activityDm.density = resourceDm.density;
-        activityDm.scaledDensity = resourceDm.scaledDensity;
-        activityDm.densityDpi = resourceDm.densityDpi;
-    }
-
-    /**
      * dp > px
      *
      * @param dpValue

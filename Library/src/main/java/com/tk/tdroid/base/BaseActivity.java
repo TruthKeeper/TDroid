@@ -2,6 +2,7 @@ package com.tk.tdroid.base;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,7 +21,7 @@ import com.tk.tdroid.rx.lifecycle.ILifecycle;
 import com.tk.tdroid.rx.lifecycle.ILifecycleProvider;
 import com.tk.tdroid.rx.lifecycle.LifecycleTransformer;
 import com.tk.tdroid.saverestore.SaveRestoreHelper;
-import com.tk.tdroid.utils.DensityUtil;
+import com.tk.tdroid.utils.AdaptScreenUtils;
 import com.tk.tdroid.utils.SoftKeyboardUtils;
 
 import io.reactivex.subjects.PublishSubject;
@@ -93,13 +94,18 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
     }
 
     @Override
+    public Resources getResources() {
+        if (fitMode == DesignFit.Width) {
+            return AdaptScreenUtils.adaptWidth(super.getResources(), designSize());
+        } else if (fitMode == DesignFit.Height) {
+            return AdaptScreenUtils.adaptHeight(super.getResources(), designSize());
+        }
+        return super.getResources();
+    }
+
+    @Override
     public void setContentView(int layoutResID) {
         onLifecycleNext(ActivityLifecycleImpl.PRE_INFLATE);
-        if (fitMode == DesignFit.Width) {
-            DensityUtil.adaptScreen(this, designDpSize(), true);
-        } else if (fitMode == DesignFit.Height) {
-            DensityUtil.adaptScreen(this, designDpSize(), false);
-        }
         super.setContentView(layoutResID);
     }
 
@@ -277,7 +283,7 @@ public class BaseActivity extends AppCompatActivity implements ILifecycleProvide
      * @return
      */
     @Override
-    public int designDpSize() {
-        return 568;
+    public int designSize() {
+        return 1280;
     }
 }
