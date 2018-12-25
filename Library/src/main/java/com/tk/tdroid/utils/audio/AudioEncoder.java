@@ -22,6 +22,10 @@ import java.nio.ByteBuffer;
  * </pre>
  */
 class AudioEncoder {
+    /**
+     * 类型
+     */
+    public static final String MIME_TYPE = "audio/mp4a-latm";
     private MediaCodec mMediaCodec;
     private final int mSampleRateType;
 
@@ -61,18 +65,18 @@ class AudioEncoder {
         close();
 
         try {
-            mMediaCodec = MediaCodec.createByCodecName("OMX.google.aac.encoder");
+            mMediaCodec = MediaCodec.createEncoderByType(MIME_TYPE);
             MediaFormat mediaFormat = MediaFormat.createAudioFormat(
-                    "audio/mp4a-latm",
+                    MIME_TYPE,
                     AudioRecordHelper.SAMPLE_RATE,
-                    1);
-            mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE,
-                    MediaCodecInfo.CodecProfileLevel.AACObjectLC);
+                    2);
             mediaFormat.setInteger(MediaFormat.KEY_BIT_RATE,
                     //比特率，决定录音文件的大小
-                    32000);
+                    32 * 1024);
+            mediaFormat.setInteger(MediaFormat.KEY_AAC_PROFILE,
+                    MediaCodecInfo.CodecProfileLevel.AACObjectLC);
             mediaFormat.setInteger(MediaFormat.KEY_MAX_INPUT_SIZE,
-                    1024 * 1024);
+                    10 * 1024);
 
             mMediaCodec.configure(mediaFormat, null, null,
                     MediaCodec.CONFIGURE_FLAG_ENCODE);
@@ -90,7 +94,7 @@ class AudioEncoder {
     /**
      * 关闭
      */
-    void close() {
+    public void close() {
         if (mMediaCodec == null) {
             return;
         }
@@ -111,23 +115,25 @@ class AudioEncoder {
      *
      * @param input
      */
-    synchronized void encode(byte[] input) {
+    public synchronized void encode(byte[] input) {
         if (mMediaCodec == null) {
             return;
         }
         int inputBufferIndex = mMediaCodec.dequeueInputBuffer(-1);
-        if (inputBufferIndex >= 0) {
+        if (inputBufferIndex > 0) {
             ByteBuffer inputBuffer = mInputBuffers[inputBufferIndex];
             inputBuffer.clear();
             inputBuffer.put(input);
-            inputBuffer.limit(input.length);
-            mMediaCodec.queueInputBuffer(inputBufferIndex, 0, input.length, 0, 0);
+            mMediaCodec.queueInputBuffer(inputBufferIndex,
+                    0,
+                    input.length,
+                    System.nanoTime(),
+                    0);
         }
 
         MediaCodec.BufferInfo bufferInfo = new MediaCodec.BufferInfo();
         int outputBufferIndex = mMediaCodec.dequeueOutputBuffer(bufferInfo, 0);
-
-        while (outputBufferIndex >= 0) {
+        while (outputBufferIndex > 0) {
             int outBitsSize = bufferInfo.size;
             int outPacketSize = outBitsSize + 7;
             ByteBuffer outputBuffer = mOutputBuffers[outputBufferIndex];
@@ -160,7 +166,7 @@ class AudioEncoder {
     private static void addADTStoPacket(int sampleRateType, byte[] packet, int packetLen) {
         int profile = 2; // AAC LC
         int freqIdx = sampleRateType; // 44.1KHz
-        int chanCfg = 1; // CPE
+        int chanCfg = 2; // CPE
         // fill in ADTS data
         packet[0] = (byte) 0xFF;
         packet[1] = (byte) 0xF9;
@@ -170,5 +176,4 @@ class AudioEncoder {
         packet[5] = (byte) (((packetLen & 7) << 5) + 0x1F);
         packet[6] = (byte) 0xFC;
     }
-
 }

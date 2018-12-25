@@ -42,12 +42,16 @@ public class AudioRecordHelper {
      * 缓冲区大小
      */
     private static final int BUFFER_SIZE = AudioRecord.getMinBufferSize(SAMPLE_RATE,
-            AudioFormat.CHANNEL_IN_MONO,
+            AudioFormat.CHANNEL_IN_STEREO,
             AudioFormat.ENCODING_PCM_16BIT);
     /**
      * 音量监听器
      */
     private final OnVolumeListener mOnVolumeListener;
+    /**
+     * 代理器
+     */
+    private SourceDataDelegate sourceDataDelegate;
     /**
      * 录音器
      */
@@ -123,9 +127,10 @@ public class AudioRecordHelper {
         if (mRecorder != null) {
             return;
         }
+        //消除回声
         mRecorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
                 SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_MONO,
+                AudioFormat.CHANNEL_IN_STEREO,
                 AudioFormat.ENCODING_PCM_16BIT,
                 BUFFER_SIZE * 2);
     }
@@ -315,6 +320,18 @@ public class AudioRecordHelper {
         return (int) Math.min(avgVolume * 100D / maxValue, 100);
     }
 
+    /**
+     * 设置代理
+     *
+     * @param sourceDataDelegate
+     */
+    public void setSourceDataDelegate(SourceDataDelegate sourceDataDelegate) {
+        this.sourceDataDelegate = sourceDataDelegate;
+    }
+
+    /**
+     * 音量监听器
+     */
     public interface OnVolumeListener {
         /**
          * 音量的改变
@@ -322,6 +339,18 @@ public class AudioRecordHelper {
          * @param percent
          */
         void onVolumeChange(@IntRange(from = 0, to = 100) int percent);
+    }
+
+    /**
+     * 录制的源数据代理
+     */
+    public interface SourceDataDelegate {
+        /**
+         * 录制过程中的回调
+         *
+         * @param data
+         */
+        void onRecord(byte[] data);
     }
 
     /**
