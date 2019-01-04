@@ -123,16 +123,18 @@ public class AudioRecordHelper {
         initAudioRecorder();
     }
 
+    /**
+     * 初始化录音器
+     */
     private void initAudioRecorder() {
-        if (mRecorder != null) {
-            return;
+        if (mRecorder == null) {
+            //消除回声
+            mRecorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
+                    SAMPLE_RATE,
+                    AudioFormat.CHANNEL_IN_STEREO,
+                    AudioFormat.ENCODING_PCM_16BIT,
+                    BUFFER_SIZE * 2);
         }
-        //消除回声
-        mRecorder = new AudioRecord(MediaRecorder.AudioSource.VOICE_COMMUNICATION,
-                SAMPLE_RATE,
-                AudioFormat.CHANNEL_IN_STEREO,
-                AudioFormat.ENCODING_PCM_16BIT,
-                BUFFER_SIZE * 2);
     }
 
     private void generateOutputFile() {
@@ -216,7 +218,7 @@ public class AudioRecordHelper {
      * 取消录音
      */
     public void cancelRecord() {
-        if (!mIsRecording) {
+        if (!mIsRecording || mRecorder == null) {
             return;
         }
         mIsPause = false;
@@ -245,7 +247,7 @@ public class AudioRecordHelper {
      */
     public AudioRecordResult finishRecord() {
         mIsPause = false;
-        if (!mIsRecording) {
+        if (!mIsRecording || mRecorder == null) {
             return null;
         }
         mIsRecording = false;

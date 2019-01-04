@@ -70,4 +70,5 @@ dependencies {
     api(rootProject.ext.dependencies["rxandroid2"]) {
         exclude module: 'rxjava'
     }
+    api 'com.tencent:mmkv:1.0.15'
 }
