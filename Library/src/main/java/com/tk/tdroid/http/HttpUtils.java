@@ -87,6 +87,7 @@ public final class HttpUtils {
                             .baseUrl(httpConfig.getBaseUrl())
                             .client(okHttpClient)
                             .addConverterFactory(GsonConverterFactory.create())
+                            .addCallAdapterFactory(CallWrapperFactory.create())
                             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                             .build();
                 }
