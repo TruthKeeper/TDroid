@@ -35,9 +35,14 @@ public class HomeActivity extends BaseActivity {
             mineInnerFragment.setArguments(bundle);
             fragmentHelper = FragmentHelper.create(getSupportFragmentManager(), R.id.container,
                     savedInstanceState,
-                    FragmentHelper.FragmentData.create(mineInnerFragment));
+                    FragmentHelper.FragmentData.create("home", new FragmentHelper.FragmentFactory() {
+                        @Override
+                        public Fragment create(String sign) {
+                            return mineInnerFragment;
+                        }
+                    }));
 
-            fragmentHelper.switchFragment(0);
+            fragmentHelper.switchFragment("home");
         }
     }
 

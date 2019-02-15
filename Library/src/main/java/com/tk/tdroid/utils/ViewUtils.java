@@ -15,10 +15,12 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -213,6 +215,30 @@ public final class ViewUtils {
             Field mShowInput = editorClass.getDeclaredField("mShowSoftInputOnFocus");
             mShowInput.setAccessible(true);
             mShowInput.set(editor, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 使EditText显示光标但是不弹出输入法
+     *
+     * @param activity
+     * @param editText
+     */
+    public static void setEditTextFocusShowWithoutSoft(@NonNull Activity activity, @NonNull EditText editText) {
+        WindowManager.LayoutParams layoutParams = activity.getWindow().getAttributes();
+        if (layoutParams == null) {
+            return;
+        }
+        //拼接hide属性
+        activity.getWindow().setSoftInputMode(layoutParams.softInputMode | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        try {
+            Class<EditText> cls = EditText.class;
+            Method setSoftInputShownOnFocus;
+            setSoftInputShownOnFocus = cls.getMethod("setShowSoftInputOnFocus", boolean.class);
+            setSoftInputShownOnFocus.setAccessible(true);
+            setSoftInputShownOnFocus.invoke(editText, false);
         } catch (Exception e) {
             e.printStackTrace();
         }

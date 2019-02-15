@@ -7,20 +7,35 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * <pre>
- *      author : TK
- *      time : 2017/11/30
- *      desc : Fragment切换帮助类 , 通过{@link FragmentHelper#onSaveInstanceState(Bundle)}解决重叠问题
+ *     author : amin
+ *     time   : 2019/2/15
+ *     desc   :
  * </pre>
  */
-
 public class FragmentHelper {
-    private static final String SAVE_STATE = "FragmentHelper_";
+    /**
+     * 标记前缀
+     */
+    private static final String KEY_PREFIX = "FragmentHelper_";
+    /**
+     * 依附的布局Id
+     */
     @IdRes
     private int containerId;
-    private FragmentData[] fragmentData = null;
+    /**
+     * 放置的Fragment数据
+     */
+    private Map<String, FragmentData> fragmentMap = null;
+    /**
+     * 管理器
+     */
     private FragmentManager manager = null;
 
     /**
@@ -35,29 +50,28 @@ public class FragmentHelper {
     public static FragmentHelper create(@NonNull FragmentManager manager,
                                         @IdRes int containerId,
                                         @Nullable Bundle savedInstanceState,
-                                        @NonNull FragmentData... fragmentData) {
+                                        @NonNull FragmentHelper.FragmentData... fragmentData) {
         return new FragmentHelper(manager, containerId, savedInstanceState, fragmentData);
     }
 
     private FragmentHelper(@NonNull FragmentManager manager,
                            @IdRes int containerId,
                            @Nullable Bundle savedInstanceState,
-                           @NonNull FragmentData... fragmentData) {
+                           @NonNull FragmentHelper.FragmentData... fragmentData) {
         this.manager = manager;
         this.containerId = containerId;
-        this.fragmentData = fragmentData;
-
-        if (savedInstanceState != null) {
-            //从内存中获取实例
-            for (int i = 0; i < fragmentData.length; i++) {
-                Fragment fragment = manager.getFragment(savedInstanceState, SAVE_STATE + i);
+        fragmentMap = new ArrayMap<>();
+        for (FragmentData data : fragmentData) {
+            //从内存中获取保存的实例
+            if (savedInstanceState != null) {
+                Fragment fragment = manager.getFragment(savedInstanceState, KEY_PREFIX + data.sign);
                 if (fragment != null) {
-                    try {
-                        fragmentData[i].fragment = fragment;
-                    } catch (Exception e) {
-                    }
+                    data.fragment = fragment;
+                    fragmentMap.put(data.sign, data);
+                    continue;
                 }
             }
+            fragmentMap.put(data.sign, data);
         }
     }
 
@@ -67,83 +81,108 @@ public class FragmentHelper {
      * @param outState
      */
     public void onSaveInstanceState(@NonNull Bundle outState) {
-        for (int i = 0; i < fragmentData.length; i++) {
-            if (fragmentData[i].fragment != null && fragmentData[i].fragment.isAdded()) {
-                manager.putFragment(outState, SAVE_STATE + i, fragmentData[i].fragment);
+        Set<Map.Entry<String, FragmentData>> entrySet = fragmentMap.entrySet();
+        for (Map.Entry<String, FragmentData> entry : entrySet) {
+            if (entry.getValue() != null && entry.getValue().fragment.isAdded()) {
+                manager.putFragment(outState, KEY_PREFIX + entry.getValue().sign, entry.getValue().fragment);
             }
         }
     }
 
+    /**
+     * 根据签名获取Fragment
+     *
+     * @param sign
+     * @param <T>
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @Nullable
-    public <T extends Fragment> T getFragmentByIndex(int index) {
-        if (index < 0 || index >= fragmentData.length) {
+    public <T extends Fragment> T getFragmentBySign(@NonNull String sign) {
+        if (EmptyUtils.isEmpty(sign)) {
             return null;
         }
-        return (T) fragmentData[index].fragment;
+        FragmentData data = fragmentMap.get(sign);
+        if (data != null) {
+            return (T) data.fragment;
+        }
+        return null;
     }
+
     /**
      * 切换
      *
-     * @param index
+     * @param sign
      */
-    public void switchFragment(int index) {
-        if (index < 0 || index >= fragmentData.length) {
-            throw new IllegalArgumentException();
+    public void switchFragment(@NonNull String sign) {
+        FragmentData data = fragmentMap.get(sign);
+        if (data == null) {
+            return;
         }
-
-        if (instanceFragment(index)) {
-            boolean isAdded = fragmentData[index].fragment.isAdded();
-            boolean isHidden = fragmentData[index].fragment.isHidden();
+        if (instanceFragment(data)) {
+            boolean isAdded = data.fragment.isAdded();
+            boolean isHidden = data.fragment.isHidden();
             if (isAdded && !isHidden) {
                 return;
             }
             FragmentTransaction ft = manager.beginTransaction();
-            hideOther(ft, index);
+            hideOther(ft, sign);
             if (isAdded) {
-                ft.show(fragmentData[index].fragment);
+                ft.show(data.fragment);
             } else {
-                ft.add(containerId, fragmentData[index].fragment, fragmentData[index].tag);
+                ft.add(containerId, data.fragment, data.tag);
             }
             ft.commit();
         }
     }
 
     /**
-     * 隐藏
+     * 拼接显示
+     *
+     * @param data
+     * @param switchThis
+     */
+    public void appendFragment(@NonNull FragmentData data, boolean switchThis) {
+        if (fragmentMap.get(data.sign) != null) {
+            return;
+        }
+        fragmentMap.put(data.sign, data);
+        if (switchThis) {
+            switchFragment(data.sign);
+        }
+
+    }
+
+    /**
+     * 隐藏其他的Fragment
      *
      * @param ft
-     * @param index
+     * @param sign
      */
-    private void hideOther(FragmentTransaction ft, int index) {
-        for (int i = 0; i < fragmentData.length; i++) {
-            if (i != index
-                    && fragmentData[i].fragment != null
-                    && fragmentData[i].fragment.isAdded()
-                    && !fragmentData[i].fragment.isHidden()) {
-                ft.hide(fragmentData[i].fragment);
+    private void hideOther(FragmentTransaction ft, @NonNull String sign) {
+        Set<Map.Entry<String, FragmentData>> entrySet = fragmentMap.entrySet();
+        for (Map.Entry<String, FragmentData> entry : entrySet) {
+            if (!entry.getKey().equals(sign)
+                    && entry.getValue().fragment != null
+                    && entry.getValue().fragment.isAdded()
+                    && !entry.getValue().fragment.isHidden()) {
+                ft.hide(entry.getValue().fragment);
             }
         }
     }
 
     /**
-     * 实例化:根据fragment、类实例化
+     * 实例化Fragment
      *
-     * @param index
+     * @param data
      * @return
      */
-    private boolean instanceFragment(int index) {
-        if (index < 0) {
-            return false;
-        }
-        if (fragmentData[index].fragment != null) {
+    private boolean instanceFragment(FragmentData data) {
+        if (data.fragment != null) {
             return true;
         }
-        if (fragmentData[index].cls == null) {
-            return false;
-        }
         try {
-            fragmentData[index].fragment = fragmentData[index].cls.newInstance();
+            data.fragment = data.factory.create(data.sign);
             return true;
         } catch (Exception e) {
         }
@@ -151,33 +190,31 @@ public class FragmentHelper {
     }
 
     public static class FragmentData {
+        private String sign;
         private Fragment fragment;
-        private Class<? extends Fragment> cls;
+        private FragmentFactory factory;
         private String tag;
 
         private FragmentData() {
         }
 
-        public static FragmentData create(@NonNull Class<? extends Fragment> cls) {
-            return create(cls, null);
+        public static FragmentHelper.FragmentData create(@NonNull String sign, @NonNull FragmentFactory factory) {
+            return create(sign, factory, null);
         }
 
-        public static FragmentData create(@NonNull Class<? extends Fragment> cls, @Nullable String tag) {
-            FragmentData fragmentData = new FragmentData();
-            fragmentData.cls = cls;
+        public static FragmentHelper.FragmentData create(@NonNull String sign, @NonNull FragmentFactory factory, @Nullable String tag) {
+            FragmentHelper.FragmentData fragmentData = new FragmentHelper.FragmentData();
+            fragmentData.sign = sign;
+            fragmentData.factory = factory;
             fragmentData.tag = tag;
             return fragmentData;
         }
 
-        public static FragmentData create(@NonNull Fragment fragment) {
-            return create(fragment, null);
-        }
-
-        public static FragmentData create(@NonNull Fragment fragment, @Nullable String tag) {
-            FragmentData fragmentData = new FragmentData();
-            fragmentData.fragment = fragment;
-            fragmentData.tag = tag;
-            return fragmentData;
-        }
     }
+
+    public interface FragmentFactory {
+        Fragment create(String sign);
+    }
+
 }
+
