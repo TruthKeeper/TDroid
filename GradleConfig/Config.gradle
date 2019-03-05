@@ -1,10 +1,10 @@
 ext {
-    compileSdkVersion = 27
-    buildToolsVersion = "27.0.3"
+    compileSdkVersion = 28
+    buildToolsVersion = "28.0.2"
     minSdkVersion = 17
     //用于测试环境时加速编译
     minSdkVersionLollipop = 21
-    targetSdkVersion = 27
+    targetSdkVersion = 26
 
     configDir = rootProject.rootDir.absolutePath + "/GradleConfig/"
     baseModuleFile = rootProject.file(configDir + "BaseModule.gradle")
