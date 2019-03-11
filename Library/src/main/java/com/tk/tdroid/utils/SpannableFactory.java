@@ -15,16 +15,19 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.content.res.AppCompatResources;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.AlignmentSpan;
 import android.text.style.BackgroundColorSpan;
@@ -57,8 +60,8 @@ import java.util.regex.Pattern;
 /**
  * <pre>
  *      author : TK
- *      time : 2017/9/30
- *      desc : Spannable生成工具
+ *      time : 2017/12/26
+ *      desc : Spannable辅助类
  * </pre>
  * 支持：
  * <ul>
@@ -86,6 +89,7 @@ import java.util.regex.Pattern;
  */
 
 public final class SpannableFactory {
+
 
     @IntDef({Align.ALIGN_BOTTOM, Align.ALIGN_BASELINE, Align.ALIGN_CENTER, Align.ALIGN_TOP})
     @Retention(RetentionPolicy.SOURCE)
@@ -118,7 +122,7 @@ public final class SpannableFactory {
      */
     public static List<String> findImageTagByText(@NonNull CharSequence charSequence) {
         List<String> list = new LinkedList<>();
-        if (EmptyUtils.isEmpty(charSequence)) {
+        if (TextUtils.isEmpty(charSequence)) {
             return list;
         }
         if (pattern == null) {
@@ -234,7 +238,7 @@ public final class SpannableFactory {
 
         public Builder(CharSequence text) {
             mBuilder = new SpannableStringBuilder();
-            tempText = EmptyUtils.isEmpty(text) ? "" : text;
+            tempText = TextUtils.isEmpty(text) ? "" : text;
             reset();
         }
 
@@ -787,6 +791,31 @@ public final class SpannableFactory {
         }
 
         /**
+         * 追加图片
+         *
+         * @param resourceId 图片资源id
+         * @return
+         */
+        public Builder appendImage(@DrawableRes final int resourceId) {
+            return appendImage(resourceId, Align.ALIGN_BOTTOM);
+        }
+
+        /**
+         * 追加图片
+         *
+         * @param resourceId 图片资源id
+         * @param align      对齐
+         * @return
+         */
+        public Builder appendImage(@DrawableRes final int resourceId, @Align final int align) {
+            update(TYPE_IMAGE);
+            this.imageDrawable = AppCompatResources.getDrawable(Utils.getApp(), resourceId);
+            this.imageAlign = align;
+            return this;
+        }
+
+
+        /**
          * 追加空格
          *
          * @param spaceWidth
@@ -919,7 +948,7 @@ public final class SpannableFactory {
         private void updateImage() {
             int from = mBuilder.length();
             mBuilder.append(IMAGE_PLACEHOLDER_START);
-            if (!EmptyUtils.isEmpty(imageTag)) {
+            if (!TextUtils.isEmpty(imageTag)) {
                 mBuilder.append(imageTag);
             }
             mBuilder.append(IMAGE_PLACEHOLDER_END);
@@ -947,6 +976,7 @@ public final class SpannableFactory {
          * @return
          */
         public SpannableStringBuilder build() {
+            append(" ").fontSize(0);
             updateAndReset();
             return mBuilder;
         }
