@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.DrawableContainer;
 import android.graphics.drawable.StateListDrawable;
@@ -16,6 +17,9 @@ import android.support.graphics.drawable.VectorDrawableCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v7.content.res.AppCompatResources;
+import android.util.TypedValue;
+
+import com.tk.tdroid.R;
 
 /**
  * <pre>
@@ -38,8 +42,20 @@ public final class DrawableUtils {
      */
     @Nullable
     public static Drawable getTintDrawable(@NonNull TypedArray array, @StyleableRes int index) {
-        int resourceId = array.getResourceId(index, -1);
-        return resourceId == -1 ? null : AppCompatResources.getDrawable(Utils.getApp(), resourceId);
+        TypedValue value = new TypedValue();
+        boolean has = array.getValue(index, value);
+        if (has) {
+            switch (value.type) {
+                case TypedValue.TYPE_FIRST_COLOR_INT:
+                case TypedValue.TYPE_INT_COLOR_RGB8:
+                case TypedValue.TYPE_INT_COLOR_ARGB4:
+                case TypedValue.TYPE_INT_COLOR_RGB4:
+                    return new ColorDrawable(value.data);
+                default:
+                    return value.resourceId == -1 ? null : AppCompatResources.getDrawable(Utils.getApp(), value.resourceId);
+            }
+        }
+        return null;
     }
 
     /**

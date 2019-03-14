@@ -152,15 +152,15 @@
         <enum name="center" value="1" />
         <enum name="bottom" value="2" />
     </attr>
-    <attr name="tui_drawableLeft_default" format="reference" />
+    <attr name="tui_drawableLeft_default" format="reference|color" />
     <attr name="tui_drawableLeftTint_default" format="color" />
-    <attr name="tui_drawableLeft_pressed" format="reference" />
+    <attr name="tui_drawableLeft_pressed" format="reference|color" />
     <attr name="tui_drawableLeftTint_pressed" format="color" />
-    <attr name="tui_drawableLeft_selected" format="reference" />
+    <attr name="tui_drawableLeft_selected" format="reference|color" />
     <attr name="tui_drawableLeftTint_selected" format="color" />
-    <attr name="tui_drawableLeft_focused" format="reference" />
+    <attr name="tui_drawableLeft_focused" format="reference|color" />
     <attr name="tui_drawableLeftTint_focused" format="color" />
-    <attr name="tui_drawableLeft_disabled" format="reference" />
+    <attr name="tui_drawableLeft_disabled" format="reference|color" />
     <attr name="tui_drawableLeftTint_disabled" format="color" />
 
     <attr name="tui_drawableTopWidth" format="dimension" />
@@ -170,15 +170,15 @@
         <enum name="center" value="1" />
         <enum name="right" value="2" />
     </attr>
-    <attr name="tui_drawableTop_default" format="reference" />
+    <attr name="tui_drawableTop_default" format="reference|color" />
     <attr name="tui_drawableTopTint_default" format="color" />
-    <attr name="tui_drawableTop_pressed" format="reference" />
+    <attr name="tui_drawableTop_pressed" format="reference|color" />
     <attr name="tui_drawableTopTint_pressed" format="color" />
-    <attr name="tui_drawableTop_selected" format="reference" />
+    <attr name="tui_drawableTop_selected" format="reference|color" />
     <attr name="tui_drawableTopTint_selected" format="color" />
-    <attr name="tui_drawableTop_focused" format="reference" />
+    <attr name="tui_drawableTop_focused" format="reference|color" />
     <attr name="tui_drawableTopTint_focused" format="color" />
-    <attr name="tui_drawableTop_disabled" format="reference" />
+    <attr name="tui_drawableTop_disabled" format="reference|color" />
     <attr name="tui_drawableTopTint_disabled" format="color" />
 
     <attr name="tui_drawableRightWidth" format="dimension" />
@@ -188,15 +188,15 @@
         <enum name="center" value="1" />
         <enum name="bottom" value="2" />
     </attr>
-    <attr name="tui_drawableRight_default" format="reference" />
+    <attr name="tui_drawableRight_default" format="reference|color" />
     <attr name="tui_drawableRightTint_default" format="color" />
-    <attr name="tui_drawableRight_pressed" format="reference" />
+    <attr name="tui_drawableRight_pressed" format="reference|color" />
     <attr name="tui_drawableRightTint_pressed" format="color" />
-    <attr name="tui_drawableRight_selected" format="reference" />
+    <attr name="tui_drawableRight_selected" format="reference|color" />
     <attr name="tui_drawableRightTint_selected" format="color" />
-    <attr name="tui_drawableRight_focused" format="reference" />
+    <attr name="tui_drawableRight_focused" format="reference|color" />
     <attr name="tui_drawableRightTint_focused" format="color" />
-    <attr name="tui_drawableRight_disabled" format="reference" />
+    <attr name="tui_drawableRight_disabled" format="reference|color" />
     <attr name="tui_drawableRightTint_disabled" format="color" />
 
     <attr name="tui_drawableBottomWidth" format="dimension" />
@@ -206,15 +206,15 @@
         <enum name="center" value="1" />
         <enum name="right" value="2" />
     </attr>
-    <attr name="tui_drawableBottom_default" format="reference" />
+    <attr name="tui_drawableBottom_default" format="reference|color" />
     <attr name="tui_drawableBottomTint_default" format="color" />
-    <attr name="tui_drawableBottom_pressed" format="reference" />
+    <attr name="tui_drawableBottom_pressed" format="reference|color" />
     <attr name="tui_drawableBottomTint_pressed" format="color" />
-    <attr name="tui_drawableBottom_selected" format="reference" />
+    <attr name="tui_drawableBottom_selected" format="reference|color" />
     <attr name="tui_drawableBottomTint_selected" format="color" />
-    <attr name="tui_drawableBottom_focused" format="reference" />
+    <attr name="tui_drawableBottom_focused" format="reference|color" />
     <attr name="tui_drawableBottomTint_focused" format="color" />
-    <attr name="tui_drawableBottom_disabled" format="reference" />
+    <attr name="tui_drawableBottom_disabled" format="reference|color" />
     <attr name="tui_drawableBottomTint_disabled" format="color" />
     <!--ImageView的src配置-->
     <attr name="tui_src_default" format="reference" />

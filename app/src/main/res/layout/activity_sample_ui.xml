@@ -64,6 +64,19 @@
                 app:tui_textColor_default="@android:color/black"
                 app:tui_textColor_selected="@android:color/holo_green_light" />
 
+            <com.tk.tdroid.view.tui.TUITextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:drawablePadding="16dp"
+                android:gravity="center_vertical"
+                android:text="左边支持放置ColorDrawable"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                app:tui_drawableLeftHeight="24dp"
+                app:tui_drawableLeftWidth="9dp"
+                app:tui_drawableLeft_default="@color/colorPrimary" />
+
             <com.tk.tdroid.view.tui.TUIEditText
                 android:layout_width="match_parent"
                 android:layout_height="52dp"
@@ -88,9 +101,9 @@
             <com.tk.tdroid.view.tui.TUIImageView
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
                 android:clickable="true"
                 android:padding="12dp"
                 app:tui_bg_corner="12dp"
@@ -102,9 +115,9 @@
             <com.tk.tdroid.view.tui.TUITextView
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
                 android:background="#f0f0f0"
                 android:gravity="center"
                 android:text="TUITextView支持Drawable多种对齐方式"
@@ -123,9 +136,9 @@
                 android:id="@+id/rl_container"
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
-                android:layout_marginBottom="12dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
+                android:layout_marginBottom="12dp"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
                 app:tui_bg_corner="6dp"

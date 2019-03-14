@@ -6,11 +6,19 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.annotation.ColorInt;
+import android.support.annotation.Px;
 import android.support.annotation.StyleableRes;
 import android.widget.TextView;
 
+import com.tk.tdroid.utils.ConvertUtils;
 import com.tk.tdroid.utils.DrawableUtils;
 import com.tk.tdroid.utils.SelectorFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static android.graphics.drawable.GradientDrawable.Orientation.TOP_BOTTOM;
 
 /**
  * <pre>
@@ -24,692 +32,554 @@ import com.tk.tdroid.utils.SelectorFactory;
  */
 
 public class TUIHelper<TUI extends IView> {
-
-    private TUI uiView;
-
-    private int bgSolidDefault;
-    private int bgSolidPressed;
-    private int bgSolidSelected;
-    private int bgSolidFocused;
-    private int bgSolidDisabled;
-
-    private int bgStrokeDefault;
-    private int bgStrokePressed;
-    private int bgStrokeSelected;
-    private int bgStrokeFocused;
-    private int bgStrokeDisabled;
-
-    private int bgStrokeColorDefault;
-    private int bgStrokeColorPressed;
-    private int bgStrokeColorSelected;
-    private int bgStrokeColorFocused;
-    private int bgStrokeColorDisabled;
-
-    private int bgCorner;
-    private int bgCornerTopLeft;
-    private int bgCornerTopRight;
-    private int bgCornerBottomRight;
-    private int bgCornerBottomLeft;
-
-    private int bgRipplePressed;
-
-    private int bgGradientStartColorDefault;
-    private int bgGradientStartColorPressed;
-    private int bgGradientStartColorSelected;
-    private int bgGradientStartColorFocused;
-    private int bgGradientStartColorDisabled;
-
-    private int bgGradientCenterColorDefault;
-    private int bgGradientCenterColorPressed;
-    private int bgGradientCenterColorSelected;
-    private int bgGradientCenterColorFocused;
-    private int bgGradientCenterColorDisabled;
-
-    private int bgGradientEndColorDefault;
-    private int bgGradientEndColorPressed;
-    private int bgGradientEndColorSelected;
-    private int bgGradientEndColorFocused;
-    private int bgGradientEndColorDisabled;
-
-    private int bgGradientDirectionDefault;
-    private int bgGradientDirectionPressed;
-    private int bgGradientDirectionSelected;
-    private int bgGradientDirectionFocused;
-    private int bgGradientDirectionDisabled;
-
-    private int textColorDefault;
-    private int textColorPressed;
-    private int textColorSelected;
-    private int textColorFocused;
-    private int textColorDisabled;
-
-    private int drawableLeftWidth;
-    private int drawableLeftHeight;
-    private int drawableLeftAlign;
-    private Drawable drawableLeftDefault;
-    private int drawableLeftTintDefault;
-    private Drawable drawableLeftPressed;
-    private int drawableLeftTintPressed;
-    private Drawable drawableLeftSelected;
-    private int drawableLeftTintSelected;
-    private Drawable drawableLeftFocused;
-    private int drawableLeftTintFocused;
-    private Drawable drawableLeftDisabled;
-    private int drawableLeftTintDisabled;
-
-    private int drawableTopWidth;
-    private int drawableTopHeight;
-    private int drawableTopAlign;
-    private Drawable drawableTopDefault;
-    private int drawableTopTintDefault;
-    private Drawable drawableTopPressed;
-    private int drawableTopTintPressed;
-    private Drawable drawableTopSelected;
-    private int drawableTopTintSelected;
-    private Drawable drawableTopFocused;
-    private int drawableTopTintFocused;
-    private Drawable drawableTopDisabled;
-    private int drawableTopTintDisabled;
-
-    private int drawableRightWidth;
-    private int drawableRightHeight;
-    private int drawableRightAlign;
-    private Drawable drawableRightDefault;
-    private int drawableRightTintDefault;
-    private Drawable drawableRightPressed;
-    private int drawableRightTintPressed;
-    private Drawable drawableRightSelected;
-    private int drawableRightTintSelected;
-    private Drawable drawableRightFocused;
-    private int drawableRightTintFocused;
-    private Drawable drawableRightDisabled;
-    private int drawableRightTintDisabled;
-
-    private int drawableBottomWidth;
-    private int drawableBottomHeight;
-    private int drawableBottomAlign;
-    private Drawable drawableBottomDefault;
-    private int drawableBottomTintDefault;
-    private Drawable drawableBottomPressed;
-    private int drawableBottomTintPressed;
-    private Drawable drawableBottomSelected;
-    private int drawableBottomTintSelected;
-    private Drawable drawableBottomFocused;
-    private int drawableBottomTintFocused;
-    private Drawable drawableBottomDisabled;
-    private int drawableBottomTintDisabled;
-
-    private Drawable srcDefault;
-    private int srcTintDefault;
-    private Drawable srcPressed;
-    private int srcTintPressed;
-    private Drawable srcSelected;
-    private int srcTintSelected;
-    private Drawable srcFocused;
-    private int srcTintFocused;
-    private Drawable srcDisabled;
-    private int srcTintDisabled;
+    private Builder<TUI> mBuilder;
 
     private TUIHelper(Builder<TUI> builder) {
-        uiView = builder.uiView;
-        bgSolidDefault = builder.bgSolidDefault;
-        bgSolidPressed = builder.bgSolidPressed;
-        bgSolidSelected = builder.bgSolidSelected;
-        bgSolidFocused = builder.bgSolidFocused;
-        bgSolidDisabled = builder.bgSolidDisabled;
-
-        bgStrokeDefault = builder.bgStrokeDefault;
-        bgStrokePressed = builder.bgStrokePressed;
-        bgStrokeSelected = builder.bgStrokeSelected;
-        bgStrokeFocused = builder.bgStrokeFocused;
-        bgStrokeDisabled = builder.bgStrokeDisabled;
-
-        bgStrokeColorDefault = builder.bgStrokeColorDefault;
-        bgStrokeColorPressed = builder.bgStrokeColorPressed;
-        bgStrokeColorSelected = builder.bgStrokeColorSelected;
-        bgStrokeColorFocused = builder.bgStrokeColorFocused;
-        bgStrokeColorDisabled = builder.bgStrokeColorDisabled;
-
-        bgCorner = builder.bgCorner;
-        bgCornerTopLeft = builder.bgCornerTopLeft;
-        bgCornerTopRight = builder.bgCornerTopRight;
-        bgCornerBottomRight = builder.bgCornerBottomRight;
-        bgCornerBottomLeft = builder.bgCornerBottomLeft;
-
-        bgRipplePressed = builder.bgRipplePressed;
-
-        bgGradientStartColorDefault = builder.bgGradientStartColorDefault;
-        bgGradientStartColorPressed = builder.bgGradientStartColorPressed;
-        bgGradientStartColorSelected = builder.bgGradientStartColorSelected;
-        bgGradientStartColorFocused = builder.bgGradientStartColorFocused;
-        bgGradientStartColorDisabled = builder.bgGradientStartColorDisabled;
-
-        bgGradientCenterColorDefault = builder.bgGradientCenterColorDefault;
-        bgGradientCenterColorPressed = builder.bgGradientCenterColorPressed;
-        bgGradientCenterColorSelected = builder.bgGradientCenterColorSelected;
-        bgGradientCenterColorFocused = builder.bgGradientCenterColorFocused;
-        bgGradientCenterColorDisabled = builder.bgGradientCenterColorDisabled;
-
-        bgGradientEndColorDefault = builder.bgGradientEndColorDefault;
-        bgGradientEndColorPressed = builder.bgGradientEndColorPressed;
-        bgGradientEndColorSelected = builder.bgGradientEndColorSelected;
-        bgGradientEndColorFocused = builder.bgGradientEndColorFocused;
-        bgGradientEndColorDisabled = builder.bgGradientEndColorDisabled;
-
-        bgGradientDirectionDefault = builder.bgGradientDirectionDefault;
-        bgGradientDirectionPressed = builder.bgGradientDirectionPressed;
-        bgGradientDirectionSelected = builder.bgGradientDirectionSelected;
-        bgGradientDirectionFocused = builder.bgGradientDirectionFocused;
-        bgGradientDirectionDisabled = builder.bgGradientDirectionDisabled;
-
-        textColorDefault = builder.textColorDefault;
-        textColorPressed = builder.textColorPressed;
-        textColorSelected = builder.textColorSelected;
-        textColorFocused = builder.textColorFocused;
-        textColorDisabled = builder.textColorDisabled;
-
-        drawableLeftWidth = builder.drawableLeftWidth;
-        drawableLeftHeight = builder.drawableLeftHeight;
-        drawableLeftAlign = builder.drawableLeftAlign;
-        drawableLeftDefault = builder.drawableLeftDefault;
-        drawableLeftTintDefault = builder.drawableLeftTintDefault;
-        drawableLeftPressed = builder.drawableLeftPressed;
-        drawableLeftTintPressed = builder.drawableLeftTintPressed;
-        drawableLeftSelected = builder.drawableLeftSelected;
-        drawableLeftTintSelected = builder.drawableLeftTintSelected;
-        drawableLeftFocused = builder.drawableLeftFocused;
-        drawableLeftTintFocused = builder.drawableLeftTintFocused;
-        drawableLeftDisabled = builder.drawableLeftDisabled;
-        drawableLeftTintDisabled = builder.drawableLeftTintDisabled;
-
-        drawableTopWidth = builder.drawableTopWidth;
-        drawableTopHeight = builder.drawableTopHeight;
-        drawableTopAlign = builder.drawableTopAlign;
-        drawableTopDefault = builder.drawableTopDefault;
-        drawableTopTintDefault = builder.drawableTopTintDefault;
-        drawableTopPressed = builder.drawableTopPressed;
-        drawableTopTintPressed = builder.drawableTopTintPressed;
-        drawableTopSelected = builder.drawableTopSelected;
-        drawableTopTintSelected = builder.drawableTopTintSelected;
-        drawableTopFocused = builder.drawableTopFocused;
-        drawableTopTintFocused = builder.drawableTopTintFocused;
-        drawableTopDisabled = builder.drawableTopDisabled;
-        drawableTopTintDisabled = builder.drawableTopTintDisabled;
-
-        drawableRightWidth = builder.drawableRightWidth;
-        drawableRightHeight = builder.drawableRightHeight;
-        drawableRightAlign = builder.drawableRightAlign;
-        drawableRightDefault = builder.drawableRightDefault;
-        drawableRightTintDefault = builder.drawableRightTintDefault;
-        drawableRightPressed = builder.drawableRightPressed;
-        drawableRightTintPressed = builder.drawableRightTintPressed;
-        drawableRightSelected = builder.drawableRightSelected;
-        drawableRightTintSelected = builder.drawableRightTintSelected;
-        drawableRightFocused = builder.drawableRightFocused;
-        drawableRightTintFocused = builder.drawableRightTintFocused;
-        drawableRightDisabled = builder.drawableRightDisabled;
-        drawableRightTintDisabled = builder.drawableRightTintDisabled;
-
-        drawableBottomWidth = builder.drawableBottomWidth;
-        drawableBottomHeight = builder.drawableBottomHeight;
-        drawableBottomAlign = builder.drawableBottomAlign;
-        drawableBottomDefault = builder.drawableBottomDefault;
-        drawableBottomTintDefault = builder.drawableBottomTintDefault;
-        drawableBottomPressed = builder.drawableBottomPressed;
-        drawableBottomTintPressed = builder.drawableBottomTintPressed;
-        drawableBottomSelected = builder.drawableBottomSelected;
-        drawableBottomTintSelected = builder.drawableBottomTintSelected;
-        drawableBottomFocused = builder.drawableBottomFocused;
-        drawableBottomTintFocused = builder.drawableBottomTintFocused;
-        drawableBottomDisabled = builder.drawableBottomDisabled;
-        drawableBottomTintDisabled = builder.drawableBottomTintDisabled;
-
-        srcDefault = builder.srcDefault;
-        srcTintDefault = builder.srcTintDefault;
-        srcPressed = builder.srcPressed;
-        srcTintPressed = builder.srcTintPressed;
-        srcSelected = builder.srcSelected;
-        srcTintSelected = builder.srcTintSelected;
-        srcFocused = builder.srcFocused;
-        srcTintFocused = builder.srcTintFocused;
-        srcDisabled = builder.srcDisabled;
-        srcTintDisabled = builder.srcTintDisabled;
+        mBuilder = builder;
     }
 
     public TUI getUiView() {
-        return uiView;
+        return mBuilder.uiView;
     }
 
-    public void bgSolidDefault(int bgSolidDefault) {
-        this.bgSolidDefault = bgSolidDefault;
+    public TUIHelper<TUI> bgSolidDefault(@ColorInt int bgSolidDefault) {
+        mBuilder.bgSolidDefault = bgSolidDefault;
+        return this;
     }
 
-    public void bgSolidPressed(int bgSolidPressed) {
-        this.bgSolidPressed = bgSolidPressed;
+    public TUIHelper<TUI> bgSolidPressed(@ColorInt int bgSolidPressed) {
+        mBuilder.bgSolidPressed = bgSolidPressed;
+        return this;
     }
 
-    public void bgSolidSelected(int bgSolidSelected) {
-        this.bgSolidSelected = bgSolidSelected;
+    public TUIHelper<TUI> bgSolidSelected(@ColorInt int bgSolidSelected) {
+        mBuilder.bgSolidSelected = bgSolidSelected;
+        return this;
     }
 
-    public void bgSolidFocused(int bgSolidFocused) {
-        this.bgSolidFocused = bgSolidFocused;
+    public TUIHelper<TUI> bgSolidFocused(@ColorInt int bgSolidFocused) {
+        mBuilder.bgSolidFocused = bgSolidFocused;
+        return this;
     }
 
-    public void bgSolidDisabled(int bgSolidDisabled) {
-        this.bgSolidDisabled = bgSolidDisabled;
+    public TUIHelper<TUI> bgSolidDisabled(@ColorInt int bgSolidDisabled) {
+        mBuilder.bgSolidDisabled = bgSolidDisabled;
+        return this;
     }
 
-    public void bgStrokeDefault(int bgStrokeDefault) {
-        this.bgStrokeDefault = bgStrokeDefault;
+    public TUIHelper<TUI> bgStrokeDefault(@Px int bgStrokeDefault) {
+        mBuilder.bgStrokeDefault = bgStrokeDefault;
+        return this;
     }
 
-    public void bgStrokePressed(int bgStrokePressed) {
-        this.bgStrokePressed = bgStrokePressed;
+    public TUIHelper<TUI> bgStrokePressed(@Px int bgStrokePressed) {
+        mBuilder.bgStrokePressed = bgStrokePressed;
+        return this;
     }
 
-    public void bgStrokeSelected(int bgStrokeSelected) {
-        this.bgStrokeSelected = bgStrokeSelected;
+    public TUIHelper<TUI> bgStrokeSelected(@Px int bgStrokeSelected) {
+        mBuilder.bgStrokeSelected = bgStrokeSelected;
+        return this;
     }
 
-    public void bgStrokeFocused(int bgStrokeFocused) {
-        this.bgStrokeFocused = bgStrokeFocused;
+    public TUIHelper<TUI> bgStrokeFocused(@Px int bgStrokeFocused) {
+        mBuilder.bgStrokeFocused = bgStrokeFocused;
+        return this;
     }
 
-    public void bgStrokeDisabled(int bgStrokeDisabled) {
-        this.bgStrokeDisabled = bgStrokeDisabled;
+    public TUIHelper<TUI> bgStrokeDisabled(@Px int bgStrokeDisabled) {
+        mBuilder.bgStrokeDisabled = bgStrokeDisabled;
+        return this;
     }
 
-    public void bgStrokeColorDefault(int bgStrokeColorDefault) {
-        this.bgStrokeColorDefault = bgStrokeColorDefault;
+    public TUIHelper<TUI> bgStrokeColorDefault(@ColorInt int bgStrokeColorDefault) {
+        mBuilder.bgStrokeColorDefault = bgStrokeColorDefault;
+        return this;
     }
 
-    public void bgStrokeColorPressed(int bgStrokeColorPressed) {
-        this.bgStrokeColorPressed = bgStrokeColorPressed;
+    public TUIHelper<TUI> bgStrokeColorPressed(@ColorInt int bgStrokeColorPressed) {
+        mBuilder.bgStrokeColorPressed = bgStrokeColorPressed;
+        return this;
     }
 
-    public void bgStrokeColorSelected(int bgStrokeColorSelected) {
-        this.bgStrokeColorSelected = bgStrokeColorSelected;
+    public TUIHelper<TUI> bgStrokeColorSelected(@ColorInt int bgStrokeColorSelected) {
+        mBuilder.bgStrokeColorSelected = bgStrokeColorSelected;
+        return this;
     }
 
-    public void bgStrokeColorFocused(int bgStrokeColorFocused) {
-        this.bgStrokeColorFocused = bgStrokeColorFocused;
+    public TUIHelper<TUI> bgStrokeColorFocused(@ColorInt int bgStrokeColorFocused) {
+        mBuilder.bgStrokeColorFocused = bgStrokeColorFocused;
+        return this;
     }
 
-    public void bgStrokeColorDisabled(int bgStrokeColorDisabled) {
-        this.bgStrokeColorDisabled = bgStrokeColorDisabled;
+    public TUIHelper<TUI> bgStrokeColorDisabled(@ColorInt int bgStrokeColorDisabled) {
+        mBuilder.bgStrokeColorDisabled = bgStrokeColorDisabled;
+        return this;
     }
 
-    public void bgCorner(int bgCorner) {
-        this.bgCorner = bgCorner;
+    public TUIHelper<TUI> bgCorner(@Px int bgCorner) {
+        mBuilder.bgCorner = bgCorner;
+        return this;
     }
 
-    public void bgCornerTopLeft(int bgCornerTopLeft) {
-        this.bgCornerTopLeft = bgCornerTopLeft;
+    public TUIHelper<TUI> bgCornerTopLeft(@Px int bgCornerTopLeft) {
+        mBuilder.bgCornerTopLeft = bgCornerTopLeft;
+        return this;
     }
 
-    public void bgCornerTopRight(int bgCornerTopRight) {
-        this.bgCornerTopRight = bgCornerTopRight;
+    public TUIHelper<TUI> bgCornerTopRight(@Px int bgCornerTopRight) {
+        mBuilder.bgCornerTopRight = bgCornerTopRight;
+        return this;
     }
 
-    public void bgCornerBottomRight(int bgCornerBottomRight) {
-        this.bgCornerBottomRight = bgCornerBottomRight;
+    public TUIHelper<TUI> bgCornerBottomRight(@Px int bgCornerBottomRight) {
+        mBuilder.bgCornerBottomRight = bgCornerBottomRight;
+        return this;
     }
 
-    public void bgCornerBottomLeft(int bgCornerBottomLeft) {
-        this.bgCornerBottomLeft = bgCornerBottomLeft;
+    public TUIHelper<TUI> bgCornerBottomLeft(@Px int bgCornerBottomLeft) {
+        mBuilder.bgCornerBottomLeft = bgCornerBottomLeft;
+        return this;
     }
 
-    public void bgRipplePressed(int bgRipplePressed) {
-        this.bgRipplePressed = bgRipplePressed;
+    public TUIHelper<TUI> bgRipplePressed(@ColorInt int bgRipplePressed) {
+        mBuilder.bgRipplePressed = bgRipplePressed;
+        return this;
     }
 
-    public void bgGradientStartColorDefault(int bgGradientStartColorDefault) {
-        this.bgGradientStartColorDefault = bgGradientStartColorDefault;
+    public TUIHelper<TUI> bgGradientStartColorDefault(@ColorInt int bgGradientStartColorDefault) {
+        mBuilder.bgGradientStartColorDefault = bgGradientStartColorDefault;
+        return this;
     }
 
-    public void bgGradientStartColorPressed(int bgGradientStartColorPressed) {
-        this.bgGradientStartColorPressed = bgGradientStartColorPressed;
+    public TUIHelper<TUI> bgGradientStartColorPressed(@ColorInt int bgGradientStartColorPressed) {
+        mBuilder.bgGradientStartColorPressed = bgGradientStartColorPressed;
+        return this;
     }
 
-    public void bgGradientStartColorSelected(int bgGradientStartColorSelected) {
-        this.bgGradientStartColorSelected = bgGradientStartColorSelected;
+    public TUIHelper<TUI> bgGradientStartColorSelected(@ColorInt int bgGradientStartColorSelected) {
+        mBuilder.bgGradientStartColorSelected = bgGradientStartColorSelected;
+        return this;
     }
 
-    public void bgGradientStartColorFocused(int bgGradientStartColorFocused) {
-        this.bgGradientStartColorFocused = bgGradientStartColorFocused;
+    public TUIHelper<TUI> bgGradientStartColorFocused(@ColorInt int bgGradientStartColorFocused) {
+        mBuilder.bgGradientStartColorFocused = bgGradientStartColorFocused;
+        return this;
     }
 
-    public void bgGradientStartColorDisabled(int bgGradientStartColorDisabled) {
-        this.bgGradientStartColorDisabled = bgGradientStartColorDisabled;
+    public TUIHelper<TUI> bgGradientStartColorDisabled(@ColorInt int bgGradientStartColorDisabled) {
+        mBuilder.bgGradientStartColorDisabled = bgGradientStartColorDisabled;
+        return this;
     }
 
-    public void bgGradientCenterColorDefault(int bgGradientCenterColorDefault) {
-        this.bgGradientCenterColorDefault = bgGradientCenterColorDefault;
+    public TUIHelper<TUI> bgGradientCenterColorDefault(@ColorInt int bgGradientCenterColorDefault) {
+        mBuilder.bgGradientCenterColorDefault = bgGradientCenterColorDefault;
+        return this;
     }
 
-    public void bgGradientCenterColorPressed(int bgGradientCenterColorPressed) {
-        this.bgGradientCenterColorPressed = bgGradientCenterColorPressed;
+    public TUIHelper<TUI> bgGradientCenterColorPressed(@ColorInt int bgGradientCenterColorPressed) {
+        mBuilder.bgGradientCenterColorPressed = bgGradientCenterColorPressed;
+        return this;
     }
 
-    public void bgGradientCenterColorSelected(int bgGradientCenterColorSelected) {
-        this.bgGradientCenterColorSelected = bgGradientCenterColorSelected;
+    public TUIHelper<TUI> bgGradientCenterColorSelected(@ColorInt int bgGradientCenterColorSelected) {
+        mBuilder.bgGradientCenterColorSelected = bgGradientCenterColorSelected;
+        return this;
     }
 
-    public void bgGradientCenterColorFocused(int bgGradientCenterColorFocused) {
-        this.bgGradientCenterColorFocused = bgGradientCenterColorFocused;
+    public TUIHelper<TUI> bgGradientCenterColorFocused(@ColorInt int bgGradientCenterColorFocused) {
+        mBuilder.bgGradientCenterColorFocused = bgGradientCenterColorFocused;
+        return this;
     }
 
-    public void bgGradientCenterColorDisabled(int bgGradientCenterColorDisabled) {
-        this.bgGradientCenterColorDisabled = bgGradientCenterColorDisabled;
+    public TUIHelper<TUI> bgGradientCenterColorDisabled(@ColorInt int bgGradientCenterColorDisabled) {
+        mBuilder.bgGradientCenterColorDisabled = bgGradientCenterColorDisabled;
+        return this;
     }
 
-    public void bgGradientEndColorDefault(int bgGradientEndColorDefault) {
-        this.bgGradientEndColorDefault = bgGradientEndColorDefault;
+    public TUIHelper<TUI> bgGradientEndColorDefault(@ColorInt int bgGradientEndColorDefault) {
+        mBuilder.bgGradientEndColorDefault = bgGradientEndColorDefault;
+        return this;
     }
 
-    public void bgGradientEndColorPressed(int bgGradientEndColorPressed) {
-        this.bgGradientEndColorPressed = bgGradientEndColorPressed;
+    public TUIHelper<TUI> bgGradientEndColorPressed(@ColorInt int bgGradientEndColorPressed) {
+        mBuilder.bgGradientEndColorPressed = bgGradientEndColorPressed;
+        return this;
     }
 
-    public void bgGradientEndColorSelected(int bgGradientEndColorSelected) {
-        this.bgGradientEndColorSelected = bgGradientEndColorSelected;
+    public TUIHelper<TUI> bgGradientEndColorSelected(@ColorInt int bgGradientEndColorSelected) {
+        mBuilder.bgGradientEndColorSelected = bgGradientEndColorSelected;
+        return this;
     }
 
-    public void bgGradientEndColorFocused(int bgGradientEndColorFocused) {
-        this.bgGradientEndColorFocused = bgGradientEndColorFocused;
+    public TUIHelper<TUI> bgGradientEndColorFocused(@ColorInt int bgGradientEndColorFocused) {
+        mBuilder.bgGradientEndColorFocused = bgGradientEndColorFocused;
+        return this;
     }
 
-    public void bgGradientEndColorDisabled(int bgGradientEndColorDisabled) {
-        this.bgGradientEndColorDisabled = bgGradientEndColorDisabled;
+    public TUIHelper<TUI> bgGradientEndColorDisabled(@ColorInt int bgGradientEndColorDisabled) {
+        mBuilder.bgGradientEndColorDisabled = bgGradientEndColorDisabled;
+        return this;
     }
 
-    public void bgGradientDirectionDefault(int bgGradientDirectionDefault) {
-        this.bgGradientDirectionDefault = bgGradientDirectionDefault;
+    public TUIHelper<TUI> bgGradientDirectionDefault(GradientDrawable.Orientation bgGradientDirectionDefault) {
+        mBuilder.bgGradientDirectionDefault = bgGradientDirectionDefault;
+        return this;
     }
 
-    public void bgGradientDirectionPressed(int bgGradientDirectionPressed) {
-        this.bgGradientDirectionPressed = bgGradientDirectionPressed;
+    public TUIHelper<TUI> bgGradientDirectionPressed(GradientDrawable.Orientation bgGradientDirectionPressed) {
+        mBuilder.bgGradientDirectionPressed = bgGradientDirectionPressed;
+        return this;
     }
 
-    public void bgGradientDirectionSelected(int bgGradientDirectionSelected) {
-        this.bgGradientDirectionSelected = bgGradientDirectionSelected;
+    public TUIHelper<TUI> bgGradientDirectionSelected(GradientDrawable.Orientation bgGradientDirectionSelected) {
+        mBuilder.bgGradientDirectionSelected = bgGradientDirectionSelected;
+        return this;
     }
 
-    public void bgGradientDirectionFocused(int bgGradientDirectionFocused) {
-        this.bgGradientDirectionFocused = bgGradientDirectionFocused;
+    public TUIHelper<TUI> bgGradientDirectionFocused(GradientDrawable.Orientation bgGradientDirectionFocused) {
+        mBuilder.bgGradientDirectionFocused = bgGradientDirectionFocused;
+        return this;
     }
 
-    public void bgGradientDirectionDisabled(int bgGradientDirectionDisabled) {
-        this.bgGradientDirectionDisabled = bgGradientDirectionDisabled;
+    public TUIHelper<TUI> bgGradientDirectionDisabled(GradientDrawable.Orientation bgGradientDirectionDisabled) {
+        mBuilder.bgGradientDirectionDisabled = bgGradientDirectionDisabled;
+        return this;
     }
 
-    public void textColorDefault(int textColorDefault) {
-        this.textColorDefault = textColorDefault;
+    public TUIHelper<TUI> textColorDefault(@ColorInt int textColorDefault) {
+        mBuilder.textColorDefault = textColorDefault;
+        return this;
     }
 
-    public void textColorPressed(int textColorPressed) {
-        this.textColorPressed = textColorPressed;
+    public TUIHelper<TUI> textColorPressed(@ColorInt int textColorPressed) {
+        mBuilder.textColorPressed = textColorPressed;
+        return this;
     }
 
-    public void textColorSelected(int textColorSelected) {
-        this.textColorSelected = textColorSelected;
+    public TUIHelper<TUI> textColorSelected(@ColorInt int textColorSelected) {
+        mBuilder.textColorSelected = textColorSelected;
+        return this;
     }
 
-    public void textColorFocused(int textColorFocused) {
-        this.textColorFocused = textColorFocused;
+    public TUIHelper<TUI> textColorFocused(@ColorInt int textColorFocused) {
+        mBuilder.textColorFocused = textColorFocused;
+        return this;
     }
 
-    public void textColorDisabled(int textColorDisabled) {
-        this.textColorDisabled = textColorDisabled;
+    public TUIHelper<TUI> textColorDisabled(@ColorInt int textColorDisabled) {
+        mBuilder.textColorDisabled = textColorDisabled;
+        return this;
     }
 
-    public void drawableLeftWidth(int drawableLeftWidth) {
-        this.drawableLeftWidth = drawableLeftWidth;
+    public TUIHelper<TUI> drawableLeftWidth(@Px int drawableLeftWidth) {
+        mBuilder.drawableLeftWidth = drawableLeftWidth;
+        return this;
     }
 
-    public void drawableLeftHeight(int drawableLeftHeight) {
-        this.drawableLeftHeight = drawableLeftHeight;
+    public TUIHelper<TUI> drawableLeftHeight(@Px int drawableLeftHeight) {
+        mBuilder.drawableLeftHeight = drawableLeftHeight;
+        return this;
     }
 
-    public void drawableLeftAlign(int drawableLeftAlign) {
-        this.drawableLeftAlign = drawableLeftAlign;
+    public TUIHelper<TUI> drawableLeftAlign(int drawableLeftAlign) {
+        mBuilder.drawableLeftAlign = drawableLeftAlign;
+        return this;
     }
 
-    public void drawableLeftDefault(Drawable drawableLeftDefault) {
-        this.drawableLeftDefault = drawableLeftDefault;
+    public TUIHelper<TUI> drawableLeftDefault(Drawable drawableLeftDefault) {
+        mBuilder.drawableLeftDefault = drawableLeftDefault;
+        return this;
     }
 
-    public void drawableLeftTintDefault(int drawableLeftTintDefault) {
-        this.drawableLeftTintDefault = drawableLeftTintDefault;
+    public TUIHelper<TUI> drawableLeftTintDefault(@ColorInt int drawableLeftTintDefault) {
+        mBuilder.drawableLeftTintDefault = drawableLeftTintDefault;
+        return this;
     }
 
-    public void drawableLeftPressed(Drawable drawableLeftPressed) {
-        this.drawableLeftPressed = drawableLeftPressed;
+    public TUIHelper<TUI> drawableLeftPressed(Drawable drawableLeftPressed) {
+        mBuilder.drawableLeftPressed = drawableLeftPressed;
+        return this;
     }
 
-    public void drawableLeftTintPressed(int drawableLeftTintPressed) {
-        this.drawableLeftTintPressed = drawableLeftTintPressed;
+    public TUIHelper<TUI> drawableLeftTintPressed(@ColorInt int drawableLeftTintPressed) {
+        mBuilder.drawableLeftTintPressed = drawableLeftTintPressed;
+        return this;
     }
 
-    public void drawableLeftSelected(Drawable drawableLeftSelected) {
-        this.drawableLeftSelected = drawableLeftSelected;
+    public TUIHelper<TUI> drawableLeftSelected(Drawable drawableLeftSelected) {
+        mBuilder.drawableLeftSelected = drawableLeftSelected;
+        return this;
     }
 
-    public void drawableLeftTintSelected(int drawableLeftTintSelected) {
-        this.drawableLeftTintSelected = drawableLeftTintSelected;
+    public TUIHelper<TUI> drawableLeftTintSelected(@ColorInt int drawableLeftTintSelected) {
+        mBuilder.drawableLeftTintSelected = drawableLeftTintSelected;
+        return this;
     }
 
-    public void drawableLeftFocused(Drawable drawableLeftFocused) {
-        this.drawableLeftFocused = drawableLeftFocused;
+    public TUIHelper<TUI> drawableLeftFocused(Drawable drawableLeftFocused) {
+        mBuilder.drawableLeftFocused = drawableLeftFocused;
+        return this;
     }
 
-    public void drawableLeftTintFocused(int drawableLeftTintFocused) {
-        this.drawableLeftTintFocused = drawableLeftTintFocused;
+    public TUIHelper<TUI> drawableLeftTintFocused(@ColorInt int drawableLeftTintFocused) {
+        mBuilder.drawableLeftTintFocused = drawableLeftTintFocused;
+        return this;
     }
 
-    public void drawableLeftDisabled(Drawable drawableLeftDisabled) {
-        this.drawableLeftDisabled = drawableLeftDisabled;
+    public TUIHelper<TUI> drawableLeftDisabled(Drawable drawableLeftDisabled) {
+        mBuilder.drawableLeftDisabled = drawableLeftDisabled;
+        return this;
     }
 
-    public void drawableLeftTintDisabled(int drawableLeftTintDisabled) {
-        this.drawableLeftTintDisabled = drawableLeftTintDisabled;
+    public TUIHelper<TUI> drawableLeftTintDisabled(@ColorInt int drawableLeftTintDisabled) {
+        mBuilder.drawableLeftTintDisabled = drawableLeftTintDisabled;
+        return this;
     }
 
-    public void drawableTopWidth(int drawableTopWidth) {
-        this.drawableTopWidth = drawableTopWidth;
+    public TUIHelper<TUI> drawableTopWidth(@Px int drawableTopWidth) {
+        mBuilder.drawableTopWidth = drawableTopWidth;
+        return this;
     }
 
-    public void drawableTopHeight(int drawableTopHeight) {
-        this.drawableTopHeight = drawableTopHeight;
+    public TUIHelper<TUI> drawableTopHeight(@Px int drawableTopHeight) {
+        mBuilder.drawableTopHeight = drawableTopHeight;
+        return this;
     }
 
-    public void drawableTopAlign(int drawableTopAlign) {
-        this.drawableTopAlign = drawableTopAlign;
+    public TUIHelper<TUI> drawableTopAlign(int drawableTopAlign) {
+        mBuilder.drawableTopAlign = drawableTopAlign;
+        return this;
     }
 
-    public void drawableTopDefault(Drawable drawableTopDefault) {
-        this.drawableTopDefault = drawableTopDefault;
+    public TUIHelper<TUI> drawableTopDefault(Drawable drawableTopDefault) {
+        mBuilder.drawableTopDefault = drawableTopDefault;
+        return this;
     }
 
-    public void drawableTopTintDefault(int drawableTopTintDefault) {
-        this.drawableTopTintDefault = drawableTopTintDefault;
+    public TUIHelper<TUI> drawableTopTintDefault(@ColorInt int drawableTopTintDefault) {
+        mBuilder.drawableTopTintDefault = drawableTopTintDefault;
+        return this;
     }
 
-    public void drawableTopPressed(Drawable drawableTopPressed) {
-        this.drawableTopPressed = drawableTopPressed;
+    public TUIHelper<TUI> drawableTopPressed(Drawable drawableTopPressed) {
+        mBuilder.drawableTopPressed = drawableTopPressed;
+        return this;
     }
 
-    public void drawableTopTintPressed(int drawableTopTintPressed) {
-        this.drawableTopTintPressed = drawableTopTintPressed;
+    public TUIHelper<TUI> drawableTopTintPressed(@ColorInt int drawableTopTintPressed) {
+        mBuilder.drawableTopTintPressed = drawableTopTintPressed;
+        return this;
     }
 
-    public void drawableTopSelected(Drawable drawableTopSelected) {
-        this.drawableTopSelected = drawableTopSelected;
+    public TUIHelper<TUI> drawableTopSelected(Drawable drawableTopSelected) {
+        mBuilder.drawableTopSelected = drawableTopSelected;
+        return this;
     }
 
-    public void drawableTopTintSelected(int drawableTopTintSelected) {
-        this.drawableTopTintSelected = drawableTopTintSelected;
+    public TUIHelper<TUI> drawableTopTintSelected(@ColorInt int drawableTopTintSelected) {
+        mBuilder.drawableTopTintSelected = drawableTopTintSelected;
+        return this;
     }
 
-    public void drawableTopFocused(Drawable drawableTopFocused) {
-        this.drawableTopFocused = drawableTopFocused;
+    public TUIHelper<TUI> drawableTopFocused(Drawable drawableTopFocused) {
+        mBuilder.drawableTopFocused = drawableTopFocused;
+        return this;
     }
 
-    public void drawableTopTintFocused(int drawableTopTintFocused) {
-        this.drawableTopTintFocused = drawableTopTintFocused;
+    public TUIHelper<TUI> drawableTopTintFocused(@ColorInt int drawableTopTintFocused) {
+        mBuilder.drawableTopTintFocused = drawableTopTintFocused;
+        return this;
     }
 
-    public void drawableTopDisabled(Drawable drawableTopDisabled) {
-        this.drawableTopDisabled = drawableTopDisabled;
+    public TUIHelper<TUI> drawableTopDisabled(Drawable drawableTopDisabled) {
+        mBuilder.drawableTopDisabled = drawableTopDisabled;
+        return this;
     }
 
-    public void drawableTopTintDisabled(int drawableTopTintDisabled) {
-        this.drawableTopTintDisabled = drawableTopTintDisabled;
+    public TUIHelper<TUI> drawableTopTintDisabled(@ColorInt int drawableTopTintDisabled) {
+        mBuilder.drawableTopTintDisabled = drawableTopTintDisabled;
+        return this;
     }
 
-    public void drawableRightWidth(int drawableRightWidth) {
-        this.drawableRightWidth = drawableRightWidth;
+    public TUIHelper<TUI> drawableRightWidth(@Px int drawableRightWidth) {
+        mBuilder.drawableRightWidth = drawableRightWidth;
+        return this;
     }
 
-    public void drawableRightHeight(int drawableRightHeight) {
-        this.drawableRightHeight = drawableRightHeight;
+    public TUIHelper<TUI> drawableRightHeight(@Px int drawableRightHeight) {
+        mBuilder.drawableRightHeight = drawableRightHeight;
+        return this;
     }
 
-    public void drawableRightAlign(int drawableRightAlign) {
-        this.drawableRightAlign = drawableRightAlign;
+    public TUIHelper<TUI> drawableRightAlign(int drawableRightAlign) {
+        mBuilder.drawableRightAlign = drawableRightAlign;
+        return this;
     }
 
-    public void drawableRightDefault(Drawable drawableRightDefault) {
-        this.drawableRightDefault = drawableRightDefault;
+    public TUIHelper<TUI> drawableRightDefault(Drawable drawableRightDefault) {
+        mBuilder.drawableRightDefault = drawableRightDefault;
+        return this;
     }
 
-    public void drawableRightTintDefault(int drawableRightTintDefault) {
-        this.drawableRightTintDefault = drawableRightTintDefault;
+    public TUIHelper<TUI> drawableRightTintDefault(@ColorInt int drawableRightTintDefault) {
+        mBuilder.drawableRightTintDefault = drawableRightTintDefault;
+        return this;
     }
 
-    public void drawableRightPressed(Drawable drawableRightPressed) {
-        this.drawableRightPressed = drawableRightPressed;
+    public TUIHelper<TUI> drawableRightPressed(Drawable drawableRightPressed) {
+        mBuilder.drawableRightPressed = drawableRightPressed;
+        return this;
     }
 
-    public void drawableRightTintPressed(int drawableRightTintPressed) {
-        this.drawableRightTintPressed = drawableRightTintPressed;
+    public TUIHelper<TUI> drawableRightTintPressed(@ColorInt int drawableRightTintPressed) {
+        mBuilder.drawableRightTintPressed = drawableRightTintPressed;
+        return this;
     }
 
-    public void drawableRightSelected(Drawable drawableRightSelected) {
-        this.drawableRightSelected = drawableRightSelected;
+    public TUIHelper<TUI> drawableRightSelected(Drawable drawableRightSelected) {
+        mBuilder.drawableRightSelected = drawableRightSelected;
+        return this;
     }
 
-    public void drawableRightTintSelected(int drawableRightTintSelected) {
-        this.drawableRightTintSelected = drawableRightTintSelected;
+    public TUIHelper<TUI> drawableRightTintSelected(@ColorInt int drawableRightTintSelected) {
+        mBuilder.drawableRightTintSelected = drawableRightTintSelected;
+        return this;
     }
 
-    public void drawableRightFocused(Drawable drawableRightFocused) {
-        this.drawableRightFocused = drawableRightFocused;
+    public TUIHelper<TUI> drawableRightFocused(Drawable drawableRightFocused) {
+        mBuilder.drawableRightFocused = drawableRightFocused;
+        return this;
     }
 
-    public void drawableRightTintFocused(int drawableRightTintFocused) {
-        this.drawableRightTintFocused = drawableRightTintFocused;
+    public TUIHelper<TUI> drawableRightTintFocused(@ColorInt int drawableRightTintFocused) {
+        mBuilder.drawableRightTintFocused = drawableRightTintFocused;
+        return this;
     }
 
-    public void drawableRightDisabled(Drawable drawableRightDisabled) {
-        this.drawableRightDisabled = drawableRightDisabled;
+    public TUIHelper<TUI> drawableRightDisabled(Drawable drawableRightDisabled) {
+        mBuilder.drawableRightDisabled = drawableRightDisabled;
+        return this;
     }
 
-    public void drawableRightTintDisabled(int drawableRightTintDisabled) {
-        this.drawableRightTintDisabled = drawableRightTintDisabled;
+    public TUIHelper<TUI> drawableRightTintDisabled(@ColorInt int drawableRightTintDisabled) {
+        mBuilder.drawableRightTintDisabled = drawableRightTintDisabled;
+        return this;
     }
 
-    public void drawableBottomWidth(int drawableBottomWidth) {
-        this.drawableBottomWidth = drawableBottomWidth;
+    public TUIHelper<TUI> drawableBottomWidth(@Px int drawableBottomWidth) {
+        mBuilder.drawableBottomWidth = drawableBottomWidth;
+        return this;
     }
 
-    public void drawableBottomHeight(int drawableBottomHeight) {
-        this.drawableBottomHeight = drawableBottomHeight;
+    public TUIHelper<TUI> drawableBottomHeight(@Px int drawableBottomHeight) {
+        mBuilder.drawableBottomHeight = drawableBottomHeight;
+        return this;
     }
 
-    public void drawableBottomAlign(int drawableBottomAlign) {
-        this.drawableBottomAlign = drawableBottomAlign;
+    public TUIHelper<TUI> drawableBottomAlign(int drawableBottomAlign) {
+        mBuilder.drawableBottomAlign = drawableBottomAlign;
+        return this;
     }
 
-    public void drawableBottomDefault(Drawable drawableBottomDefault) {
-        this.drawableBottomDefault = drawableBottomDefault;
+    public TUIHelper<TUI> drawableBottomDefault(Drawable drawableBottomDefault) {
+        mBuilder.drawableBottomDefault = drawableBottomDefault;
+        return this;
     }
 
-    public void drawableBottomTintDefault(int drawableBottomTintDefault) {
-        this.drawableBottomTintDefault = drawableBottomTintDefault;
+    public TUIHelper<TUI> drawableBottomTintDefault(@ColorInt int drawableBottomTintDefault) {
+        mBuilder.drawableBottomTintDefault = drawableBottomTintDefault;
+        return this;
     }
 
-    public void drawableBottomPressed(Drawable drawableBottomPressed) {
-        this.drawableBottomPressed = drawableBottomPressed;
+    public TUIHelper<TUI> drawableBottomPressed(Drawable drawableBottomPressed) {
+        mBuilder.drawableBottomPressed = drawableBottomPressed;
+        return this;
     }
 
-    public void drawableBottomTintPressed(int drawableBottomTintPressed) {
-        this.drawableBottomTintPressed = drawableBottomTintPressed;
+    public TUIHelper<TUI> drawableBottomTintPressed(@ColorInt int drawableBottomTintPressed) {
+        mBuilder.drawableBottomTintPressed = drawableBottomTintPressed;
+        return this;
     }
 
-    public void drawableBottomSelected(Drawable drawableBottomSelected) {
-        this.drawableBottomSelected = drawableBottomSelected;
+    public TUIHelper<TUI> drawableBottomSelected(Drawable drawableBottomSelected) {
+        mBuilder.drawableBottomSelected = drawableBottomSelected;
+        return this;
     }
 
-    public void drawableBottomTintSelected(int drawableBottomTintSelected) {
-        this.drawableBottomTintSelected = drawableBottomTintSelected;
+    public TUIHelper<TUI> drawableBottomTintSelected(@ColorInt int drawableBottomTintSelected) {
+        mBuilder.drawableBottomTintSelected = drawableBottomTintSelected;
+        return this;
     }
 
-    public void drawableBottomFocused(Drawable drawableBottomFocused) {
-        this.drawableBottomFocused = drawableBottomFocused;
+    public TUIHelper<TUI> drawableBottomFocused(Drawable drawableBottomFocused) {
+        mBuilder.drawableBottomFocused = drawableBottomFocused;
+        return this;
     }
 
-    public void drawableBottomTintFocused(int drawableBottomTintFocused) {
-        this.drawableBottomTintFocused = drawableBottomTintFocused;
+    public TUIHelper<TUI> drawableBottomTintFocused(@ColorInt int drawableBottomTintFocused) {
+        mBuilder.drawableBottomTintFocused = drawableBottomTintFocused;
+        return this;
     }
 
-    public void drawableBottomDisabled(Drawable drawableBottomDisabled) {
-        this.drawableBottomDisabled = drawableBottomDisabled;
+    public TUIHelper<TUI> drawableBottomDisabled(Drawable drawableBottomDisabled) {
+        mBuilder.drawableBottomDisabled = drawableBottomDisabled;
+        return this;
     }
 
-    public void drawableBottomTintDisabled(int drawableBottomTintDisabled) {
-        this.drawableBottomTintDisabled = drawableBottomTintDisabled;
+    public TUIHelper<TUI> drawableBottomTintDisabled(@ColorInt int drawableBottomTintDisabled) {
+        mBuilder.drawableBottomTintDisabled = drawableBottomTintDisabled;
+        return this;
     }
 
-    public void srcDefault(Drawable srcDefault) {
-        this.srcDefault = srcDefault;
+    public TUIHelper<TUI> srcDefault(Drawable srcDefault) {
+        mBuilder.srcDefault = srcDefault;
+        return this;
     }
 
-    public void srcTintDefault(int srcTintDefault) {
-        this.srcTintDefault = srcTintDefault;
+    public TUIHelper<TUI> srcTintDefault(@ColorInt int srcTintDefault) {
+        mBuilder.srcTintDefault = srcTintDefault;
+        return this;
     }
 
-    public void srcPressed(Drawable srcPressed) {
-        this.srcPressed = srcPressed;
+    public TUIHelper<TUI> srcPressed(Drawable srcPressed) {
+        mBuilder.srcPressed = srcPressed;
+        return this;
     }
 
-    public void srcTintPressed(int srcTintPressed) {
-        this.srcTintPressed = srcTintPressed;
+    public TUIHelper<TUI> srcTintPressed(@ColorInt int srcTintPressed) {
+        mBuilder.srcTintPressed = srcTintPressed;
+        return this;
     }
 
-    public void srcSelected(Drawable srcSelected) {
-        this.srcSelected = srcSelected;
+    public TUIHelper<TUI> srcSelected(Drawable srcSelected) {
+        mBuilder.srcSelected = srcSelected;
+        return this;
     }
 
-    public void srcTintSelected(int srcTintSelected) {
-        this.srcTintSelected = srcTintSelected;
+    public TUIHelper<TUI> srcTintSelected(@ColorInt int srcTintSelected) {
+        mBuilder.srcTintSelected = srcTintSelected;
+        return this;
     }
 
-    public void srcFocused(Drawable srcFocused) {
-        this.srcFocused = srcFocused;
+    public TUIHelper<TUI> srcFocused(Drawable srcFocused) {
+        mBuilder.srcFocused = srcFocused;
+        return this;
     }
 
-    public void srcTintFocused(int srcTintFocused) {
-        this.srcTintFocused = srcTintFocused;
+    public TUIHelper<TUI> srcTintFocused(@ColorInt int srcTintFocused) {
+        mBuilder.srcTintFocused = srcTintFocused;
+        return this;
     }
 
-    public void srcDisabled(Drawable srcDisabled) {
-        this.srcDisabled = srcDisabled;
+    public TUIHelper<TUI> srcDisabled(Drawable srcDisabled) {
+        mBuilder.srcDisabled = srcDisabled;
+        return this;
     }
 
-    public void srcTintDisabled(int srcTintDisabled) {
-        this.srcTintDisabled = srcTintDisabled;
+    public TUIHelper<TUI> srcTintDisabled(@ColorInt int srcTintDisabled) {
+        mBuilder.srcTintDisabled = srcTintDisabled;
+        return this;
     }
 
     /**
@@ -717,37 +587,37 @@ public class TUIHelper<TUI extends IView> {
      */
     public void updateBackground() {
         SelectorFactory factory = SelectorFactory.create();
-        factory.defaultSolid(bgSolidDefault)
-                .pressedSolid(bgSolidPressed)
-                .selectedSolid(bgSolidSelected)
-                .focusedSolid(bgSolidFocused)
-                .disabledSolid(bgSolidDisabled);
+        factory.defaultSolid(mBuilder.bgSolidDefault)
+                .pressedSolid(mBuilder.bgSolidPressed)
+                .selectedSolid(mBuilder.bgSolidSelected)
+                .focusedSolid(mBuilder.bgSolidFocused)
+                .disabledSolid(mBuilder.bgSolidDisabled);
 
-        factory.defaultStroke(bgStrokeDefault, bgStrokeColorDefault)
-                .pressedStroke(bgStrokePressed, bgStrokeColorPressed)
-                .selectedStroke(bgStrokeSelected, bgStrokeColorSelected)
-                .focusedStroke(bgStrokeFocused, bgStrokeColorFocused)
-                .disabledStroke(bgStrokeDisabled, bgStrokeColorDisabled);
+        factory.defaultStroke(mBuilder.bgStrokeDefault, mBuilder.bgStrokeColorDefault)
+                .pressedStroke(mBuilder.bgStrokePressed, mBuilder.bgStrokeColorPressed)
+                .selectedStroke(mBuilder.bgStrokeSelected, mBuilder.bgStrokeColorSelected)
+                .focusedStroke(mBuilder.bgStrokeFocused, mBuilder.bgStrokeColorFocused)
+                .disabledStroke(mBuilder.bgStrokeDisabled, mBuilder.bgStrokeColorDisabled);
 
-        if (bgCorner > 0) {
-            factory.corner(bgCorner);
+        if (mBuilder.bgCorner > 0) {
+            factory.corner(mBuilder.bgCorner);
         } else {
-            factory.corner(new float[]{bgCornerTopLeft, bgCornerTopLeft,
-                    bgCornerTopRight, bgCornerTopRight,
-                    bgCornerBottomRight, bgCornerBottomRight,
-                    bgCornerBottomLeft, bgCornerBottomLeft});
+            factory.corner(new float[]{mBuilder.bgCornerTopLeft, mBuilder.bgCornerTopLeft,
+                    mBuilder.bgCornerTopRight, mBuilder.bgCornerTopRight,
+                    mBuilder.bgCornerBottomRight, mBuilder.bgCornerBottomRight,
+                    mBuilder.bgCornerBottomLeft, mBuilder.bgCornerBottomLeft});
         }
 
-        factory.pressedRipple(bgRipplePressed);
+        factory.pressedRipple(mBuilder.bgRipplePressed);
 
-        factory.defaultGradient(generateOrientation(bgGradientDirectionDefault), generateGradientColors(bgGradientStartColorDefault, bgGradientCenterColorDefault, bgGradientEndColorDefault))
-                .pressedGradient(generateOrientation(bgGradientDirectionPressed), generateGradientColors(bgGradientStartColorPressed, bgGradientCenterColorPressed, bgGradientEndColorPressed))
-                .selectedGradient(generateOrientation(bgGradientDirectionSelected), generateGradientColors(bgGradientStartColorSelected, bgGradientCenterColorSelected, bgGradientEndColorSelected))
-                .focusedGradient(generateOrientation(bgGradientDirectionFocused), generateGradientColors(bgGradientStartColorFocused, bgGradientCenterColorFocused, bgGradientEndColorFocused))
-                .disabledGradient(generateOrientation(bgGradientDirectionDisabled), generateGradientColors(bgGradientStartColorDisabled, bgGradientCenterColorDisabled, bgGradientEndColorDisabled));
+        factory.defaultGradient(mBuilder.bgGradientDirectionDefault, generateGradientColors(mBuilder.bgGradientStartColorDefault, mBuilder.bgGradientCenterColorDefault, mBuilder.bgGradientEndColorDefault))
+                .pressedGradient(mBuilder.bgGradientDirectionPressed, generateGradientColors(mBuilder.bgGradientStartColorPressed, mBuilder.bgGradientCenterColorPressed, mBuilder.bgGradientEndColorPressed))
+                .selectedGradient(mBuilder.bgGradientDirectionSelected, generateGradientColors(mBuilder.bgGradientStartColorSelected, mBuilder.bgGradientCenterColorSelected, mBuilder.bgGradientEndColorSelected))
+                .focusedGradient(mBuilder.bgGradientDirectionFocused, generateGradientColors(mBuilder.bgGradientStartColorFocused, mBuilder.bgGradientCenterColorFocused, mBuilder.bgGradientEndColorFocused))
+                .disabledGradient(mBuilder.bgGradientDirectionDisabled, generateGradientColors(mBuilder.bgGradientStartColorDisabled, mBuilder.bgGradientCenterColorDisabled, mBuilder.bgGradientEndColorDisabled));
         StateListDrawable stateListDrawable = factory.build();
         if (!DrawableUtils.isStateListDrawableEmpty(stateListDrawable)) {
-            uiView.updateBackground(stateListDrawable);
+            mBuilder.uiView.updateBackground(stateListDrawable);
         }
     }
 
@@ -755,17 +625,35 @@ public class TUIHelper<TUI extends IView> {
      * 更新文字
      */
     public void updateText() {
-        if (textColorDefault == SelectorFactory.INVALID) {
+        if (mBuilder.textColorDefault == SelectorFactory.INVALID) {
             return;
         }
-        if (uiView instanceof ITextView) {
-            ColorStateList colorStateList = new ColorStateList(SelectorFactory.STATES,
-                    new int[]{textColorSelected == SelectorFactory.INVALID ? textColorDefault : textColorSelected,
-                            textColorPressed == SelectorFactory.INVALID ? textColorDefault : textColorPressed,
-                            textColorFocused == SelectorFactory.INVALID ? textColorDefault : textColorFocused,
-                            textColorDisabled == SelectorFactory.INVALID ? textColorDefault : textColorDisabled,
-                            textColorDefault});
-            ((ITextView) uiView).updateText(colorStateList);
+        if (mBuilder.uiView instanceof ITextView) {
+            List<int[]> stateList = new ArrayList<>();
+            List<Integer> colorList = new ArrayList<>();
+            if (mBuilder.textColorSelected != SelectorFactory.INVALID) {
+                stateList.add(SelectorFactory.STATES[0]);
+                colorList.add(mBuilder.textColorSelected);
+            }
+            if (mBuilder.textColorPressed != SelectorFactory.INVALID) {
+                stateList.add(SelectorFactory.STATES[1]);
+                colorList.add(mBuilder.textColorPressed);
+            }
+            if (mBuilder.textColorFocused != SelectorFactory.INVALID) {
+                stateList.add(SelectorFactory.STATES[2]);
+                colorList.add(mBuilder.textColorFocused);
+            }
+            if (mBuilder.textColorDisabled != SelectorFactory.INVALID) {
+                stateList.add(SelectorFactory.STATES[3]);
+                colorList.add(mBuilder.textColorDisabled);
+            }
+            if (mBuilder.textColorDefault != SelectorFactory.INVALID) {
+                stateList.add(SelectorFactory.STATES[4]);
+                colorList.add(mBuilder.textColorDefault);
+            }
+            ((ITextView) mBuilder.uiView).updateText(new ColorStateList(
+                    stateList.toArray(new int[stateList.size()][]),
+                    ConvertUtils.convert(colorList.toArray(new Integer[stateList.size()]))));
         }
     }
 
@@ -774,35 +662,35 @@ public class TUIHelper<TUI extends IView> {
      * 更新Drawable
      */
     public void updateDrawable() {
-        if (uiView instanceof ITextView) {
+        if (mBuilder.uiView instanceof ITextView) {
             Drawable[] drawables = new Drawable[4];
 
-            drawables[0] = generateDrawable(tintWrapDrawable(drawableLeftDefault, drawableLeftTintDefault),
-                    tintWrapDrawable(drawableLeftPressed, drawableLeftTintPressed),
-                    tintWrapDrawable(drawableLeftSelected, drawableLeftTintSelected),
-                    tintWrapDrawable(drawableLeftFocused, drawableLeftTintFocused),
-                    tintWrapDrawable(drawableLeftDisabled, drawableLeftTintDisabled),
-                    drawableLeftWidth, drawableLeftHeight);
-            drawables[1] = generateDrawable(tintWrapDrawable(drawableTopDefault, drawableTopTintDefault),
-                    tintWrapDrawable(drawableTopPressed, drawableTopTintPressed),
-                    tintWrapDrawable(drawableTopSelected, drawableTopTintSelected),
-                    tintWrapDrawable(drawableTopFocused, drawableTopTintFocused),
-                    tintWrapDrawable(drawableTopDisabled, drawableTopTintDisabled),
-                    drawableTopWidth, drawableTopHeight);
-            drawables[2] = generateDrawable(tintWrapDrawable(drawableRightDefault, drawableRightTintDefault),
-                    tintWrapDrawable(drawableRightPressed, drawableRightTintPressed),
-                    tintWrapDrawable(drawableRightSelected, drawableRightTintSelected),
-                    tintWrapDrawable(drawableRightFocused, drawableRightTintFocused),
-                    tintWrapDrawable(drawableRightDisabled, drawableRightTintDisabled),
-                    drawableRightWidth, drawableRightHeight);
-            drawables[3] = generateDrawable(tintWrapDrawable(drawableBottomDefault, drawableBottomTintDefault),
-                    tintWrapDrawable(drawableBottomPressed, drawableBottomTintPressed),
-                    tintWrapDrawable(drawableBottomSelected, drawableBottomTintSelected),
-                    tintWrapDrawable(drawableBottomFocused, drawableBottomTintFocused),
-                    tintWrapDrawable(drawableBottomDisabled, drawableBottomTintDisabled),
-                    drawableBottomWidth, drawableBottomHeight);
+            drawables[0] = generateDrawable(tintWrapDrawable(mBuilder.drawableLeftDefault, mBuilder.drawableLeftTintDefault),
+                    tintWrapDrawable(mBuilder.drawableLeftPressed, mBuilder.drawableLeftTintPressed),
+                    tintWrapDrawable(mBuilder.drawableLeftSelected, mBuilder.drawableLeftTintSelected),
+                    tintWrapDrawable(mBuilder.drawableLeftFocused, mBuilder.drawableLeftTintFocused),
+                    tintWrapDrawable(mBuilder.drawableLeftDisabled, mBuilder.drawableLeftTintDisabled),
+                    mBuilder.drawableLeftWidth, mBuilder.drawableLeftHeight);
+            drawables[1] = generateDrawable(tintWrapDrawable(mBuilder.drawableTopDefault, mBuilder.drawableTopTintDefault),
+                    tintWrapDrawable(mBuilder.drawableTopPressed, mBuilder.drawableTopTintPressed),
+                    tintWrapDrawable(mBuilder.drawableTopSelected, mBuilder.drawableTopTintSelected),
+                    tintWrapDrawable(mBuilder.drawableTopFocused, mBuilder.drawableTopTintFocused),
+                    tintWrapDrawable(mBuilder.drawableTopDisabled, mBuilder.drawableTopTintDisabled),
+                    mBuilder.drawableTopWidth, mBuilder.drawableTopHeight);
+            drawables[2] = generateDrawable(tintWrapDrawable(mBuilder.drawableRightDefault, mBuilder.drawableRightTintDefault),
+                    tintWrapDrawable(mBuilder.drawableRightPressed, mBuilder.drawableRightTintPressed),
+                    tintWrapDrawable(mBuilder.drawableRightSelected, mBuilder.drawableRightTintSelected),
+                    tintWrapDrawable(mBuilder.drawableRightFocused, mBuilder.drawableRightTintFocused),
+                    tintWrapDrawable(mBuilder.drawableRightDisabled, mBuilder.drawableRightTintDisabled),
+                    mBuilder.drawableRightWidth, mBuilder.drawableRightHeight);
+            drawables[3] = generateDrawable(tintWrapDrawable(mBuilder.drawableBottomDefault, mBuilder.drawableBottomTintDefault),
+                    tintWrapDrawable(mBuilder.drawableBottomPressed, mBuilder.drawableBottomTintPressed),
+                    tintWrapDrawable(mBuilder.drawableBottomSelected, mBuilder.drawableBottomTintSelected),
+                    tintWrapDrawable(mBuilder.drawableBottomFocused, mBuilder.drawableBottomTintFocused),
+                    tintWrapDrawable(mBuilder.drawableBottomDisabled, mBuilder.drawableBottomTintDisabled),
+                    mBuilder.drawableBottomWidth, mBuilder.drawableBottomHeight);
 
-            ((ITextView) uiView).updateDrawable(drawables);
+            ((ITextView) mBuilder.uiView).updateDrawable(drawables);
         }
     }
 
@@ -820,7 +708,7 @@ public class TUIHelper<TUI extends IView> {
             int topDrawableH = compoundDrawables[1] == null ? 0 : compoundDrawables[1].getBounds().height();
             int bottomDrawableH = compoundDrawables[3] == null ? 0 : compoundDrawables[3].getBounds().height();
             int drawableTop = availableHeight / 2 - ((availableHeight - bottomDrawableH - topDrawableH) / 2 + topDrawableH);
-            switch (drawableLeftAlign) {
+            switch (mBuilder.drawableLeftAlign) {
                 case 0:
                     drawableTop -= (availableHeight - compoundDrawables[0].getBounds().height() >> 1);
                     break;
@@ -839,7 +727,7 @@ public class TUIHelper<TUI extends IView> {
             int leftDrawableW = compoundDrawables[0] == null ? 0 : compoundDrawables[0].getBounds().width();
             int rightDrawableW = compoundDrawables[2] == null ? 0 : compoundDrawables[2].getBounds().width();
             int drawableLeft = availableWidth / 2 - ((availableWidth - rightDrawableW - leftDrawableW) / 2 + leftDrawableW);
-            switch (drawableTopAlign) {
+            switch (mBuilder.drawableTopAlign) {
                 case 0:
                     drawableLeft -= (availableWidth - compoundDrawables[1].getBounds().width() >> 1);
                     break;
@@ -858,7 +746,7 @@ public class TUIHelper<TUI extends IView> {
             int topDrawableH = compoundDrawables[1] == null ? 0 : compoundDrawables[1].getBounds().height();
             int bottomDrawableH = compoundDrawables[3] == null ? 0 : compoundDrawables[3].getBounds().height();
             int drawableTop = availableHeight / 2 - ((availableHeight - bottomDrawableH - topDrawableH) / 2 + topDrawableH);
-            switch (drawableRightAlign) {
+            switch (mBuilder.drawableRightAlign) {
                 case 0:
                     drawableTop -= (availableHeight - compoundDrawables[0].getBounds().height() >> 1);
                     break;
@@ -877,7 +765,7 @@ public class TUIHelper<TUI extends IView> {
             int leftDrawableW = compoundDrawables[0] == null ? 0 : compoundDrawables[0].getBounds().width();
             int rightDrawableW = compoundDrawables[2] == null ? 0 : compoundDrawables[2].getBounds().width();
             int drawableLeft = availableWidth / 2 - ((availableWidth - rightDrawableW - leftDrawableW) / 2 + leftDrawableW);
-            switch (drawableBottomAlign) {
+            switch (mBuilder.drawableBottomAlign) {
                 case 0:
                     drawableLeft -= (availableWidth - compoundDrawables[1].getBounds().width() >> 1);
                     break;
@@ -898,14 +786,14 @@ public class TUIHelper<TUI extends IView> {
      * 更新背景
      */
     public void updateSrc() {
-        Drawable src = generateDrawable(tintWrapDrawable(srcDefault, srcTintDefault),
-                tintWrapDrawable(srcPressed, srcTintPressed),
-                tintWrapDrawable(srcSelected, srcTintSelected),
-                tintWrapDrawable(srcFocused, srcTintFocused),
-                tintWrapDrawable(srcDisabled, srcTintDisabled),
+        Drawable src = generateDrawable(tintWrapDrawable(mBuilder.srcDefault, mBuilder.srcTintDefault),
+                tintWrapDrawable(mBuilder.srcPressed, mBuilder.srcTintPressed),
+                tintWrapDrawable(mBuilder.srcSelected, mBuilder.srcTintSelected),
+                tintWrapDrawable(mBuilder.srcFocused, mBuilder.srcTintFocused),
+                tintWrapDrawable(mBuilder.srcDisabled, mBuilder.srcTintDisabled),
                 -1, -1);
-        if (uiView instanceof TUIImageView && src != null) {
-            ((TUIImageView) uiView).updateSrc(src);
+        if (mBuilder.uiView instanceof TUIImageView && src != null) {
+            ((TUIImageView) mBuilder.uiView).updateSrc(src);
         }
     }
 
@@ -1032,11 +920,11 @@ public class TUIHelper<TUI extends IView> {
         private int bgGradientEndColorFocused = SelectorFactory.INVALID;
         private int bgGradientEndColorDisabled = SelectorFactory.INVALID;
 
-        private int bgGradientDirectionDefault = 1;
-        private int bgGradientDirectionPressed = 1;
-        private int bgGradientDirectionSelected = 1;
-        private int bgGradientDirectionFocused = 1;
-        private int bgGradientDirectionDisabled = 1;
+        private GradientDrawable.Orientation bgGradientDirectionDefault = TOP_BOTTOM;
+        private GradientDrawable.Orientation bgGradientDirectionPressed = TOP_BOTTOM;
+        private GradientDrawable.Orientation bgGradientDirectionSelected = TOP_BOTTOM;
+        private GradientDrawable.Orientation bgGradientDirectionFocused = TOP_BOTTOM;
+        private GradientDrawable.Orientation bgGradientDirectionDisabled = TOP_BOTTOM;
 
         private int textColorDefault = SelectorFactory.INVALID;
         private int textColorPressed = SelectorFactory.INVALID;
@@ -1297,27 +1185,27 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> bgGradientDirectionDefault(@StyleableRes int bgGradientDirectionDefault) {
-            this.bgGradientDirectionDefault = typedArray.getInt(bgGradientDirectionDefault, 1);
+            this.bgGradientDirectionDefault = generateOrientation(typedArray.getInt(bgGradientDirectionDefault, 0));
             return this;
         }
 
         public Builder<T> bgGradientDirectionPressed(@StyleableRes int bgGradientDirectionPressed) {
-            this.bgGradientDirectionPressed = typedArray.getInt(bgGradientDirectionPressed, 1);
+            this.bgGradientDirectionPressed = generateOrientation(typedArray.getInt(bgGradientDirectionPressed, 0));
             return this;
         }
 
         public Builder<T> bgGradientDirectionSelected(@StyleableRes int bgGradientDirectionSelected) {
-            this.bgGradientDirectionSelected = typedArray.getInt(bgGradientDirectionSelected, 1);
+            this.bgGradientDirectionSelected = generateOrientation(typedArray.getInt(bgGradientDirectionSelected, 0));
             return this;
         }
 
         public Builder<T> bgGradientDirectionFocused(@StyleableRes int bgGradientDirectionFocused) {
-            this.bgGradientDirectionFocused = typedArray.getInt(bgGradientDirectionFocused, 1);
+            this.bgGradientDirectionFocused = generateOrientation(typedArray.getInt(bgGradientDirectionFocused, 0));
             return this;
         }
 
         public Builder<T> bgGradientDirectionDisabled(@StyleableRes int bgGradientDirectionDisabled) {
-            this.bgGradientDirectionDisabled = typedArray.getInt(bgGradientDirectionDisabled, 1);
+            this.bgGradientDirectionDisabled = generateOrientation(typedArray.getInt(bgGradientDirectionDisabled, 0));
             return this;
         }
 
@@ -1362,7 +1250,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableLeftDefault(@StyleableRes int drawableLeftDefault) {
-            this.drawableLeftDefault = typedArray.getDrawable(drawableLeftDefault);
+            this.drawableLeftDefault = DrawableUtils.getTintDrawable(typedArray, drawableLeftDefault);
             return this;
         }
 
@@ -1372,7 +1260,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableLeftPressed(@StyleableRes int drawableLeftPressed) {
-            this.drawableLeftPressed = typedArray.getDrawable(drawableLeftPressed);
+            this.drawableLeftPressed = DrawableUtils.getTintDrawable(typedArray, drawableLeftPressed);
             return this;
         }
 
@@ -1382,7 +1270,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableLeftSelected(@StyleableRes int drawableLeftSelected) {
-            this.drawableLeftSelected = typedArray.getDrawable(drawableLeftSelected);
+            this.drawableLeftSelected = DrawableUtils.getTintDrawable(typedArray, drawableLeftSelected);
             return this;
         }
 
@@ -1392,7 +1280,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableLeftFocused(@StyleableRes int drawableLeftFocused) {
-            this.drawableLeftFocused = typedArray.getDrawable(drawableLeftFocused);
+            this.drawableLeftFocused = DrawableUtils.getTintDrawable(typedArray, drawableLeftFocused);
             return this;
         }
 
@@ -1402,7 +1290,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableLeftDisabled(@StyleableRes int drawableLeftDisabled) {
-            this.drawableLeftDisabled = typedArray.getDrawable(drawableLeftDisabled);
+            this.drawableLeftDisabled = DrawableUtils.getTintDrawable(typedArray, drawableLeftDisabled);
             return this;
         }
 
@@ -1427,7 +1315,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableTopDefault(@StyleableRes int drawableTopDefault) {
-            this.drawableTopDefault = typedArray.getDrawable(drawableTopDefault);
+            this.drawableTopDefault = DrawableUtils.getTintDrawable(typedArray, drawableTopDefault);
             return this;
         }
 
@@ -1437,7 +1325,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableTopPressed(@StyleableRes int drawableTopPressed) {
-            this.drawableTopPressed = typedArray.getDrawable(drawableTopPressed);
+            this.drawableTopPressed = DrawableUtils.getTintDrawable(typedArray, drawableTopPressed);
             return this;
         }
 
@@ -1447,7 +1335,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableTopSelected(@StyleableRes int drawableTopSelected) {
-            this.drawableTopSelected = typedArray.getDrawable(drawableTopSelected);
+            this.drawableTopSelected = DrawableUtils.getTintDrawable(typedArray, drawableTopSelected);
             return this;
         }
 
@@ -1457,7 +1345,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableTopFocused(@StyleableRes int drawableTopFocused) {
-            this.drawableTopFocused = typedArray.getDrawable(drawableTopFocused);
+            this.drawableTopFocused = DrawableUtils.getTintDrawable(typedArray, drawableTopFocused);
             return this;
         }
 
@@ -1467,7 +1355,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableTopDisabled(@StyleableRes int drawableTopDisabled) {
-            this.drawableTopDisabled = typedArray.getDrawable(drawableTopDisabled);
+            this.drawableTopDisabled = DrawableUtils.getTintDrawable(typedArray, drawableTopDisabled);
             return this;
         }
 
@@ -1492,7 +1380,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableRightDefault(@StyleableRes int drawableRightDefault) {
-            this.drawableRightDefault = typedArray.getDrawable(drawableRightDefault);
+            this.drawableRightDefault = DrawableUtils.getTintDrawable(typedArray, drawableRightDefault);
             return this;
         }
 
@@ -1502,7 +1390,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableRightPressed(@StyleableRes int drawableRightPressed) {
-            this.drawableRightPressed = typedArray.getDrawable(drawableRightPressed);
+            this.drawableRightPressed = DrawableUtils.getTintDrawable(typedArray, drawableRightPressed);
             return this;
         }
 
@@ -1512,7 +1400,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableRightSelected(@StyleableRes int drawableRightSelected) {
-            this.drawableRightSelected = typedArray.getDrawable(drawableRightSelected);
+            this.drawableRightSelected = DrawableUtils.getTintDrawable(typedArray, drawableRightSelected);
             return this;
         }
 
@@ -1522,7 +1410,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableRightFocused(@StyleableRes int drawableRightFocused) {
-            this.drawableRightFocused = typedArray.getDrawable(drawableRightFocused);
+            this.drawableRightFocused = DrawableUtils.getTintDrawable(typedArray, drawableRightFocused);
             return this;
         }
 
@@ -1532,7 +1420,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableRightDisabled(@StyleableRes int drawableRightDisabled) {
-            this.drawableRightDisabled = typedArray.getDrawable(drawableRightDisabled);
+            this.drawableRightDisabled = DrawableUtils.getTintDrawable(typedArray, drawableRightDisabled);
             return this;
         }
 
@@ -1557,7 +1445,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableBottomDefault(@StyleableRes int drawableBottomDefault) {
-            this.drawableBottomDefault = typedArray.getDrawable(drawableBottomDefault);
+            this.drawableBottomDefault = DrawableUtils.getTintDrawable(typedArray, drawableBottomDefault);
             return this;
         }
 
@@ -1567,7 +1455,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableBottomPressed(@StyleableRes int drawableBottomPressed) {
-            this.drawableBottomPressed = typedArray.getDrawable(drawableBottomPressed);
+            this.drawableBottomPressed = DrawableUtils.getTintDrawable(typedArray, drawableBottomPressed);
             return this;
         }
 
@@ -1577,7 +1465,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableBottomSelected(@StyleableRes int drawableBottomSelected) {
-            this.drawableBottomSelected = typedArray.getDrawable(drawableBottomSelected);
+            this.drawableBottomSelected = DrawableUtils.getTintDrawable(typedArray, drawableBottomSelected);
             return this;
         }
 
@@ -1587,7 +1475,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableBottomFocused(@StyleableRes int drawableBottomFocused) {
-            this.drawableBottomFocused = typedArray.getDrawable(drawableBottomFocused);
+            this.drawableBottomFocused = DrawableUtils.getTintDrawable(typedArray, drawableBottomFocused);
             return this;
         }
 
@@ -1597,7 +1485,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> drawableBottomDisabled(@StyleableRes int drawableBottomDisabled) {
-            this.drawableBottomDisabled = typedArray.getDrawable(drawableBottomDisabled);
+            this.drawableBottomDisabled = DrawableUtils.getTintDrawable(typedArray, drawableBottomDisabled);
             return this;
         }
 
@@ -1607,7 +1495,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> srcDefault(@StyleableRes int srcDefault) {
-            this.srcDefault = typedArray.getDrawable(srcDefault);
+            this.srcDefault = DrawableUtils.getTintDrawable(typedArray, srcDefault);
             return this;
         }
 
@@ -1617,7 +1505,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> srcPressed(@StyleableRes int srcPressed) {
-            this.srcPressed = typedArray.getDrawable(srcPressed);
+            this.srcPressed = DrawableUtils.getTintDrawable(typedArray, srcPressed);
             return this;
         }
 
@@ -1627,7 +1515,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> srcSelected(@StyleableRes int srcSelected) {
-            this.srcSelected = typedArray.getDrawable(srcSelected);
+            this.srcSelected = DrawableUtils.getTintDrawable(typedArray, srcSelected);
             return this;
         }
 
@@ -1637,7 +1525,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> srcFocused(@StyleableRes int srcFocused) {
-            this.srcFocused = typedArray.getDrawable(srcFocused);
+            this.srcFocused = DrawableUtils.getTintDrawable(typedArray, srcFocused);
             return this;
         }
 
@@ -1647,7 +1535,7 @@ public class TUIHelper<TUI extends IView> {
         }
 
         public Builder<T> srcDisabled(@StyleableRes int srcDisabled) {
-            this.srcDisabled = typedArray.getDrawable(srcDisabled);
+            this.srcDisabled = DrawableUtils.getTintDrawable(typedArray, srcDisabled);
             return this;
         }
 

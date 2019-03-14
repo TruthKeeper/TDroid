@@ -73,6 +73,40 @@ public final class AppUtils {
     }
 
     /**
+     * 根据版本名称判断是否满足更新版本条件
+     *
+     * @param localVersion
+     * @param newVersion
+     * @return
+     */
+    public static boolean canUpdateVersion(String localVersion, String newVersion) {
+        if (EmptyUtils.isEmpty(localVersion) || EmptyUtils.isEmpty(newVersion)) {
+            return false;
+        }
+        String[] localVersionArray = localVersion.split("\\.");
+        String[] newVersionArray = newVersion.split("\\.");
+        if (localVersionArray.length < newVersionArray.length) {
+            int cha = newVersionArray.length - localVersionArray.length;
+            for (int i = 0; i < cha; i++) {
+                localVersion += ".0";
+            }
+            localVersionArray = localVersion.split("\\.");
+        }
+        try {
+            for (int i = 0; i < newVersionArray.length; i++) {
+                int newCode = Integer.parseInt(newVersionArray[i]);
+                int localCode = Integer.parseInt(localVersionArray[i]);
+                if (newCode > localCode) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
      * 当前是否是主进程
      *
      * @return
