@@ -337,12 +337,15 @@ public final class FileUtils {
         }
         if (file.isDirectory()) {
             File[] files = file.listFiles();
+            if (files == null) {
+                return file.delete();
+            }
             for (File f : files) {
                 if (!deleteFile(f, filter)) {
                     return false;
                 }
             }
-            return true;
+            return file.delete();
         }
         return file.delete();
     }

@@ -90,12 +90,18 @@ public final class IntentUtils {
      * @param immediately 立即拨出
      */
     public static void toCallPhone(@NonNull String phone, boolean immediately) {
-        if (ActivityCompat.checkSelfPermission(Utils.getApp(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+        Intent intent;
+        if (!immediately) {
             Uri uri = Uri.parse("tel:" + phone);
-            Intent intent = new Intent(immediately ? Intent.ACTION_CALL : Intent.ACTION_DIAL, uri);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            Utils.getApp().startActivity(intent);
+            intent = new Intent(Intent.ACTION_DIAL, uri);
+        } else if (ActivityCompat.checkSelfPermission(Utils.getApp(), Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED) {
+            Uri uri = Uri.parse("tel:" + phone);
+            intent = new Intent(Intent.ACTION_CALL, uri);
+        } else {
+            return;
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Utils.getApp().startActivity(intent);
     }
 
     /**
