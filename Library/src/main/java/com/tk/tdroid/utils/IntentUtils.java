@@ -203,17 +203,24 @@ public final class IntentUtils {
      * 跳转到通知栏设置权限
      */
     public static void toNotifySetting() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Intent intent = new Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+        Intent intent = new Intent();
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 26) {
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, Utils.getApp().getPackageName());
+        } else if (Build.VERSION.SDK_INT >= 21) {
+            intent.setAction("android.settings.APP_NOTIFICATION_SETTINGS");
             intent.putExtra("app_package", Utils.getApp().getPackageName());
-            intent.putExtra("app_uid", Binder.getCallingUid());
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if (IntentUtils.isSafeActivity(intent)) {
-                Utils.getApp().startActivity(intent);
-            }
+            intent.putExtra("app_uid", Utils.getApp().getApplicationInfo().uid);
         } else {
             toSetting();
+            return;
         }
+        if (IntentUtils.isSafeActivity(intent)) {
+            Utils.getApp().startActivity(intent);
+            return;
+        }
+        toSetting();
     }
 
     /**
